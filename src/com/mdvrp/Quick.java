@@ -54,7 +54,7 @@ public class Quick {
    /***********************************************************************
     *  Helper sorting functions
     ***********************************************************************/
-    // is v < w ?
+    // is c1 < c2 ?
     private static boolean less(Customer c1, Customer c2, int index) {
     	if( c1.getDistance() <  c2.getDistance()) {
 			return true;

@@ -38,6 +38,7 @@ public class Customer {
 		waitingTime          = 0;
 		twViol               = 0;
 		angleToDepot	= 0;
+		distanceFromDepot = 0;
 		
 	}
 	
