@@ -1,0 +1,15 @@
+Removed
+	com.mdvrp
+		Parameters.java
+			@34-36:	MovesType parameter
+			@43-45:	Precision parameter
+			@49-51:	Route point generation parameter
+			@52-24:	Random seed parameter
+			@58-67:	TabuTenure variability parameter
+Things fixed adjusted:
+	-	Many classes were overhauled for managing one depot only, removed
+		loops for calculating:
+			- Angles
+			- Distances
+		Modified also methods.
+		All the removed data is commented.
