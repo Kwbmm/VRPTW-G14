@@ -427,7 +427,10 @@ public class Instance {
 	}
 
 
-	public Depot getDepot(int i) {
+//	public Depot getDepot(int i) {
+//		return depot;
+//	}
+	public Depot getDepot(){
 		return depot;
 	}
 

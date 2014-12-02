@@ -146,7 +146,8 @@ public class MySolution extends SolutionAdapter{
 					routes[i][j].setIndex(i*(instance.getVehiclesNr()) + j);
 					
 					// add the depot as the first node to the route
-					routes[i][j].setDepot(instance.getDepot(i));
+//					routes[i][j].setDepot(instance.getDepot(i));
+					routes[i][j].setDepot(instance.getDepot());
 					
 					// set the cost of the route
 					Cost cost = new Cost();
@@ -171,24 +172,27 @@ public class MySolution extends SolutionAdapter{
 		int assignedCustomersNr;
 		int startCustomer;
 		int customerChosen; // serve to cycle j, j+1, ... assignedcustomersnr, 0, ... j-1
-
+		
 		// cycle the list of depots
 		for( int i = 0; i < instance.getDepotsNr(); ++i) {
 			debug.append("\n");
-			assignedCustomersNr = instance.getDepot(i).getAssignedCustomersNr();
+//			assignedCustomersNr = instance.getDepot(i).getAssignedCustomersNr();
+			assignedCustomersNr = instance.getDepot().getAssignedCustomersNr();
 			if(instance.getParameters().getStartClient() != -1) {
 				startCustomer = instance.getParameters().getStartClient();
 			}else{
-				startCustomer = instance.getRandom().nextInt(assignedCustomersNr);
+//				startCustomer = instance.getRandom().nextInt(assignedCustomersNr);
+				//Get the most distant customer
+				startCustomer = instance.getDepot().getAssignedcustomers().size()-1;
 				instance.getParameters().setStartClient(startCustomer);
 			}
 			// cycle the entire list of customers starting from the randomly chosen one
 			for (int j = startCustomer; j < assignedCustomersNr + startCustomer; ++j) {
 				// serve to cycle j, j+1, ... assignedcustomersnr, 0, ... j-1
 				customerChosen = j % assignedCustomersNr;
-
 				// stores the pointer to the customer chosen from depots list assigned customers
-				customerChosenPtr = instance.getDepot(i).getAssignedCustomer(customerChosen);
+//				customerChosenPtr = instance.getDepot(i).getAssignedCustomer(customerChosen);
+				customerChosenPtr = instance.getDepot().getAssignedCustomer(customerChosen);
 				// cycle the routes until the last one
 				int k;
 				for(k= 0; k < instance.getVehiclesNr() - 1; ++k){
@@ -196,11 +200,13 @@ public class MySolution extends SolutionAdapter{
 					route = routes[i][k];
 
 					// accept on the route only if satisfy the load and duration
+					//route.getCost().load = The current load on the vehicle
+					//route.getLoadAdmitted = Max capacity of the vehicle
 					if (customerChosenPtr.getCapacity() + route.getCost().load <= route.getLoadAdmited()
 					 && customerChosenPtr.getServiceDuration() + route.getDuration()  <= route.getDurationAdmited()){
 						insertBestTravel(instance, route, customerChosenPtr);
 						evaluateRoute(route);
-						break;
+						break; //Break so that a new vehicles takes another customer
 					}
 				} // end for routes
 				// if the customer was not inserted and we reach the last route
