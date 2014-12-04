@@ -11,7 +11,7 @@ public class Cost {
 	public double serviceTime;		 // sum of all service time;	 
 	public double waitingTime;		 // sum of all waiting times when arrives before start TW
 	public double loadViol;		     // violation of the load
-	public double durationViol;      // violation of the duration waiting time + service time
+	//public double durationViol;      // violation of the duration waiting time + service time
 	public double twViol;            // violation of the time window
 	public double returnToDepotTime; // stores time to return to the depot
 	public double depotTwViol;       // stores the time window violation of the depot
