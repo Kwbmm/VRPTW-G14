@@ -13,7 +13,7 @@ public class Parameters {
 	private int tabuTenure;
 	private boolean variableTenure;
 	private String currDir;
-	private int groups;
+	private int vehicles; //How many vehicles we want to use
 	
 	public Parameters() {
 		currDir 			= System.getProperty("user.dir");
@@ -25,7 +25,7 @@ public class Parameters {
 		tabuTenure        	= -1;
 		randomSeed		  	= -1;
 		variableTenure    	= false;
-		groups				= 0;
+		vehicles			= 4; //Minimum number of vehicles to use
 	}
 	
 	public void updateParameters(String[] args) throws Exception
@@ -67,8 +67,8 @@ public class Parameters {
 							throw new Exception();
 						}
 						break;
-					case "-g":
-						groups = Integer.parseInt(args[i+1]);
+					case "-v":
+						vehicles = Integer.parseInt(args[i+1]);
 						break;
 					default: {
 						System.out.println("Unknown type of argument: " + args[i]);
@@ -221,4 +221,12 @@ public class Parameters {
 	public void setCurrDir(String currDir) {
 		this.currDir = currDir;
 	}
+	
+	public int getVehiclesToUse(){
+		return this.vehicles;
+	}
+	
+//	public void setVehiclesToUse(int vehicles){
+//		this.vehicles = vehicles;
+//	}
 }
