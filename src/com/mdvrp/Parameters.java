@@ -13,6 +13,7 @@ public class Parameters {
 	private int tabuTenure;
 	private boolean variableTenure;
 	private String currDir;
+	private int groups;
 	
 	public Parameters() {
 		currDir 			= System.getProperty("user.dir");
@@ -24,6 +25,7 @@ public class Parameters {
 		tabuTenure        	= -1;
 		randomSeed		  	= -1;
 		variableTenure    	= false;
+		groups				= 0;
 	}
 	
 	public void updateParameters(String[] args) throws Exception
@@ -64,6 +66,9 @@ public class Parameters {
 							System.out.println("Variable tenure argument must be true of false. Set to default false!");
 							throw new Exception();
 						}
+						break;
+					case "-g":
+						groups = Integer.parseInt(args[i+1]);
 						break;
 					default: {
 						System.out.println("Unknown type of argument: " + args[i]);
