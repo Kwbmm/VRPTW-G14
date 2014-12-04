@@ -10,11 +10,11 @@ public class Cost {
 	public double load;			     // sum of all quantities
 	public double serviceTime;		 // sum of all service time;	 
 	public double waitingTime;		 // sum of all waiting times when arrives before start TW
-	public double loadViol;		     // violation of the load
+	//public double loadViol;		     // violation of the load
 	//public double durationViol;      // violation of the duration waiting time + service time
-	public double twViol;            // violation of the time window
+	//public double twViol;            // violation of the time window
 	public double returnToDepotTime; // stores time to return to the depot
-	public double depotTwViol;       // stores the time window violation of the depot
+	//public double depotTwViol;       // stores the time window violation of the depot
 	
 	
 	// default constructor
@@ -25,12 +25,12 @@ public class Cost {
 		serviceTime		  = 0;
 		waitingTime		  = 0;
 		
-		loadViol          = 0;
-		durationViol      = 0;
-		twViol            = 0;
+		//loadViol          = 0;
+		//durationViol      = 0;
+		//twViol            = 0;
 		
 		returnToDepotTime = 0;
-		depotTwViol       = 0;
+		//depotTwViol       = 0;
 		
 	}
 	
@@ -42,15 +42,15 @@ public class Cost {
 		this.serviceTime       = new Double(cost.serviceTime);
 		this.waitingTime       = new Double(cost.waitingTime);
 		
-		this.loadViol          = new Double(cost.loadViol);
-		this.durationViol      = new Double(cost.durationViol);
-		this.twViol            = new Double(cost.twViol);
+		//this.loadViol          = new Double(cost.loadViol);
+		//this.durationViol      = new Double(cost.durationViol);
+		//this.twViol            = new Double(cost.twViol);
 		
 		this.returnToDepotTime = new Double(cost.returnToDepotTime);
-		this.depotTwViol       = new Double(cost.depotTwViol);		
+		//this.depotTwViol       = new Double(cost.depotTwViol);		
 	}
 
-	
+	/*
 	public String toString() {
 		StringBuffer print = new StringBuffer();
 		print.append("--- Cost -------------------------------------");
@@ -58,11 +58,13 @@ public class Cost {
 		print.append("\n" + "| LoadViol=" + loadViol + " DurationViol=" + durationViol + " TWViol=" + twViol);
 		print.append("\n" + "--------------------------------------------------" + "\n");
 		return print.toString();
-	}
+	}*/
 	
+	/*
 	public void calculateTotalCostViol() {
-		total = travelTime + loadViol + durationViol + twViol;
+		total = travelTime + loadViol + twViol + durationViol;
 	}
+	*/
 	
 	/**
 	 * Set the total cost based on alpha, beta, gamma
@@ -71,9 +73,10 @@ public class Cost {
 	 * @param gamma
 	 */
 	public void calculateTotal(double alpha, double beta, double gamma) {
-		total = travelTime + alpha * loadViol + beta * durationViol + gamma * twViol;
+		total = travelTime + serviceTime + waitingTime; //+ alpha * loadViol + beta * durationViol + gamma * twViol;
 	}
 	
+	/*
 	public void setLoadViol(double capacityviol) {
 		this.loadViol = capacityviol;
 	}
@@ -93,6 +96,7 @@ public class Cost {
 	public void addTWViol(double TWviol) {
 		this.twViol += TWviol;
 	}
+	*/
 	
 	/**
 	 * Add cost to the total cost
@@ -119,9 +123,11 @@ public class Cost {
 	public double getTotal() {
 		return total;
 	}
+	
 	/**
 	 * @return the capacityviol
 	 */
+	/*
 	public double getLoadViol() {
 		return loadViol;
 	}
@@ -129,6 +135,7 @@ public class Cost {
 	/**
 	 * @return the durationviol
 	 */
+	/*
 	public double getDurationViol() {
 		return durationViol;
 	}
@@ -136,10 +143,11 @@ public class Cost {
 	/**
 	 * @return the tWviol
 	 */
+	/*
 	public double getTwViol() {
 		return twViol;
 	}
-
+	*/
 	public void initialize() {
 		total             	= 0;
 		travelTime        	= 0;
@@ -147,12 +155,12 @@ public class Cost {
 		serviceTime		  	= 0;
 		waitingTime			= 0;
 		
-		loadViol			= 0;
-		durationViol 		= 0;
-		twViol       		= 0;
+		//loadViol			= 0;
+		//durationViol 		= 0;
+		//twViol       		= 0;
 		
 		returnToDepotTime 	= 0;
-		depotTwViol       	= 0;
+		//depotTwViol       	= 0;
 		
 	}
 	
