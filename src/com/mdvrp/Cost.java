@@ -164,6 +164,7 @@ public class Cost {
 		
 	}
 	
+	/*
 	// check if a cost has violations
     public boolean checkFeasible() {
     	if (this.loadViol == 0 && this.durationViol == 0 && this.twViol == 0) {
@@ -171,7 +172,7 @@ public class Cost {
     	} else {
     		return false;
     	}
-    }
+    }*/
     
     public double getDuration(){
     	return this.serviceTime + this.waitingTime;
@@ -236,20 +237,23 @@ public class Cost {
 	/**
 	 * @return the depotTwViol
 	 */
+	/*
 	public double getDepotTwViol() {
 		return depotTwViol;
 	}
-
+*/
 	/**
 	 * @param depotTwViol the depotTwViol to set
 	 */
+	/*
 	public void setDepotTwViol(double depotTwViol) {
 		this.depotTwViol = depotTwViol;
 	}
-
+*/
 	/**
 	 * @return the travelTime
 	 */
+	
 	public double getTravelTime() {
 		return travelTime;
 	}
@@ -264,7 +268,8 @@ public class Cost {
 	/**
 	 * @param twViol the twViol to set
 	 */
+	/*
 	public void setTwViol(double twViol) {
 		this.twViol = twViol;
-	}
+	}*/
 }

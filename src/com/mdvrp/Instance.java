@@ -305,8 +305,8 @@ public class Instance {
 				}else if(i < customersNr && j >= customersNr)
 				{
 					int d = j - customersNr; // depot number in the instance list
-					distances[i][j] = Math.sqrt(Math.pow(customers.get(i).getXCoordinate() - depots.get(d).getXCoordinate(), 2)
-					+ Math.pow(customers.get(i).getYCoordinate() - depots.get(d).getYCoordinate(), 2));
+					distances[i][j] = Math.sqrt(Math.pow(customers.get(i).getXCoordinate() - depot.get(d).getXCoordinate(), 2)
+					+ Math.pow(customers.get(i).getYCoordinate() - depot.get(d).getYCoordinate(), 2));
 					distances[i][j] = Math.floor(distances[i][j] * 10) / 10;
 					distances[j][i] = distances[i][j];
 	 
@@ -315,8 +315,8 @@ public class Instance {
 				{
 					int d1 = i - customersNr; // first depot number in the instance list
 					int d2 = j - customersNr; // second depot number in the instance list
-					distances[i][j] = Math.sqrt(Math.pow(depots.get(d1).getXCoordinate() - depots.get(d2).getXCoordinate(), 2)
-					+ Math.pow(depots.get(d1).getYCoordinate() - depots.get(d2).getYCoordinate(), 2));
+					distances[i][j] = Math.sqrt(Math.pow(depot.get(d1).getXCoordinate() - depot.get(d2).getXCoordinate(), 2)
+					+ Math.pow(depot.get(d1).getYCoordinate() - depot.get(d2).getYCoordinate(), 2));
 					distances[i][j] = Math.floor(distances[i][j] * 10) / 10;
 					distances[j][i] = distances[i][j];
 				}
