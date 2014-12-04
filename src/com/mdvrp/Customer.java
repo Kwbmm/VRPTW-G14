@@ -24,7 +24,7 @@ public class Customer {
 	private double angleToDepot;
 	
 	private double distanceFromDepot;
-	
+	private double[] distanceFromCustomers;
 	public Customer() {
 		xCoordinate          = 0;
 		yCoordinate          = 0;
@@ -152,8 +152,12 @@ public class Customer {
 		this.yCoordinate = ycoordinate;
 	}
 
-	public void setDistance(double distance){
+	public void setDistanceFromDepot(double distance){
 		this.distanceFromDepot = distance;
+	}
+	
+	public void setDistanceFromCustomer(double distance,int i){
+		this.distanceFromCustomers[i] = distance;
 	}
 
 	/**

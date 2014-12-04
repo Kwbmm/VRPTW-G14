@@ -300,6 +300,8 @@ public class Instance {
 					+ Math.pow(customers.get(i).getYCoordinate() - customers.get(j).getYCoordinate(), 2));
 					distances[i][j] = Math.floor(distances[i][j] * 10) / 10;
 					distances[j][i] = distances[i][j];
+					customers.get(i).setDistanceFromCustomer(distances[i][j], j);
+					customers.get(j).setDistanceFromCustomer(distances[i][j],i);
 	 
 				// case customer and depot
 				}else if(i < customersNr && j >= customersNr)
