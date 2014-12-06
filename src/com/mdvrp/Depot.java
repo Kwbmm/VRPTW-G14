@@ -27,6 +27,7 @@ public class Depot {
 	/**
 	 * Return the formated string of the depot
 	 */
+	/*
 	public String toString() {
 		StringBuffer print = new StringBuffer();
 		print.append("\n");
@@ -40,12 +41,13 @@ public class Depot {
 		}
 		print.append("\n" + "--------------------------------------------------");
 		return print.toString();	
-	}
+	}*/
 	
 	/**
 	 * 
 	 * @return the list of assigned customers to depot in a string
 	 */
+	/*
 	public String printAssignedCustomers() {
 		StringBuffer print = new StringBuffer();
 		print.append("\n" + "AssignedCustomers=");
@@ -54,13 +56,14 @@ public class Depot {
 		}
 		print.append("\n");
 		return print.toString();
-	}
+	}*/
 	
 	/**
 	 * 
 	 * @param index
 	 * @return the formated string with the angles of assigned customers to depot
 	 */
+	/*
 	public String printAssignedCustomersAngles(int index) {
 		StringBuffer print = new StringBuffer();
 		print.append("\nDepot[" + index + "]---AssignedCustomers-------------\nCustomerNumber\t\tCustomerAngle\n");
@@ -70,7 +73,7 @@ public class Depot {
 		}
 		print.append("---------------------------------------------------\n");
 		return print.toString();
-	}
+	}*/
 	
 	/**
 	 * 

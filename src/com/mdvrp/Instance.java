@@ -14,7 +14,7 @@ import java.util.Scanner;
 public class Instance {
 	private int vehiclesNr;
 	private int customersNr;
-	private int depotsNr;
+//	private int depotsNr;
 	private int daysNr = 1;
 	private ArrayList<Customer> customers 	= new ArrayList<>(); 		// vector of customers;
 //	private ArrayList<Depot> depots 		= new ArrayList<>();       	// vector of depots;
@@ -22,7 +22,7 @@ public class Instance {
 	private double[][] durations;
 	private double[][] capacities;
 	private double[][] distances;
-	private Route[][] routes;
+	//private Route[][] routes;    -- I put a comment because this attribute is never used in our version for now
 	private Random random 					= new Random();
 	private Parameters parameters;
 	
@@ -51,11 +51,12 @@ public class Instance {
 	 * and calculates angles
 	 * @param filename
 	 */
-	public void populateFromHombergFile(String filename) {
+	//public void populateFromHombergFile(String filename) {
+	public void populateFromFile(String filename) {
 		try {
 						
 			Scanner in = new Scanner(new FileReader(parameters.getCurrDir() + "/input/" + filename));
-			depotsNr = 1;
+			//depotsNr = 1;
 			
 			// skip useless lines
 			in.nextLine(); // skip filename
@@ -65,8 +66,10 @@ public class Instance {
 			vehiclesNr	= in.nextInt(); //Amount of vehicles
 			
 			// read D and Q
-			durations	= new double[depotsNr][daysNr];
-			capacities	= new double[depotsNr][daysNr];
+			//durations	= new double[depotsNr][daysNr];
+			durations	= new double[1][daysNr];
+			//capacities	= new double[depotsNr][daysNr];
+			capacities	= new double[1][daysNr];
 			durations[0][0] = Double.MAX_VALUE;
 			capacities[0][0] = in.nextInt(); //Capacity of all the vehicles
 			
@@ -157,7 +160,8 @@ public class Instance {
 		for (int i = 0; i < customersNr; ++i){
 			double min = Double.MAX_VALUE;
 //			int depotToAssign = 0;
-			for (int j = customersNr; j < customersNr + depotsNr; ++j)
+			//for (int j = customersNr; j < customersNr + depotsNr; ++j)
+			for (int j = customersNr; j < customersNr + 1; ++j)
 				if (min > distances[i][j]) {
 					min = distances[i][j];
 //					depotToAssign = j - customersNr;
@@ -168,6 +172,7 @@ public class Instance {
 		
 	}
 	
+	/*
 	public String printRoutes(Route[][] routes) {
 		StringBuffer print = new StringBuffer();
 		print.append("------------Routes-----------\n");
@@ -184,10 +189,12 @@ public class Instance {
 		print.append("------------Routes-----------\n");
 		return print.toString();
 	}// end method printRoutes
+	*/
 	
 	/**
 	 * Print all the routes for each depots, day and vehicle
 	 */
+	/*
 	public String printRoutes() {
 		StringBuffer print = new StringBuffer();
 		for (int i = 0; i < depotsNr; ++i){
@@ -198,7 +205,7 @@ public class Instance {
 			print.append("\n");
 		}
 		return print.toString();
-	}
+	}*/
 	
 //	public void initializeRoutes() {
 //		routes = new Route[depotsNr][vehiclesNr];
@@ -254,7 +261,7 @@ public class Instance {
 	/**
 	 * Calculate the symmetric euclidean matrix of costs
 	 */
-	/*
+	/* --OLD VERSION
 	public void calculateDistances() {
 		distances = new double[customersNr + depotsNr][customersNr + depotsNr];
 		for (int i = 0; i  < customersNr + depotsNr - 1; ++i)
@@ -287,11 +294,15 @@ public class Instance {
 	/**
 	* Calculate the symmetric euclidean matrix of costs
 	*/
+	// NEW VERSION PUBLISHED BY PERBOLI ON "PORTALE DELLA DIDATTICA"
 	public void calculateDistances() 
 	{
-		distances = new double[customersNr + depotsNr][customersNr + depotsNr];
-		for (int i = 0; i  < customersNr + depotsNr - 1; ++i)
-			for (int j = i + 1; j < customersNr +  depotsNr; ++j) 
+		//distances = new double[customersNr + depotsNr][customersNr + depotsNr];
+		distances = new double[customersNr + 1][customersNr + 1];
+		//for (int i = 0; i  < customersNr + depotsNr - 1; ++i)
+		for (int i = 0; i  < customersNr; ++i)
+			//for (int j = i + 1; j < customersNr +  depotsNr; ++j)
+			for (int j = i + 1; j < customersNr +  1; ++j)
 			{
 				//case both customers
 				if(i < customersNr && j < customersNr)
@@ -306,14 +317,18 @@ public class Instance {
 				// case customer and depot
 				}else if(i < customersNr && j >= customersNr)
 				{
-					int d = j - customersNr; // depot number in the instance list
-					distances[i][j] = Math.sqrt(Math.pow(customers.get(i).getXCoordinate() - depot.get(d).getXCoordinate(), 2)
-					+ Math.pow(customers.get(i).getYCoordinate() - depot.get(d).getYCoordinate(), 2));
+					//int d = j - customersNr; // depot number in the instance list
+					/*distances[i][j] = Math.sqrt(Math.pow(customers.get(i).getXCoordinate() - depot.get(d).getXCoordinate(), 2)
+					+ Math.pow(customers.get(i).getYCoordinate() - depot.get(d).getYCoordinate(), 2));*/
+					distances[i][j] = Math.sqrt(Math.pow(customers.get(i).getXCoordinate() - depot.getXCoordinate(), 2)
+					+ Math.pow(customers.get(i).getYCoordinate() - depot.getYCoordinate(), 2));
 					distances[i][j] = Math.floor(distances[i][j] * 10) / 10;
 					distances[j][i] = distances[i][j];
 	 
 				// case both depots
-				}else if(i >= customersNr && j >= customersNr)
+					
+				}/*
+				else if(i >= customersNr && j >= customersNr)
 				{
 					int d1 = i - customersNr; // first depot number in the instance list
 					int d2 = j - customersNr; // second depot number in the instance list
@@ -321,7 +336,7 @@ public class Instance {
 					+ Math.pow(depot.get(d1).getYCoordinate() - depot.get(d2).getYCoordinate(), 2));
 					distances[i][j] = Math.floor(distances[i][j] * 10) / 10;
 					distances[j][i] = distances[i][j];
-				}
+				}*/
 			}
 	}
 	
@@ -353,6 +368,7 @@ public class Instance {
 	/**
 	 * @return distances as a string
 	 */
+	/*
 	public String printDistances() {
 		StringBuffer print = new StringBuffer();
 		for	(int i = 0; i < customersNr + depotsNr; ++i) {
@@ -361,28 +377,30 @@ public class Instance {
 			print.append("\n");
 		}
 		return print.toString();
-	}
+	}*/
 	
 	
 	/**
 	 * @return all the customers as string
 	 */
+	/*
 	public String printCustomers() {
 		StringBuffer print = new StringBuffer();
 		for (int i = 0; i < customersNr; ++i) {
 			print.append(customers.get(i));
 		}
 		return print.toString();
-	}
+	}*/
 	
 	/**
 	 * @return all the depots as string
 	 */
+	/*
 	public String printDepots() {
 		StringBuffer print = new StringBuffer();
 		print.append(depot + "\n");
 		return print.toString();
-	}
+	}*/
 	
 	/**
 	 * @param costs the costs to set
@@ -443,17 +461,19 @@ public class Instance {
 	/**
 	 * @return the depotsNr
 	 */
+	/*
 	public int getDepotsNr() {
 		return depotsNr;
-	}
+	}*/
 
 
 	/**
 	 * @param depotsNr the depotsNr to set
 	 */
+	/*
 	public void setDepotsNr(int depotsNr) {
 		this.depotsNr = depotsNr;
-	}
+	}*/
 
 
 	/**

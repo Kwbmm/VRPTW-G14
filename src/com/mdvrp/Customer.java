@@ -11,32 +11,32 @@ public class Customer {
 	private double serviceDuration;     // duration that takes to dispatch the delivery    
 	private double load;                // capacity of the pack that is expecting
 	private int frequency;              // frequency of visit
-	private int combinationsVisitsNr;   // number of possible visits combinations
-	private int[][] combinationsList;   // combinationslist[i][j] where i = visit combinations nr and j = frequency
+//???	private int combinationsVisitsNr;   // number of possible visits combinations
+//???	private int[][] combinationsList;   // combinationslist[i][j] where i = visit combinations nr and j = frequency
 	private int startTw;                // beginning of time window (earliest time for start of service),if any
 	private int endTw;                  // end of time window (latest time for start of service), if any
-	private int patternUsed;            // the combination of 
+//???	private int patternUsed;            // the combination of 
 	private Depot assignedDepot;        // the depot from which the customer will be served
 	private double arriveTime;          // time at which the car arrives to the customer
 	private double waitingTime;         // time to wait until arriveTime equal start time window
-	private double twViol;              // value of time window violation, 0 if none
+//	private double twViol;              // value of time window violation, 0 if none
 //	private double[] anglesToDepots;
 	private double angleToDepot;
-	
 	private double distanceFromDepot;
 	private double[] distanceFromCustomers;
+	
 	public Customer() {
 		xCoordinate          = 0;
 		yCoordinate          = 0;
 		serviceDuration      = 0;
 		load                 = 0;
 		frequency            = 0;
-		combinationsVisitsNr = 0;
+	//	combinationsVisitsNr = 0;
 		startTw              = 0;
 		endTw                = 0;
 		arriveTime           = 0;
 		waitingTime          = 0;
-		twViol               = 0;
+	//	twViol               = 0;
 		angleToDepot	= 0;
 		distanceFromDepot = 0;
 		
@@ -49,15 +49,15 @@ public class Customer {
 		this.serviceDuration 	= customer.serviceDuration;
 		this.load 				= customer.load;
 		this.frequency 			= customer.frequency;
-		this.combinationsVisitsNr = customer.combinationsVisitsNr;
-		this.combinationsList 	= customer.combinationsList;
+	//	this.combinationsVisitsNr = customer.combinationsVisitsNr;
+	//	this.combinationsList 	= customer.combinationsList;
 		this.startTw 			= customer.startTw;
 		this.endTw 				= customer.endTw;
-		this.patternUsed 		= customer.patternUsed;
+	//	this.patternUsed 		= customer.patternUsed;
 		this.assignedDepot 		= customer.assignedDepot;
 		this.arriveTime 		= new Double(customer.arriveTime);
 		this.waitingTime 		= new Double(customer.waitingTime);
-		this.twViol 			= new Double(customer.twViol);
+	//	this.twViol 			= new Double(customer.twViol);
 //		this.anglesToDepots 	= customer.anglesToDepots;
 		this.angleToDepot		= customer.angleToDepot;
 		this.distanceFromDepot = customer.distanceFromDepot;
@@ -67,6 +67,7 @@ public class Customer {
 	 * This return a string with formated customer data
 	 * @return
 	 */
+	/*
 	public String print() {
 		StringBuffer print = new StringBuffer();
 		print.append("\n");
@@ -84,7 +85,7 @@ public class Customer {
 		print.append("\n" + "--------------------------------------------------");
 		return print.toString();
 		
-	}
+	}*/
 	
 	/**
 	 * get the time at which the car arrives to the customer
@@ -243,33 +244,37 @@ public class Customer {
 	/**
 	 * @return the patternsNr
 	 */
+	/*
 	public int getCombinationsVisitsNr() {
 		return combinationsVisitsNr;
-	}
+	}*/
 
 
 	/**
 	 * @param patternsNr the patternsNr to set
 	 */
+	/*
 	public void setCombinationsVisitsNr(int patternsNr) {
 		this.combinationsVisitsNr = patternsNr;
-	}
+	}*/
 
 
 	/**
 	 * @return the combinationslist
 	 */
+	/*
 	public int[][] getCombinationsList() {
 		return combinationsList;
-	}
+	}*/
 
 
 	/**
 	 * @param combinationslist the combinationslist to set
 	 */
+	/*
 	public void setCombinationsList(int[][] combinationslist) {
 		this.combinationsList = combinationslist;
-	}
+	}*/
 
 
 	/**
@@ -319,17 +324,19 @@ public class Customer {
 	/**
 	 * @return the patternused
 	 */
+	/*
 	public int getPatternUsed() {
 		return patternUsed;
-	}
+	}*/
 
 
 	/**
 	 * @param patternused the patternused to set
 	 */
+	/*
 	public void setPatternUsed(int patternused) {
 		this.patternUsed = patternused;
-	}
+	}*/
 
 	/**
 	 * @return the waitingTime
@@ -348,16 +355,18 @@ public class Customer {
 	/**
 	 * @return the twViol
 	 */
+	/*
 	public double getTwViol() {
 		return twViol;
-	}
+	}*/
 
 	/**
 	 * @param twViol the twViol to set
 	 */
+	/*
 	public void setTwViol(double twViol) {
 		this.twViol = twViol;
-	}
+	}*/
 
 
 
