@@ -156,6 +156,7 @@ public class Customer {
 		this.distanceFromDepot = distance;
 	}
 	
+	//This sets the distance from the i-th customer
 	public void setDistanceFromCustomer(double distance,int i){
 		this.distanceFromCustomers[i] = distance;
 	}
