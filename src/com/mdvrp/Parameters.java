@@ -82,6 +82,7 @@ public class Parameters {
 		}
 	}
 	
+	/*
 	public String toString(){
 		StringBuffer print = new StringBuffer();
 		print.append("\n" + "--- Parameters: -------------------------------------");
@@ -96,7 +97,7 @@ public class Parameters {
 		print.append("\n" + "| Variable Tenure: " + variableTenure);
 		print.append("\n" + "------------------------------------------------------");
 		return print.toString();	
-	}
+	}*/
 
 	/**
 	 * @return the movesType
@@ -226,7 +227,7 @@ public class Parameters {
 		return this.vehicles;
 	}
 	
-//	public void setVehiclesToUse(int vehicles){
-//		this.vehicles = vehicles;
-//	}
+	public void setVehiclesToUse(int vehicles){
+		this.vehicles = vehicles;
+	}
 }

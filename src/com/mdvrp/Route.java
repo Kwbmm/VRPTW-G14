@@ -79,6 +79,7 @@ public class Route {
 	/**
 	 * Prints the route
 	 */
+	/*
 	public String printRoute() {
 		StringBuffer print = new StringBuffer();
 		print.append("Route[" + index + ", " + (getCustomersLength() + 1) + "]=");
@@ -88,9 +89,9 @@ public class Route {
 		}
 		print.append("\n");
 		return print.toString();
-	}
+	}*/
 	
-	
+	/*
 	public String printRouteCost() {
 		StringBuffer print = new StringBuffer();
 		print.append("\n" + "Route[" + index + "]");
@@ -99,7 +100,7 @@ public class Route {
 		print.append("\n" + cost);
 		print.append("\n");
 		return print.toString();
-	}
+	}*/
 	
 	
 	/**
@@ -204,16 +205,18 @@ public class Route {
 	/**
 	 * @return the depotTwViol
 	 */
+	/*
 	public double getDepotTwViol() {
 		return cost.depotTwViol;
-	}
+	}*/
 
 	/**
 	 * @param depotTwViol the depotTwViol to set
 	 */
+	/*
 	public void setDepotTwViol(double depotTwViol) {
 		this.cost.depotTwViol = depotTwViol;
-	}
+	}*/
 
 	/**
 	 * @return the returnToDepotTime

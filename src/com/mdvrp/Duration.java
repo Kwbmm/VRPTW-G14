@@ -113,6 +113,7 @@ public class Duration {
 	/**
 	 * Print duration formated as [HH:MM:SS:ms]
 	 */
+	/*
 	public String printDoted(){
 		StringBuffer print = new StringBuffer();
 		print.append(this.hours + ":");
@@ -120,21 +121,23 @@ public class Duration {
 		print.append(this.seconds + ":");
 		print.append(this.milliSeconds);
 		return print.toString();
-	}
+	}*/
 	
 	/**
 	 * Print duration formated as [MM:SS]
 	 * @return
 	 */
+	/*
 	public String printMinSec(){
 		StringBuffer print = new StringBuffer();
 		print.append(minutes + ":" + seconds);
 		return print.toString();
-	}
+	}*/
 
 	/**
 	 * Print duration formated as hours minutes seconds milliseconds
 	 */
+	/*
 	public String toString(){
 		StringBuffer print = new StringBuffer();
 		print.append(this.hours + "h ");
@@ -142,7 +145,7 @@ public class Duration {
 		print.append(this.seconds + "s ");
 		print.append(this.milliSeconds + "ms");
 		return print.toString();
-	}
+	}*/
 	/**
 	 * @return the miliSeconds
 	 */

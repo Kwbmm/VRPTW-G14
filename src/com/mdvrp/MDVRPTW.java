@@ -36,7 +36,8 @@ public class MDVRPTW {
 
 			// get the instance from the file			
 			instance = new Instance(parameters); 
-			instance.populateFromHombergFile(parameters.getInputFileName());
+			//instance.populateFromHombergFile(parameters.getInputFileName());
+			instance.populateFromFile(parameters.getInputFileName());
 						
 			// Init memory for Tabu Search
 			initialSol 		= new MySolution(instance);
@@ -45,7 +46,8 @@ public class MDVRPTW {
 	        moveManager.setMovesType(parameters.getMovesType());
 	        
 	        // Tabu list
-	        int dimension[] = {instance.getDepotsNr(), instance.getVehiclesNr(), instance.getCustomersNr(), 1, 1};
+	        //int dimension[] = {instance.getDepotsNr(), instance.getVehiclesNr(), instance.getCustomersNr(), 1, 1};
+	        int dimension[] = {1, instance.getVehiclesNr(), instance.getCustomersNr(), 1, 1};
 	        tabuList 		= new MyTabuList(parameters.getTabuTenure(), dimension);
 	        
 	        // Create Tabu Search object
