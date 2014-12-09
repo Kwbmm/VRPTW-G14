@@ -172,23 +172,25 @@ public class MySolution extends SolutionAdapter{
 		int assignedCustomersNr;
 		int startCustomer;
 		int customerChosen; // serve to cycle j, j+1, ... assignedcustomersnr, 0, ... j-1
-		
-		// cycle the list of depots
-		for( int i = 0; i < instance.getDepotsNr(); ++i) {
-			debug.append("\n");
-//			assignedCustomersNr = instance.getDepot(i).getAssignedCustomersNr();
-			assignedCustomersNr = instance.getDepot().getAssignedCustomersNr();
-			if(instance.getParameters().getStartClient() != -1) {
-				startCustomer = instance.getParameters().getStartClient();
-			}else{
-//				startCustomer = instance.getRandom().nextInt(assignedCustomersNr);
-				//Get the most distant customer
-				startCustomer = instance.getDepot().getAssignedcustomers().size()-1;
-				instance.getParameters().setStartClient(startCustomer);
-			}
-			// cycle the entire list of customers starting from the randomly chosen one
+		boolean isCustomerSet; //This is true when the customer is passed through parameters, false otherwise
+
+		assignedCustomersNr = instance.getDepot().getAssignedCustomersNr();
+		//If the customer is set through parameter use this one
+		if(instance.getParameters().getStartClient() != -1) {
+			startCustomer = instance.getParameters().getStartClient();
+			isCustomerSet = true;
+		}else{
+			//Use the most distant, which is in the first position of the customer array
+			instance.getParameters().setStartClient(0); //Set the start client
+			startCustomer = instance.getParameters().getStartClient();
+			isCustomerSet = false;
+		}
+		if(isCustomerSet){ //Use the old method
 			for (int j = startCustomer; j < assignedCustomersNr + startCustomer; ++j) {
-				// serve to cycle j, j+1, ... assignedcustomersnr, 0, ... j-1
+				/*
+				 * This works as a circular buffer: we start from j, then go to j+1
+				 * up until we reach j-1
+				 */
 				customerChosen = j % assignedCustomersNr;
 				// stores the pointer to the customer chosen from depots list assigned customers
 //				customerChosenPtr = instance.getDepot(i).getAssignedCustomer(customerChosen);
@@ -197,7 +199,8 @@ public class MySolution extends SolutionAdapter{
 				int k;
 				for(k= 0; k < instance.getVehiclesNr() - 1; ++k){
 					// stores the pointer to the current route
-					route = routes[i][k];
+					//Routes[i][k] is the route from deposit i to customer k
+					route = routes[0][k];
 
 					// accept on the route only if satisfy the load and duration
 					//route.getCost().load = The current load on the vehicle
@@ -212,10 +215,34 @@ public class MySolution extends SolutionAdapter{
 				// if the customer was not inserted and we reach the last route
 				// insert it anyway
 				if(k == instance.getVehiclesNr() - 1){
-					insertBestTravel(instance, routes[i][k], customerChosenPtr);
-					evaluateRoute(routes[i][k]);
+					insertBestTravel(instance, routes[0][k], customerChosenPtr);
+					evaluateRoute(routes[0][k]);
 				}
 			} // end for customer list
+		} else{
+			for(int i=startCustomer; i<instance.getVehiclesUsed();++i){
+				/*
+				 * This works as a circular buffer: we start from j, then go to j+1
+				 * up until we reach j-1
+				 */
+				customerChosen = startCustomer % i;
+				customerChosenPtr = instance.getDepot().getAssignedCustomer(customerChosen);
+				int j;
+				for(j=0;j<instance.getVehiclesUsed();++j){
+					route = routes[0][j];
+					
+					if (customerChosenPtr.getCapacity() + route.getCost().load <= route.getLoadAdmited() &&
+						customerChosenPtr.getServiceDuration() + route.getDuration()  <= route.getDurationAdmited()){
+						insertBestTravel(instance, route, customerChosenPtr);
+						evaluateRoute(route);
+						
+						/*
+						 * WORK IN PROGRESS, GATHERING IDEAS
+						 */
+						break; //Break so that a new vehicles takes another customer
+					}
+				}
+			}	
 		}
 	}
 	

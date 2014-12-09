@@ -1,4 +1,5 @@
 package com.mdvrp;
+import java.util.Random;
 
 /**
  * Customer class stores information about one customer which implements the Vertex interface.
@@ -24,6 +25,8 @@ public class Customer {
 	private double angleToDepot;
 	private double distanceFromDepot;
 	private double[] distanceFromCustomers;
+	private Random random;
+	private boolean isDistant=false;
 	
 	public Customer() {
 		xCoordinate          = 0;
@@ -155,6 +158,14 @@ public class Customer {
 
 	public void setDistanceFromDepot(double distance){
 		this.distanceFromDepot = distance;
+	}
+	
+	public void setIsDistant(){
+		this.isDistant = true;
+	}
+	
+	public boolean getIsDistant(){
+		return this.isDistant;
 	}
 	//Sets the distance from customer i
 	public void setDistanceFromCustomer(double distance,int i){

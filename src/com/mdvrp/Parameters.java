@@ -25,7 +25,7 @@ public class Parameters {
 		tabuTenure        	= -1;
 		randomSeed		  	= -1;
 		variableTenure    	= false;
-		vehicles			= 4; //Minimum number of vehicles to use
+		vehicles			= -1; //If this remains -1, a random number is generated
 	}
 	
 	public void updateParameters(String[] args) throws Exception

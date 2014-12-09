@@ -25,6 +25,7 @@ public class Instance {
 	//private Route[][] routes;    -- I put a comment because this attribute is never used in our version for now
 	private Random random 					= new Random();
 	private Parameters parameters;
+	private int vehiclesUsed;
 	
 	public Instance(Parameters parameters) 
 	{
@@ -64,6 +65,10 @@ public class Instance {
 			in.nextLine(); // skip vehicle line
 			in.nextLine();
 			vehiclesNr	= in.nextInt(); //Amount of vehicles
+			
+			if(parameters.getVehiclesToUse() == -1)
+				//this generates a random integer between 1 and vehiclesNr (inclusive)
+				this.vehiclesUsed = random.nextInt(vehiclesNr-1+1)+1;
 			
 			// read D and Q
 			//durations	= new double[depotsNr][daysNr];
@@ -119,6 +124,14 @@ public class Instance {
 //			calculateAngles();
 			calculateAngle();
 			sortAssignedCustomers();
+			//Mark the customers that are distant
+			for(int i=0;i<this.getVehiclesUsed();++i){
+				customers.get(i).setIsDistant();
+				
+				/*
+				 * Here for each of the "distant" customers create the neighbourhood
+				 */
+			}
 		} catch (FileNotFoundException e) {
 			// File not found
 			System.out.println("File not found!");
@@ -528,5 +541,9 @@ public class Instance {
 	 */
 	public double getPrecision(){
 		return parameters.getPrecision();
+	}
+	
+	public int getVehiclesUsed(){
+		return this.vehiclesUsed;
 	}
 }
