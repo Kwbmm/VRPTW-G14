@@ -8,7 +8,7 @@ public class Parameters {
 	private String outputFileName;
 	private double precision;
 	private int iterations;
-	private int startClient;
+//	private int startClient;
 	private int randomSeed;
 	private int tabuTenure;
 	private boolean variableTenure;
@@ -21,7 +21,7 @@ public class Parameters {
 		movesType         	= MovesType.SWAP;
 		precision         	= 1E-2;
 		iterations        	= 1000;
-		startClient       	= -1;
+//		startClient       	= -1;
 		tabuTenure        	= -1;
 		randomSeed		  	= -1;
 		variableTenure    	= false;
@@ -48,9 +48,9 @@ public class Parameters {
 					case "-it":
 						iterations = Integer.parseInt(args[i+1]);
 						break;
-					case "-sc":
-						startClient = Integer.parseInt(args[i+1]);
-						break;
+//					case "-sc":
+//						startClient = Integer.parseInt(args[i+1]);
+//						break;
 					case "-rs":
 						randomSeed = Integer.parseInt(args[i+1]);
 						break;
@@ -158,9 +158,9 @@ public class Parameters {
 	/**
 	 * @return the startClient
 	 */
-	public int getStartClient() {
-		return startClient;
-	}
+//	public int getStartClient() {
+//		return startClient;
+//	}
 
 	/**
 	 * @return the randomSeed
@@ -179,9 +179,9 @@ public class Parameters {
 	/**
 	 * @param startClient the startClient to set
 	 */
-	public void setStartClient(int startClient) {
-		this.startClient = startClient;
-	}
+//	public void setStartClient(int startClient) {
+//		this.startClient = startClient;
+//	}
 
 	/**
 	 * @return the tabuTenure

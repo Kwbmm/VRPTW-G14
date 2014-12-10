@@ -1,5 +1,6 @@
 package com.mdvrp;
 import java.util.Random;
+import java.util.ArrayList;
 
 /**
  * Customer class stores information about one customer which implements the Vertex interface.
@@ -27,6 +28,13 @@ public class Customer {
 	private double[] distanceFromCustomers;
 	private Random random;
 	private boolean isDistant=false;
+	private ArrayList<Customer> neighbours;
+	private boolean isTaken=false;
+	/*
+	 * This stores the mean distance from the most distant customers. The amount of most distant customers
+	 * is equal to the amount of vehicles used initially
+	 */
+	private double meanDistance;
 	
 	public Customer() {
 		xCoordinate          = 0;
@@ -41,8 +49,7 @@ public class Customer {
 		waitingTime          = 0;
 	//	twViol               = 0;
 		angleToDepot	= 0;
-		distanceFromDepot = 0;
-		
+		distanceFromDepot = 0;	
 	}
 	
 	public Customer(Customer customer) {
@@ -167,18 +174,55 @@ public class Customer {
 	public boolean getIsDistant(){
 		return this.isDistant;
 	}
+	
 	//Sets the distance from customer i
 	public void setDistanceFromCustomer(double distance,int i){
 		this.distanceFromCustomers[i] = distance;
 	}
+	//This is the mean distance from the most distant customers
+	public void setMeanDistance(double meanDistance){
+		this.meanDistance = meanDistance;
+	}
+	
+	public void setIsTaken(){
+		this.isTaken = true;
+	}
+	
+	public boolean getIsTaken(){
+		return this.isTaken;
+	}
+	
+	public void generateNeighbours(ArrayList<Customer> customers,int vehiclesUsed){
+		//Generate a random number between 10 (minimum threshold for ray) and meanDistance
+		double randomRay = 10 + (this.meanDistance - 10) * random.nextDouble();
+		double distance;
+		/*
+		 * The loop starts from the vehiclesUsed-th position bc customers from 0 -> vehiclesUsed are
+		 * marked as most distant.
+		 */
+		for(int i=vehiclesUsed; i<customers.size();++i){
+			distance = customers.get(i).getDistance()-this.getDistance();
+			if(distance <= randomRay && !customers.get(i).getIsTaken()){
+				this.neighbours.add(customers.get(i));
+				customers.get(i).setIsTaken();
+			}
+		}
+	}
+	
+	public void addNeighbour(Customer customer){
+		this.neighbours.add(customer);
+	}
 
+	public ArrayList<Customer> getNeighbours(){
+		return this.neighbours;
+	}
 	/**
 	 * @return the serviceduration
 	 */
 	public double getServiceDuration() {
 		return serviceDuration;
 	}
-
+	
 
 	/**
 	 * @param serviceduration the serviceduration to set

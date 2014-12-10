@@ -168,84 +168,63 @@ public class MySolution extends SolutionAdapter{
 	public void buildInitialRoutes1(Instance instance) {
 		Route route; // stores the pointer to the current route
 		Customer customerChosenPtr; // stores the pointer to the customer chosen from depots list assigned customers
-		StringBuffer debug = new StringBuffer();
-		int assignedCustomersNr;
-		int startCustomer;
-		int customerChosen; // serve to cycle j, j+1, ... assignedcustomersnr, 0, ... j-1
-		boolean isCustomerSet; //This is true when the customer is passed through parameters, false otherwise
-
-		assignedCustomersNr = instance.getDepot().getAssignedCustomersNr();
-		//If the customer is set through parameter use this one
-		if(instance.getParameters().getStartClient() != -1) {
-			startCustomer = instance.getParameters().getStartClient();
-			isCustomerSet = true;
-		}else{
-			//Use the most distant, which is in the first position of the customer array
-			instance.getParameters().setStartClient(0); //Set the start client
-			startCustomer = instance.getParameters().getStartClient();
-			isCustomerSet = false;
+		Customer superCustomerPtr; //Store the pointer to the super customers
+		Random random = new Random();
+		int superCustomer;
+		int i;
+		/*
+		 * Customers are ordered from the most distant to the closet (closest is at the end
+		 * of the array).
+		 * After knowing how many starting vehicles we want to use, we assign to them the
+		 * distant customers.
+		 * Then for each distant customer (which from now on we will call "super customer")
+		 * we create its neighbourhood of near customers that our vehicle will visit. 
+		 */
+		for(i=0; i<instance.getVehiclesUsed();++i){
+			superCustomerPtr = instance.getDepot().getAssignedCustomer(i);
+				route = routes[0][i];
+				/*
+				 * superCustomerPtr.getCapacity() returns the DEMAND of the CUSTOMER
+				 * route.getCost().load is the total load we have so far (i.e the sum of the already served customer's load)
+				 * route.getLoadAdmited() returns the CAPACITY of the VEHICLE (which is the same for every vehicle)
+				 * superCustomerPtr.getServiceDuration() returns how much time we need to spend to serve the customer
+				 * route.getDuration() is the time we have spent so far since when we departed from depot
+				 * route.getDurationAdmited() is the maximum time we can travel before going back to depot.
+				 */
+				if (superCustomerPtr.getCapacity() + route.getCost().load <= route.getLoadAdmited() &&
+					superCustomerPtr.getServiceDuration() + route.getDuration()  <= route.getDurationAdmited()){
+					insertBestTravel(instance, route, superCustomerPtr);
+					evaluateRoute(route);
+				}
 		}
-		if(isCustomerSet){ //Use the old method
-			for (int j = startCustomer; j < assignedCustomersNr + startCustomer; ++j) {
-				/*
-				 * This works as a circular buffer: we start from j, then go to j+1
-				 * up until we reach j-1
-				 */
-				customerChosen = j % assignedCustomersNr;
-				// stores the pointer to the customer chosen from depots list assigned customers
-//				customerChosenPtr = instance.getDepot(i).getAssignedCustomer(customerChosen);
-				customerChosenPtr = instance.getDepot().getAssignedCustomer(customerChosen);
-				// cycle the routes until the last one
-				int k;
-				for(k= 0; k < instance.getVehiclesNr() - 1; ++k){
-					// stores the pointer to the current route
-					//Routes[i][k] is the route from deposit i to customer k
-					route = routes[0][k];
-
-					// accept on the route only if satisfy the load and duration
-					//route.getCost().load = The current load on the vehicle
-					//route.getLoadAdmitted = Max capacity of the vehicle
-					if (customerChosenPtr.getCapacity() + route.getCost().load <= route.getLoadAdmited()
-					 && customerChosenPtr.getServiceDuration() + route.getDuration()  <= route.getDurationAdmited()){
-						insertBestTravel(instance, route, customerChosenPtr);
-						evaluateRoute(route);
-						break; //Break so that a new vehicles takes another customer
-					}
-				} // end for routes
-				// if the customer was not inserted and we reach the last route
-				// insert it anyway
-				if(k == instance.getVehiclesNr() - 1){
-					insertBestTravel(instance, routes[0][k], customerChosenPtr);
-					evaluateRoute(routes[0][k]);
-				}
-			} // end for customer list
-		} else{
-			for(int i=startCustomer; i<instance.getVehiclesUsed();++i){
-				/*
-				 * This works as a circular buffer: we start from j, then go to j+1
-				 * up until we reach j-1
-				 */
-				customerChosen = startCustomer % i;
-				customerChosenPtr = instance.getDepot().getAssignedCustomer(customerChosen);
-				int j;
-				for(j=0;j<instance.getVehiclesUsed();++j){
-					route = routes[0][j];
-					
-					if (customerChosenPtr.getCapacity() + route.getCost().load <= route.getLoadAdmited() &&
-						customerChosenPtr.getServiceDuration() + route.getDuration()  <= route.getDurationAdmited()){
-						insertBestTravel(instance, route, customerChosenPtr);
-						evaluateRoute(route);
-						
-						/*
-						 * WORK IN PROGRESS, GATHERING IDEAS
-						 */
-						break; //Break so that a new vehicles takes another customer
-					}
-				}
-			}	
+		//For the most distant customers, compute their neighbourhood
+		for(i=0;i<instance.getVehiclesUsed();++i){
+			superCustomerPtr = instance.getDepot().getAssignedCustomer(i);
+			superCustomerPtr.generateNeighbours(instance.getDepot().getAssignedcustomers(), instance.getVehiclesUsed());
+		}
+		//Check that all customers belong to a neighbourhood
+		for(i=instance.getVehiclesUsed(); i < instance.getDepot().getAssignedCustomersNr();++i){
+			customerChosenPtr = instance.getDepot().getAssignedCustomer(i);
+			//If a customer is not taken by anyone, assign it randomly
+			if(!customerChosenPtr.getIsTaken()){
+				superCustomer = random.nextInt((instance.getVehiclesUsed() - 0) + 1);
+				superCustomerPtr = instance.getDepot().getAssignedCustomer(superCustomer);
+			}
+		}
+		//Now add the neighbours to the respective routes
+		for(i=0;i<instance.getVehiclesUsed();++i){
+			superCustomerPtr = instance.getDepot().getAssignedCustomer(i);
+			route = routes[0][i];
+			for(int j=0; j < superCustomerPtr.getNeighbours().size();++j){
+				customerChosenPtr = superCustomerPtr.getNeighbours().get(j);
+				if (customerChosenPtr.getCapacity() + route.getCost().load <= route.getLoadAdmited() &&
+					customerChosenPtr.getServiceDuration() + route.getDuration()  <= route.getDurationAdmited()){
+					insertBestTravel(instance, route, customerChosenPtr);
+					evaluateRoute(route);
+				}				
+			}
 		}
 	}
-	
 	
 	private void insertBestTravel(Instance instance, Route route, Customer customerChosenPtr) {
 		double minCost = Double.MAX_VALUE;
@@ -253,7 +232,14 @@ public class MySolution extends SolutionAdapter{
 		int position = 0;
 		if(route.isEmpty()){
 			// add on first position
-			position = 0;
+			position = 0;		
+			
+			/*
+			 * Mark the customer as one of the super customers.
+			 * We do this because all the customers that are set as "distant"
+			 * will generate their neighbours
+			 */
+			customerChosenPtr.setIsDistant();
 		}else {
 			// first position
 			if(customerChosenPtr.getEndTw() <= route.getCustomer(0).getEndTw()) {
@@ -291,9 +277,7 @@ public class MySolution extends SolutionAdapter{
 			}
 //			return position;
 		}
-		
 		route.addCustomer(customerChosenPtr, position);
-		
 	}
 
     /**

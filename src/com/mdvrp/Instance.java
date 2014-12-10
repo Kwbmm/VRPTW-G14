@@ -67,8 +67,8 @@ public class Instance {
 			vehiclesNr	= in.nextInt(); //Amount of vehicles
 			
 			if(parameters.getVehiclesToUse() == -1)
-				//this generates a random integer between 1 and vehiclesNr (inclusive)
-				this.vehiclesUsed = random.nextInt(vehiclesNr-1+1)+1;
+				this.vehiclesUsed = random.nextInt(vehiclesNr-1+1)+1; //this generates a random integer between 1 and vehiclesNr (inclusive)
+			
 			
 			// read D and Q
 			//durations	= new double[depotsNr][daysNr];
@@ -124,14 +124,6 @@ public class Instance {
 //			calculateAngles();
 			calculateAngle();
 			sortAssignedCustomers();
-			//Mark the customers that are distant
-			for(int i=0;i<this.getVehiclesUsed();++i){
-				customers.get(i).setIsDistant();
-				
-				/*
-				 * Here for each of the "distant" customers create the neighbourhood
-				 */
-			}
 		} catch (FileNotFoundException e) {
 			// File not found
 			System.out.println("File not found!");
@@ -144,6 +136,15 @@ public class Instance {
 	 */
 	public void sortAssignedCustomers() {
 			Quick.sort(depot.getAssignedcustomers(), 0);
+			double sumOfDistances=0;
+			double meanDistance;
+			int i;
+			for(i=0;i<this.vehiclesUsed;++i){
+				sumOfDistances += depot.getAssignedCustomer(i).getDistance();
+			}
+			meanDistance = sumOfDistances / this.vehiclesUsed;
+			for(i=0;i<this.vehiclesUsed;++i)
+				depot.getAssignedCustomer(i).setMeanDistance(meanDistance);
 	}
 	
 	/**
@@ -324,8 +325,6 @@ public class Instance {
 					+ Math.pow(customers.get(i).getYCoordinate() - customers.get(j).getYCoordinate(), 2));
 					distances[i][j] = Math.floor(distances[i][j] * 10) / 10;
 					distances[j][i] = distances[i][j];
-					customers.get(i).setDistanceFromCustomer(distances[i][j], j);
-					customers.get(j).setDistanceFromCustomer(distances[i][j],i);
 	 
 				// case customer and depot
 				}else if(i < customersNr && j >= customersNr)

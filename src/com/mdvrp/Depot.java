@@ -77,7 +77,7 @@ public class Depot {
 	
 	/**
 	 * 
-	 * @return the number of assigned customers
+	 * @return the number of customers assigned to depot
 	 */
 	public int getAssignedCustomersNr() {
 		return assignedCustomers.size();
