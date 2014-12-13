@@ -79,7 +79,7 @@ public class Route {
 	/**
 	 * Prints the route
 	 */
-	/*
+
 	public String printRoute() {
 		StringBuffer print = new StringBuffer();
 		print.append("Route[" + index + ", " + (getCustomersLength() + 1) + "]=");
@@ -89,9 +89,8 @@ public class Route {
 		}
 		print.append("\n");
 		return print.toString();
-	}*/
+	}
 	
-	/*
 	public String printRouteCost() {
 		StringBuffer print = new StringBuffer();
 		print.append("\n" + "Route[" + index + "]");
@@ -100,7 +99,7 @@ public class Route {
 		print.append("\n" + cost);
 		print.append("\n");
 		return print.toString();
-	}*/
+	}
 	
 	
 	/**

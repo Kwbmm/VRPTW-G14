@@ -14,15 +14,12 @@ import java.util.Scanner;
 public class Instance {
 	private int vehiclesNr;
 	private int customersNr;
-//	private int depotsNr;
 	private int daysNr = 1;
 	private ArrayList<Customer> customers 	= new ArrayList<>(); 		// vector of customers;
-//	private ArrayList<Depot> depots 		= new ArrayList<>();       	// vector of depots;
 	private Depot depot;
 	private double[][] durations;
 	private double[][] capacities;
 	private double[][] distances;
-	//private Route[][] routes;    -- I put a comment because this attribute is never used in our version for now
 	private Random random 					= new Random();
 	private Parameters parameters;
 	private int vehiclesUsed;
@@ -57,7 +54,6 @@ public class Instance {
 		try {
 						
 			Scanner in = new Scanner(new FileReader(parameters.getCurrDir() + "/input/" + filename));
-			//depotsNr = 1;
 			
 			// skip useless lines
 			in.nextLine(); // skip filename
@@ -71,9 +67,7 @@ public class Instance {
 			
 			
 			// read D and Q
-			//durations	= new double[depotsNr][daysNr];
 			durations	= new double[1][daysNr];
-			//capacities	= new double[depotsNr][daysNr];
 			capacities	= new double[1][daysNr];
 			durations[0][0] = Double.MAX_VALUE;
 			capacities[0][0] = in.nextInt(); //Capacity of all the vehicles
@@ -121,8 +115,6 @@ public class Instance {
 			
 			calculateDistances();
 			assignCustomersToDepots();			
-//			calculateAngles();
-			calculateAngle();
 			sortAssignedCustomers();
 		} catch (FileNotFoundException e) {
 			// File not found
@@ -173,12 +165,9 @@ public class Instance {
 		
 		for (int i = 0; i < customersNr; ++i){
 			double min = Double.MAX_VALUE;
-//			int depotToAssign = 0;
-			//for (int j = customersNr; j < customersNr + depotsNr; ++j)
 			for (int j = customersNr; j < customersNr + 1; ++j)
 				if (min > distances[i][j]) {
 					min = distances[i][j];
-//					depotToAssign = j - customersNr;
 				}
 			customers.get(i).setAssignedDepot(depot);
 			depot.addAssignedCustomer(customers.get(i));
@@ -221,29 +210,6 @@ public class Instance {
 		return print.toString();
 	}*/
 	
-//	public void initializeRoutes() {
-//		routes = new Route[depotsNr][vehiclesNr];
-//		// Creation of the routes; each route starts at the depot
-//		for (int i = 0; i < depotsNr; ++i)
-//			for (int j = 0; j < vehiclesNr; ++j){
-//					routes[i][j] = new Route();
-//					routes[i][j].setIndex(i*(vehiclesNr) + j);
-//					
-//					// set the starting depot of the route
-//					routes[i][j].setDepot(this.depot);
-//					
-//					// set the cost of the route
-//					Cost cost = new Cost();
-//					routes[i][j].setCost(cost);
-//					
-//					// assign vehicle
-//					Vehicle vehicle = new Vehicle();
-//					vehicle.setCapacity(capacities[i][0]);
-//					vehicle.setDuration(durations[i][0]);
-//					routes[i][j].setAssignedVehicle(vehicle);
-//				}
-//	}
-	
 	/**
 	 * Print for the list of depots their number on a row separated by space
 	 * Used for debugging
@@ -273,49 +239,12 @@ public class Instance {
 	}
 	
 	/**
-	 * Calculate the symmetric euclidean matrix of costs
-	 */
-	/* --OLD VERSION
-	public void calculateDistances() {
-		distances = new double[customersNr + depotsNr][customersNr + depotsNr];
-		for (int i = 0; i  < customersNr + depotsNr - 1; ++i)
-			for (int j = i + 1; j < customersNr +  depotsNr; ++j) {
-				//case both customers
-				if(i < customersNr && j < customersNr){
-					distances[i][j] = Math.sqrt(Math.pow(customers.get(i).getXCoordinate() - customers.get(j).getXCoordinate(), 2)
-										+ Math.pow(customers.get(i).getYCoordinate() - customers.get(j).getYCoordinate(), 2));
-					distances[j][i] = distances[i][j];
-					
-				// case customer and depot					
-				}else if(i < customersNr && j >= customersNr){
-//					int d = j - customersNr; // depot number in the instance list
-					distances[i][j] = Math.sqrt(Math.pow(customers.get(i).getXCoordinate() - depot.getXCoordinate(), 2)
-							+ Math.pow(customers.get(i).getYCoordinate() - depot.getYCoordinate(), 2));
-					distances[j][i] = distances[i][j];
-					customers.get(i).setDistance(distances[i][j]);
-				}
-				// case both depots
-//				else if(i >= customersNr && j >= customersNr){
-//					int d1 = i - customersNr; // first depot number in the instance list
-//					int d2 = j - customersNr; // second depot number in the instance list
-//					distances[i][j] = Math.sqrt(Math.pow(depot.getXCoordinate() - depot.getXCoordinate(), 2)
-//							+ Math.pow(depots.get(d1).getYCoordinate() - depots.get(d2).getYCoordinate(), 2));
-//					distances[j][i] = distances[i][j];
-//				}
-			}		
-	}*/
-	
-	/**
 	* Calculate the symmetric euclidean matrix of costs
 	*/
-	// NEW VERSION PUBLISHED BY PERBOLI ON "PORTALE DELLA DIDATTICA"
 	public void calculateDistances() 
 	{
-		//distances = new double[customersNr + depotsNr][customersNr + depotsNr];
 		distances = new double[customersNr + 1][customersNr + 1];
-		//for (int i = 0; i  < customersNr + depotsNr - 1; ++i)
 		for (int i = 0; i  < customersNr; ++i)
-			//for (int j = i + 1; j < customersNr +  depotsNr; ++j)
 			for (int j = i + 1; j < customersNr +  1; ++j)
 			{
 				//case both customers
@@ -329,54 +258,14 @@ public class Instance {
 				// case customer and depot
 				}else if(i < customersNr && j >= customersNr)
 				{
-					//int d = j - customersNr; // depot number in the instance list
-					/*distances[i][j] = Math.sqrt(Math.pow(customers.get(i).getXCoordinate() - depot.get(d).getXCoordinate(), 2)
-					+ Math.pow(customers.get(i).getYCoordinate() - depot.get(d).getYCoordinate(), 2));*/
 					distances[i][j] = Math.sqrt(Math.pow(customers.get(i).getXCoordinate() - depot.getXCoordinate(), 2)
 					+ Math.pow(customers.get(i).getYCoordinate() - depot.getYCoordinate(), 2));
 					distances[i][j] = Math.floor(distances[i][j] * 10) / 10;
-					distances[j][i] = distances[i][j];
-	 
-				// case both depots
-					
-				}/*
-				else if(i >= customersNr && j >= customersNr)
-				{
-					int d1 = i - customersNr; // first depot number in the instance list
-					int d2 = j - customersNr; // second depot number in the instance list
-					distances[i][j] = Math.sqrt(Math.pow(depot.get(d1).getXCoordinate() - depot.get(d2).getXCoordinate(), 2)
-					+ Math.pow(depot.get(d1).getYCoordinate() - depot.get(d2).getYCoordinate(), 2));
-					distances[i][j] = Math.floor(distances[i][j] * 10) / 10;
-					distances[j][i] = distances[i][j];
-				}*/
+					distances[j][i] = distances[i][j];	
+				}
 			}
 	}
 	
-	
-	
-	
-	/**
-	 * Calculates the angles between customers and depots
-	 */
-//	public void calculateAngles() {
-//		
-//		for (int i = 0; i < customersNr; ++i) {
-//			double[] angles = new double[depotsNr];
-//			for (int j = 0; j < depotsNr; ++j) {
-//
-//				angles[j] = Math.atan2(customers.get(i).getYCoordinate() - depot.getYCoordinate(), customers.get(i).getXCoordinate() - depot.getXCoordinate());
-//				customers.get(i).setAnglesToDepots(angles);
-//			}
-//		}
-//	}
-	public void calculateAngle() {
-		
-		for (int i = 0; i < customersNr; ++i) {
-			double angle;
-			angle = Math.atan2(customers.get(i).getYCoordinate() - depot.getYCoordinate(), customers.get(i).getXCoordinate() - depot.getXCoordinate());
-			customers.get(i).setAngleToDepot(angle);
-		}
-	}
 	/**
 	 * @return distances as a string
 	 */
@@ -401,16 +290,6 @@ public class Instance {
 		for (int i = 0; i < customersNr; ++i) {
 			print.append(customers.get(i));
 		}
-		return print.toString();
-	}*/
-	
-	/**
-	 * @return all the depots as string
-	 */
-	/*
-	public String printDepots() {
-		StringBuffer print = new StringBuffer();
-		print.append(depot + "\n");
 		return print.toString();
 	}*/
 	
@@ -469,25 +348,6 @@ public class Instance {
 		this.customersNr = customersNr;
 	}
 
-
-	/**
-	 * @return the depotsNr
-	 */
-	/*
-	public int getDepotsNr() {
-		return depotsNr;
-	}*/
-
-
-	/**
-	 * @param depotsNr the depotsNr to set
-	 */
-	/*
-	public void setDepotsNr(int depotsNr) {
-		this.depotsNr = depotsNr;
-	}*/
-
-
 	/**
 	 * @return the daysNr
 	 */
@@ -503,10 +363,6 @@ public class Instance {
 		this.daysNr = daysNr;
 	}
 
-
-//	public Depot getDepot(int i) {
-//		return depot;
-//	}
 	public Depot getDepot(){
 		return depot;
 	}

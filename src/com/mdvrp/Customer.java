@@ -22,8 +22,6 @@ public class Customer {
 	private double arriveTime;          // time at which the car arrives to the customer
 	private double waitingTime;         // time to wait until arriveTime equal start time window
 //	private double twViol;              // value of time window violation, 0 if none
-//	private double[] anglesToDepots;
-	private double angleToDepot;
 	private double distanceFromDepot;
 	private double[] distanceFromCustomers;
 	private Random random;
@@ -48,7 +46,6 @@ public class Customer {
 		arriveTime           = 0;
 		waitingTime          = 0;
 	//	twViol               = 0;
-		angleToDepot	= 0;
 		distanceFromDepot = 0;	
 	}
 	
@@ -68,8 +65,6 @@ public class Customer {
 		this.arriveTime 		= new Double(customer.arriveTime);
 		this.waitingTime 		= new Double(customer.waitingTime);
 	//	this.twViol 			= new Double(customer.twViol);
-//		this.anglesToDepots 	= customer.anglesToDepots;
-		this.angleToDepot		= customer.angleToDepot;
 		this.distanceFromDepot = customer.distanceFromDepot;
 	}
 
@@ -346,35 +341,6 @@ public class Customer {
 	public void setAssignedDepot(Depot assigneddepot) {
 		this.assignedDepot = assigneddepot;
 	}
-
-	/**
-	 * Get the angle of the customer with the depot passed as parameter
-	 */
-//	public double getAngleToDepot(int depotnr) {
-//		return anglesToDepots[depotnr];
-//	}
-	public double getAngleToDepot(){
-		return angleToDepot;
-	}
-	
-	/**
-	 * @return the anglestodepots
-	 */
-//	public double[] getAnglesToDepots() {
-//		return anglesToDepots;
-//	}
-
-
-	/**
-	 * @param anglestodepots the anglestodepots to set
-	 */
-//	public void setAnglesToDepots(double[] anglestodepots) {
-//		this.anglesToDepots = anglestodepots;
-//	}
-	public void setAngleToDepot(double angletodepot){
-		this.angleToDepot = angletodepot;
-	}
-
 
 	/**
 	 * @return the patternused

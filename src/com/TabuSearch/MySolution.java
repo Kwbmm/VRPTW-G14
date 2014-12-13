@@ -43,7 +43,7 @@ public class MySolution extends SolutionAdapter{
     	resetValue = 0.1;
     	feasibleIndex = 0;
     	MySolution.setIterationsDone(0);
-    	Bs = new int[instance.getCustomersNr()][instance.getVehiclesNr()][instance.getDepotsNr()];		
+    	Bs = new int[instance.getCustomersNr()][instance.getVehiclesNr()][1];		
 	}
 	
 	
@@ -137,29 +137,26 @@ public class MySolution extends SolutionAdapter{
 	 * @param instance
 	 */
 	public void initializeRoutes(Instance instance) {
-		routes = new Route[instance.getDepotsNr()][instance.getVehiclesNr()];
+		routes = new Route[1][instance.getVehiclesNr()];
 		// Creation of the routes; each route starts at the depot
-		for (int i = 0; i < instance.getDepotsNr(); ++i)
-			for (int j = 0; j < instance.getVehiclesNr(); ++j){
-					// initialization of routes
-					routes[i][j] = new Route();
-					routes[i][j].setIndex(i*(instance.getVehiclesNr()) + j);
-					
-					// add the depot as the first node to the route
-//					routes[i][j].setDepot(instance.getDepot(i));
-					routes[i][j].setDepot(instance.getDepot());
-					
-					// set the cost of the route
-					Cost cost = new Cost();
-					routes[i][j].setCost(cost);
-					
-					// assign vehicle
-					Vehicle vehicle = new Vehicle();
-					vehicle.setCapacity(instance.getCapacity(i, 0));
-					vehicle.setDuration(instance.getDuration(i, 0));
-					routes[i][j].setAssignedVehicle(vehicle);
-					
-				}
+		for (int j = 0; j < instance.getVehiclesNr(); ++j){
+				// initialization of routes
+				routes[0][j] = new Route();
+				routes[0][j].setIndex(0*(instance.getVehiclesNr()) + j);
+
+				// add the depot as the first node to the route
+				routes[0][j].setDepot(instance.getDepot());
+
+				// set the cost of the route
+				Cost cost = new Cost();
+				routes[0][j].setCost(cost);
+
+				// assign vehicle
+				Vehicle vehicle = new Vehicle();
+				vehicle.setCapacity(instance.getCapacity(0, 0));
+				vehicle.setDuration(instance.getDuration(0, 0));
+				routes[0][j].setAssignedVehicle(vehicle);		
+			}
 	}
 	
 	/**
