@@ -137,12 +137,12 @@ public class MySolution extends SolutionAdapter{
 	 * @param instance
 	 */
 	public void initializeRoutes(Instance instance) {
-		routes = new Route[1][instance.getVehiclesNr()];
+		routes = new Route[1][instance.getVehiclesUsed()];
 		// Creation of the routes; each route starts at the depot
-		for (int j = 0; j < instance.getVehiclesNr(); ++j){
+		for (int j = 0; j < instance.getVehiclesUsed(); ++j){
 				// initialization of routes
 				routes[0][j] = new Route();
-				routes[0][j].setIndex(0*(instance.getVehiclesNr()) + j);
+				routes[0][j].setIndex(0*(instance.getVehiclesUsed()) + j);
 
 				// add the depot as the first node to the route
 				routes[0][j].setDepot(instance.getDepot());
@@ -192,6 +192,8 @@ public class MySolution extends SolutionAdapter{
 					superCustomerPtr.getServiceDuration() + route.getDuration()  <= route.getDurationAdmited()){
 					insertBestTravel(instance, route, superCustomerPtr);
 					evaluateRoute(route);
+				}else{
+					System.out.println("here");
 				}
 		}
 		//For the most distant customers, compute their neighbourhood
@@ -226,7 +228,7 @@ public class MySolution extends SolutionAdapter{
 		for(i=instance.getVehiclesUsed(); i<instance.getCustomersNr();++i){
 			customerChosenPtr = instance.getDepot().getAssignedCustomer(i);
 			if(!customerChosenPtr.getIsTaken()){
-				randomRoute = random.nextInt(instance.getVehiclesNr()-1+1)+1;
+				randomRoute = random.nextInt(instance.getVehiclesUsed());
 				route = routes[0][randomRoute];
 				insertBestTravel(instance,route,customerChosenPtr);
 				evaluateRoute(route);
@@ -283,7 +285,6 @@ public class MySolution extends SolutionAdapter{
 					}
 				}
 			}
-//			return position;
 		}
 		route.addCustomer(customerChosenPtr, position);
 	}
