@@ -21,7 +21,7 @@ public class Customer {
 	private Depot assignedDepot;        // the depot from which the customer will be served
 	private double arriveTime;          // time at which the car arrives to the customer
 	private double waitingTime;         // time to wait until arriveTime equal start time window
-//	private double twViol;              // value of time window violation, 0 if none
+	private double twViol;              // value of time window violation, 0 if none
 	private double distanceFromDepot;
 	private double[] distanceFromCustomers;
 	private Random random;
@@ -45,7 +45,7 @@ public class Customer {
 		endTw                = 0;
 		arriveTime           = 0;
 		waitingTime          = 0;
-	//	twViol               = 0;
+		twViol               = 0;
 		distanceFromDepot = 0;	
 	}
 	
@@ -64,7 +64,7 @@ public class Customer {
 		this.assignedDepot 		= customer.assignedDepot;
 		this.arriveTime 		= new Double(customer.arriveTime);
 		this.waitingTime 		= new Double(customer.waitingTime);
-	//	this.twViol 			= new Double(customer.twViol);
+		this.twViol 			= new Double(customer.twViol);
 		this.distanceFromDepot = customer.distanceFromDepot;
 	}
 
@@ -72,25 +72,19 @@ public class Customer {
 	 * This return a string with formated customer data
 	 * @return
 	 */
-	/*
 	public String print() {
 		StringBuffer print = new StringBuffer();
 		print.append("\n");
 		print.append("\n" + "--- Customer " + number + " -----------------------------------");
 		print.append("\n" + "| x=" + xCoordinate + " y=" + yCoordinate);
 		print.append("\n" + "| ServiceDuration=" + serviceDuration + " Demand=" + load);
-		print.append("\n" + "| frequency=" + frequency + " visitcombinationsnr=" + combinationsVisitsNr);
+//		print.append("\n" + "| frequency=" + frequency + " visitcombinationsnr=" + combinationsVisitsNr);
 		print.append("\n" + "| AssignedDepot=" + assignedDepot.getNumber());
 		print.append("\n" + "| StartTimeWindow=" + startTw + " EndTimeWindow=" + endTw);
-		print.append("\n" + "| AnglesToDepots: ");
-//		for (int i = 0; i < anglesToDepots.length; ++i) {
-//			print.append(anglesToDepots[i] + " ");
-//		}
-		print.append(angleToDepot + "");
 		print.append("\n" + "--------------------------------------------------");
 		return print.toString();
 		
-	}*/
+	}
 	
 	/**
 	 * get the time at which the car arrives to the customer
@@ -376,19 +370,17 @@ public class Customer {
 	/**
 	 * @return the twViol
 	 */
-	/*
+
 	public double getTwViol() {
 		return twViol;
-	}*/
+	}
 
 	/**
 	 * @param twViol the twViol to set
 	 */
-	/*
 	public void setTwViol(double twViol) {
 		this.twViol = twViol;
-	}*/
-
+	}
 
 
 	/*

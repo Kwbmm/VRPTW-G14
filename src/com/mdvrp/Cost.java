@@ -60,11 +60,10 @@ public class Cost {
 		return print.toString();
 	}*/
 	
-	/*
 	public void calculateTotalCostViol() {
 		total = travelTime + loadViol + twViol + durationViol;
 	}
-	*/
+
 	
 	/**
 	 * Set the total cost based on alpha, beta, gamma

@@ -204,19 +204,18 @@ public class Route {
 	/**
 	 * @return the depotTwViol
 	 */
-	/*
+
 	public double getDepotTwViol() {
 		return cost.depotTwViol;
-	}*/
-
+	}
+	
 	/**
 	 * @param depotTwViol the depotTwViol to set
 	 */
-	/*
 	public void setDepotTwViol(double depotTwViol) {
 		this.cost.depotTwViol = depotTwViol;
-	}*/
-
+	}
+	
 	/**
 	 * @return the returnToDepotTime
 	 */
