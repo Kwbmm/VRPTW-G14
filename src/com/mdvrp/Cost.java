@@ -50,7 +50,7 @@ public class Cost {
 		this.depotTwViol       = new Double(cost.depotTwViol);		
 	}
 
-	/*
+
 	public String toString() {
 		StringBuffer print = new StringBuffer();
 		print.append("--- Cost -------------------------------------");
@@ -58,7 +58,7 @@ public class Cost {
 		print.append("\n" + "| LoadViol=" + loadViol + " DurationViol=" + durationViol + " TWViol=" + twViol);
 		print.append("\n" + "--------------------------------------------------" + "\n");
 		return print.toString();
-	}*/
+	}
 	
 	public void calculateTotalCostViol() {
 		total = travelTime + loadViol + twViol + durationViol;

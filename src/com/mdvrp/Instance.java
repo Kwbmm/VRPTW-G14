@@ -107,6 +107,9 @@ public class Instance {
 				customersNr++;
 			}// end for customers
 			in.close();
+			//For each customer, save how many customers we have
+			for(Customer c:customers)
+				c.initializeDistanceFromCustomers(customersNr);
 			
 			depot.setNumber(customersNr);
 			
@@ -116,6 +119,7 @@ public class Instance {
 			calculateDistances();
 			assignCustomersToDepots();			
 			sortAssignedCustomers();
+//			System.out.println(printCustomersNumber(customers));
 		} catch (FileNotFoundException e) {
 			// File not found
 			System.out.println("File not found!");
@@ -159,20 +163,13 @@ public class Instance {
 	
 	
 	/**
-	 *  Assign to each customer the closed depot based on distances
+	 * For each customer set the depot and assign to the depot the customers
 	 */
 	public void assignCustomersToDepots() {
-		
 		for (int i = 0; i < customersNr; ++i){
-			double min = Double.MAX_VALUE;
-			for (int j = customersNr; j < customersNr + 1; ++j)
-				if (min > distances[i][j]) {
-					min = distances[i][j];
-				}
 			customers.get(i).setAssignedDepot(depot);
 			depot.addAssignedCustomer(customers.get(i));
 		}
-		
 	}
 	
 	/*
@@ -208,7 +205,7 @@ public class Instance {
 			print.append("\n");
 		}
 		return print.toString();
-	}*/
+	}
 	
 	/**
 	 * Print for the list of depots their number on a row separated by space
@@ -231,9 +228,15 @@ public class Instance {
 	public String printCustomersNumber(ArrayList<Customer> customers) {
 		StringBuffer print = new StringBuffer();
 		print.append("Customers:");
-		for (int i = 0; i < customers.size(); ++i) {
-			print.append(" " + customers.get(i).getNumber());
+		for(int i=0; i < depot.getAssignedCustomersNr();++i){
+			print.append(" " + depot.getAssignedCustomer(i).getNumber());
+			print.append(" "+ depot.getAssignedCustomer(i).getDistance());
+			print.append("\n");
 		}
+//		for (int i = 0; i < customers.size(); ++i) {
+//			print.append(" " + customers.get(i).getNumber());
+//			print.append(" "+ customers.);
+//		}
 		print.append("\n");
 		return print.toString();
 	}
@@ -254,6 +257,8 @@ public class Instance {
 					+ Math.pow(customers.get(i).getYCoordinate() - customers.get(j).getYCoordinate(), 2));
 					distances[i][j] = Math.floor(distances[i][j] * 10) / 10;
 					distances[j][i] = distances[i][j];
+					customers.get(i).setDistanceFromCustomer(distances[i][j],customers.get(j).getNumber());
+					customers.get(j).setDistanceFromCustomer(distances[i][j],customers.get(i).getNumber());
 	 
 				// case customer and depot
 				}else if(i < customersNr && j >= customersNr)
@@ -261,7 +266,8 @@ public class Instance {
 					distances[i][j] = Math.sqrt(Math.pow(customers.get(i).getXCoordinate() - depot.getXCoordinate(), 2)
 					+ Math.pow(customers.get(i).getYCoordinate() - depot.getYCoordinate(), 2));
 					distances[i][j] = Math.floor(distances[i][j] * 10) / 10;
-					distances[j][i] = distances[i][j];	
+					distances[j][i] = distances[i][j];
+					customers.get(i).setDistanceFromDepot(distances[i][j]);
 				}
 			}
 	}

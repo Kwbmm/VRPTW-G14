@@ -58,14 +58,14 @@ public class MDVRPTW {
 	        search.tabuSearch.startSolving();
 	        
 	        // wait for the search thread to finish
-	        try {
-	        	// in order to apply wait on an object synchronization must be done
-	        	synchronized(instance){
-	        		instance.wait();
-	        	}
-			} catch (InterruptedException e1) {
-				e1.printStackTrace();
-			}
+//	        try {
+//	        	// in order to apply wait on an object synchronization must be done
+//	        	synchronized(instance){
+//	        		instance.wait();
+//	        	}
+//			} catch (InterruptedException e1) {
+//				e1.printStackTrace();
+//			}
 	        
 	        duration.stop();
 	        

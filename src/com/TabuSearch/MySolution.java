@@ -170,8 +170,8 @@ public class MySolution extends SolutionAdapter{
 		int superCustomer;
 		int i;
 		/*
-		 * Customers are ordered from the most distant to the closet (closest is at the end
-		 * of the array).
+		 * Customers of the DEPOT are ordered from the most distant to the closet (closest is
+		 * at the end of the array).
 		 * After knowing how many starting vehicles we want to use, we assign to them the
 		 * distant customers.
 		 * Then for each distant customer (which from now on we will call "super customer")
@@ -219,6 +219,17 @@ public class MySolution extends SolutionAdapter{
 					insertBestTravel(instance, route, customerChosenPtr);
 					evaluateRoute(route);
 				}				
+			}
+		}
+		//Check if all customers belong to a neighbourhood. If not, add it to one route randomly
+		int randomRoute;
+		for(i=instance.getVehiclesUsed(); i<instance.getCustomersNr();++i){
+			customerChosenPtr = instance.getDepot().getAssignedCustomer(i);
+			if(!customerChosenPtr.getIsTaken()){
+				randomRoute = random.nextInt(instance.getVehiclesNr()-1+1)+1;
+				route = routes[0][randomRoute];
+				insertBestTravel(instance,route,customerChosenPtr);
+				evaluateRoute(route);
 			}
 		}
 	}

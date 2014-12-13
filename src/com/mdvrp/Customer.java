@@ -46,7 +46,7 @@ public class Customer {
 		arriveTime           = 0;
 		waitingTime          = 0;
 		twViol               = 0;
-		distanceFromDepot = 0;	
+		distanceFromDepot 	 = 0;
 	}
 	
 	public Customer(Customer customer) {
@@ -66,6 +66,7 @@ public class Customer {
 		this.waitingTime 		= new Double(customer.waitingTime);
 		this.twViol 			= new Double(customer.twViol);
 		this.distanceFromDepot = customer.distanceFromDepot;
+		this.distanceFromCustomers = customer.distanceFromCustomers;
 	}
 
 	/**
@@ -164,6 +165,11 @@ public class Customer {
 		return this.isDistant;
 	}
 	
+	//Instanciates an ArrayList with i positions ( 1 for each customer )
+	public void initializeDistanceFromCustomers(int i){
+		this.distanceFromCustomers = new double[i];
+	}
+	
 	//Sets the distance from customer i
 	public void setDistanceFromCustomer(double distance,int i){
 		this.distanceFromCustomers[i] = distance;
@@ -183,14 +189,16 @@ public class Customer {
 	
 	public void generateNeighbours(ArrayList<Customer> customers,int vehiclesUsed){
 		//Generate a random number between 10 (minimum threshold for ray) and meanDistance
+		random = new Random();
+		neighbours = new ArrayList<Customer>();
 		double randomRay = 10 + (this.meanDistance - 10) * random.nextDouble();
 		double distance;
 		/*
-		 * The loop starts from the vehiclesUsed-th position bc customers from 0 -> vehiclesUsed are
+		 * The loop starts from the vehiclesUsed-th position bc customers from 0 -> vehiclesUsed-1 are
 		 * marked as most distant.
 		 */
 		for(int i=vehiclesUsed; i<customers.size();++i){
-			distance = customers.get(i).getDistance()-this.getDistance();
+			distance = Math.abs(customers.get(i).getDistance()-this.getDistance());
 			if(distance <= randomRay && !customers.get(i).getIsTaken()){
 				this.neighbours.add(customers.get(i));
 				customers.get(i).setIsTaken();
