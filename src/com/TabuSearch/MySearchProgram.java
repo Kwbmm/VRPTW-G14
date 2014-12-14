@@ -105,11 +105,6 @@ public class MySearchProgram implements TabuSearchListener{
 			sol.setFeasibleIndex(feasibleIndex);
 			tabuSearch.setBestSolution(sol);
 		}
-		
-		// wake up the main thread
-    	synchronized(instance){
-    		instance.notify();
-    	}
 	}
 
 	@Override

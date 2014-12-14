@@ -36,7 +36,6 @@ public class MDVRPTW {
 
 			// get the instance from the file			
 			instance = new Instance(parameters); 
-			//instance.populateFromHombergFile(parameters.getInputFileName());
 			instance.populateFromFile(parameters.getInputFileName());
 						
 			// Init memory for Tabu Search
@@ -46,7 +45,7 @@ public class MDVRPTW {
 	        moveManager.setMovesType(parameters.getMovesType());
 	        
 	        // Tabu list
-	        //int dimension[] = {instance.getDepotsNr(), instance.getVehiclesNr(), instance.getCustomersNr(), 1, 1};
+	        //First is depotNr
 	        int dimension[] = {1, instance.getVehiclesNr(), instance.getCustomersNr(), 1, 1};
 	        tabuList 		= new MyTabuList(parameters.getTabuTenure(), dimension);
 	        
@@ -56,16 +55,6 @@ public class MDVRPTW {
 	        // Start solving        
 	        search.tabuSearch.setIterationsToGo(parameters.getIterations());
 	        search.tabuSearch.startSolving();
-	        
-	        // wait for the search thread to finish
-//	        try {
-//	        	// in order to apply wait on an object synchronization must be done
-//	        	synchronized(instance){
-//	        		instance.wait();
-//	        	}
-//			} catch (InterruptedException e1) {
-//				e1.printStackTrace();
-//			}
 	        
 	        duration.stop();
 	        

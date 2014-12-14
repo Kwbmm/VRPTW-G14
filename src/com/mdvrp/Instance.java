@@ -49,7 +49,6 @@ public class Instance {
 	 * and calculates angles
 	 * @param filename
 	 */
-	//public void populateFromHombergFile(String filename) {
 	public void populateFromFile(String filename) {
 		try {
 						
@@ -63,8 +62,9 @@ public class Instance {
 			vehiclesNr	= in.nextInt(); //Amount of vehicles
 			
 			if(parameters.getVehiclesToUse() == -1)
-				this.vehiclesUsed = random.nextInt(vehiclesNr-1+1)+1; //this generates a random integer between 1 and vehiclesNr (inclusive)
-			
+				vehiclesUsed = random.nextInt(vehiclesNr-1+1)+1; //this generates a random integer between 1 and vehiclesNr (inclusive)
+			else
+				vehiclesUsed = parameters.getVehiclesToUse();
 			
 			// read D and Q
 			durations	= new double[1][daysNr];
@@ -72,7 +72,7 @@ public class Instance {
 			durations[0][0] = Double.MAX_VALUE;
 			capacities[0][0] = in.nextInt(); //Capacity of all the vehicles
 			
-			// skip useless lines (Labels and whitelines)
+			// skip useless lines (Labels and white lines)
 			in.nextLine();
 			in.nextLine();
 			in.nextLine();
@@ -119,7 +119,6 @@ public class Instance {
 			calculateDistances();
 			assignCustomersToDepots();			
 			sortAssignedCustomers();
-//			System.out.println(printCustomersNumber(customers));
 		} catch (FileNotFoundException e) {
 			// File not found
 			System.out.println("File not found!");
@@ -135,11 +134,11 @@ public class Instance {
 			double sumOfDistances=0;
 			double meanDistance;
 			int i;
-			for(i=0;i<this.vehiclesUsed;++i){
+			for(i=0;i<vehiclesUsed;++i){
 				sumOfDistances += depot.getAssignedCustomer(i).getDistance();
 			}
-			meanDistance = sumOfDistances / this.vehiclesUsed;
-			for(i=0;i<this.vehiclesUsed;++i)
+			meanDistance = sumOfDistances / vehiclesUsed;
+			for(i=0;i<vehiclesUsed;++i)
 				depot.getAssignedCustomer(i).setMeanDistance(meanDistance);
 	}
 	

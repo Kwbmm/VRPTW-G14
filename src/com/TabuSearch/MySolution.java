@@ -43,7 +43,8 @@ public class MySolution extends SolutionAdapter{
     	resetValue = 0.1;
     	feasibleIndex = 0;
     	MySolution.setIterationsDone(0);
-    	Bs = new int[instance.getCustomersNr()][instance.getVehiclesNr()][1];		
+//    	Bs = new int[instance.getCustomersNr()][instance.getVehiclesNr()][1];
+    	Bs = new int[instance.getCustomersNr()][instance.getVehiclesUsed()][1];
 	}
 	
 	
@@ -142,7 +143,7 @@ public class MySolution extends SolutionAdapter{
 		for (int j = 0; j < instance.getVehiclesUsed(); ++j){
 				// initialization of routes
 				routes[0][j] = new Route();
-				routes[0][j].setIndex(0*(instance.getVehiclesUsed()) + j);
+				routes[0][j].setIndex(j);
 
 				// add the depot as the first node to the route
 				routes[0][j].setDepot(instance.getDepot());
@@ -179,22 +180,17 @@ public class MySolution extends SolutionAdapter{
 		 */
 		for(i=0; i<instance.getVehiclesUsed();++i){
 			superCustomerPtr = instance.getDepot().getAssignedCustomer(i);
-				route = routes[0][i];
-				/*
-				 * superCustomerPtr.getCapacity() returns the DEMAND of the CUSTOMER
-				 * route.getCost().load is the total load we have so far (i.e the sum of the already served customer's load)
-				 * route.getLoadAdmited() returns the CAPACITY of the VEHICLE (which is the same for every vehicle)
-				 * superCustomerPtr.getServiceDuration() returns how much time we need to spend to serve the customer
-				 * route.getDuration() is the time we have spent so far since when we departed from depot
-				 * route.getDurationAdmited() is the maximum time we can travel before going back to depot.
-				 */
-				if (superCustomerPtr.getCapacity() + route.getCost().load <= route.getLoadAdmited() &&
-					superCustomerPtr.getServiceDuration() + route.getDuration()  <= route.getDurationAdmited()){
-					insertBestTravel(instance, route, superCustomerPtr);
-					evaluateRoute(route);
-				}else{
-					System.out.println("here");
-				}
+			route = routes[0][i];
+			/*
+			 * superCustomerPtr.getCapacity() returns the DEMAND of the CUSTOMER
+			 * route.getCost().load is the total load we have so far (i.e the sum of the already served customer's load)
+			 * route.getLoadAdmited() returns the CAPACITY of the VEHICLE (which is the same for every vehicle)
+			 * superCustomerPtr.getServiceDuration() returns how much time we need to spend to serve the customer
+			 * route.getDuration() is the time we have spent so far since when we departed from depot
+			 * route.getDurationAdmited() is the maximum time we can travel before going back to depot.
+			 */
+			insertBestTravel(instance, route, superCustomerPtr);
+			evaluateRoute(route);
 		}
 		//For the most distant customers, compute their neighbourhood
 		for(i=0;i<instance.getVehiclesUsed();++i){

@@ -16,7 +16,8 @@ public class MyObjectiveFunction implements ObjectiveFunction {
     public MyObjectiveFunction( Instance instance ) 
     {   
     	MyObjectiveFunction.setInstance(instance);
-     	lambda     = 0.5 * Math.sqrt(instance.getVehiclesNr() * instance.getCustomersNr());
+//     	lambda     = 0.5 * Math.sqrt(instance.getVehiclesNr() * instance.getCustomersNr());
+    	lambda = 0.5*Math.sqrt(instance.getVehiclesUsed() * instance.getCustomersNr());
     }   // end constructor
 
     /**

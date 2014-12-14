@@ -35,7 +35,8 @@ public class MyMoveManager implements MoveManager {
      */
     public Move[] getSwapMoves(MySolution solution){
     	 Route[][] routes = solution.getRoutes();
-         Move[] buffer = new Move[ getInstance().getCustomersNr() * getInstance().getVehiclesNr() * 1];
+//         Move[] buffer = new Move[ getInstance().getCustomersNr() * getInstance().getVehiclesNr() * 1];
+    	 Move[] buffer = new Move[getInstance().getCustomersNr()*getInstance().getVehiclesUsed()*1];
          int nextBufferPos = 0;
          
          // iterates depots
