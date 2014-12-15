@@ -17,7 +17,6 @@ public class Instance {
 	private int daysNr = 1;
 	private ArrayList<Customer> customers 	= new ArrayList<>(); 		// vector of customers;
 	private Depot depot;
-	private double[][] durations;
 	private double[][] capacities;
 	private double[][] distances;
 	private Random random 					= new Random();
@@ -67,9 +66,7 @@ public class Instance {
 				vehiclesUsed = parameters.getVehiclesToUse();
 			
 			// read D and Q
-			durations	= new double[1][daysNr];
 			capacities	= new double[1][daysNr];
-			durations[0][0] = Double.MAX_VALUE;
 			capacities[0][0] = in.nextInt(); //Capacity of all the vehicles
 			
 			// skip useless lines (Labels and white lines)
@@ -377,10 +374,6 @@ public class Instance {
 		return capacities[i][j];
 	}
 
-
-	public double getDuration(int i, int j) {
-		return durations[i][j];
-	}
 
 	/**
 	 * @return the random

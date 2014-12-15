@@ -11,7 +11,6 @@ public class Cost {
 	public double serviceTime;		 // sum of all service time;	 
 	public double waitingTime;		 // sum of all waiting times when arrives before start TW
 	public double loadViol;		     // violation of the load
-	public double durationViol;      // violation of the duration waiting time + service time
 	public double twViol;            // violation of the time window
 	public double returnToDepotTime; // stores time to return to the depot
 	public double depotTwViol;       // stores the time window violation of the depot
@@ -26,7 +25,7 @@ public class Cost {
 		waitingTime		  = 0;
 		
 		loadViol          = 0;
-		durationViol      = 0;
+		
 		twViol            = 0;
 		
 		returnToDepotTime = 0;
@@ -43,7 +42,6 @@ public class Cost {
 		this.waitingTime       = new Double(cost.waitingTime);
 		
 		this.loadViol          = new Double(cost.loadViol);
-		this.durationViol      = new Double(cost.durationViol);
 		this.twViol            = new Double(cost.twViol);
 		
 		this.returnToDepotTime = new Double(cost.returnToDepotTime);
@@ -55,13 +53,13 @@ public class Cost {
 		StringBuffer print = new StringBuffer();
 		print.append("--- Cost -------------------------------------");
 		print.append("\n" + "| TotalTravelCost=" + travelTime + " TotalCostViol=" + total);
-		print.append("\n" + "| LoadViol=" + loadViol + " DurationViol=" + durationViol + " TWViol=" + twViol);
+		print.append("\n" + "| LoadViol=" + loadViol  + " TWViol=" + twViol);
 		print.append("\n" + "--------------------------------------------------" + "\n");
 		return print.toString();
 	}
 	
 	public void calculateTotalCostViol() {
-		total = travelTime + loadViol + twViol + durationViol;
+		total = travelTime + loadViol + twViol ;
 	}
 
 	
@@ -80,16 +78,9 @@ public class Cost {
 		this.loadViol = capacityviol;
 	}
 	
-	public void setDurationViol(double durationviol) {
-		this.durationViol = durationviol;
-	}
 	
 	public void addLoadViol(double capacityviol) {
 		this.loadViol += capacityviol;
-	}
-	
-	public void addDurationViol(double durationviol) {
-		this.durationViol += durationviol;
 	}
 	
 	public void addTWViol(double TWviol) {
@@ -131,14 +122,7 @@ public class Cost {
 		return loadViol;
 	}
 
-	/**
-	 * @return the durationviol
-	 */
 	
-	public double getDurationViol() {
-		return durationViol;
-	}
-
 	/**
 	 * @return the tWviol
 	 */
@@ -155,7 +139,6 @@ public class Cost {
 		waitingTime			= 0;
 		
 		loadViol			= 0;
-		durationViol 		= 0;
 		twViol       		= 0;
 		
 		returnToDepotTime 	= 0;
@@ -166,7 +149,7 @@ public class Cost {
 	
 	// check if a cost has violations
     public boolean checkFeasible() {
-    	if (this.loadViol == 0 && this.durationViol == 0 && this.twViol == 0) {
+    	if (this.loadViol == 0 && this.twViol == 0) {
     		return true;
     	} else {
     		return false;

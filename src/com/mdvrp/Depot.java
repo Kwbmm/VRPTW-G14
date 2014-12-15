@@ -12,7 +12,6 @@ public class Depot {
 	private int number;
 	private double xCoordinate;
 	private double yCoordinate;
-	private double capacity;                       // capacity that the depot can support
 	private int startTw;                           // beginning of time window (earliest time for start of service),if any
 	private int endTw;                             // end of time window (latest time for start of service), if any
 	private ArrayList<Customer> assignedCustomers; // the list of customers that are assigned to this depot
@@ -83,18 +82,6 @@ public class Depot {
 		return assignedCustomers.size();
 	}
 	
-	/**
-	 * @return the capacity
-	 */
-	public double getCapacity() {
-		return capacity;
-	}
-	/**
-	 * @param capacity the capacity to set
-	 */
-	public void setCapacity(double capacity) {
-		this.capacity = capacity;
-	}
 	/**
 	 * @return the xcoordinate
 	 */

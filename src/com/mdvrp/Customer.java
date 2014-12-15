@@ -12,12 +12,8 @@ public class Customer {
 	private double yCoordinate;
 	private double serviceDuration;     // duration that takes to dispatch the delivery    
 	private double load;                // capacity of the pack that is expecting
-	private int frequency;              // frequency of visit
-//???	private int combinationsVisitsNr;   // number of possible visits combinations
-//???	private int[][] combinationsList;   // combinationslist[i][j] where i = visit combinations nr and j = frequency
 	private int startTw;                // beginning of time window (earliest time for start of service),if any
 	private int endTw;                  // end of time window (latest time for start of service), if any
-//???	private int patternUsed;            // the combination of 
 	private Depot assignedDepot;        // the depot from which the customer will be served
 	private double arriveTime;          // time at which the car arrives to the customer
 	private double waitingTime;         // time to wait until arriveTime equal start time window
@@ -39,8 +35,7 @@ public class Customer {
 		yCoordinate          = 0;
 		serviceDuration      = 0;
 		load                 = 0;
-		frequency            = 0;
-	//	combinationsVisitsNr = 0;
+
 		startTw              = 0;
 		endTw                = 0;
 		arriveTime           = 0;
@@ -55,12 +50,8 @@ public class Customer {
 		this.yCoordinate 		= customer.yCoordinate;
 		this.serviceDuration 	= customer.serviceDuration;
 		this.load 				= customer.load;
-		this.frequency 			= customer.frequency;
-	//	this.combinationsVisitsNr = customer.combinationsVisitsNr;
-	//	this.combinationsList 	= customer.combinationsList;
 		this.startTw 			= customer.startTw;
 		this.endTw 				= customer.endTw;
-	//	this.patternUsed 		= customer.patternUsed;
 		this.assignedDepot 		= customer.assignedDepot;
 		this.arriveTime 		= new Double(customer.arriveTime);
 		this.waitingTime 		= new Double(customer.waitingTime);
@@ -271,59 +262,6 @@ public class Customer {
 		this.endTw = endTW;
 	}
 
-
-	/**
-	 * @return the frequency
-	 */
-	public int getFrequency() {
-		return frequency;
-	}
-
-
-	/**
-	 * @param frequency the frequency to set
-	 */
-	public void setFrequency(int frequency) {
-		this.frequency = frequency;
-	}
-
-
-	/**
-	 * @return the patternsNr
-	 */
-	/*
-	public int getCombinationsVisitsNr() {
-		return combinationsVisitsNr;
-	}*/
-
-
-	/**
-	 * @param patternsNr the patternsNr to set
-	 */
-	/*
-	public void setCombinationsVisitsNr(int patternsNr) {
-		this.combinationsVisitsNr = patternsNr;
-	}*/
-
-
-	/**
-	 * @return the combinationslist
-	 */
-	/*
-	public int[][] getCombinationsList() {
-		return combinationsList;
-	}*/
-
-
-	/**
-	 * @param combinationslist the combinationslist to set
-	 */
-	/*
-	public void setCombinationsList(int[][] combinationslist) {
-		this.combinationsList = combinationslist;
-	}*/
-
-
 	/**
 	 * @return the assigneddepot
 	 */
@@ -338,23 +276,6 @@ public class Customer {
 	public void setAssignedDepot(Depot assigneddepot) {
 		this.assignedDepot = assigneddepot;
 	}
-
-	/**
-	 * @return the patternused
-	 */
-	/*
-	public int getPatternUsed() {
-		return patternUsed;
-	}*/
-
-
-	/**
-	 * @param patternused the patternused to set
-	 */
-	/*
-	public void setPatternUsed(int patternused) {
-		this.patternUsed = patternused;
-	}*/
 
 	/**
 	 * @return the waitingTime

@@ -158,9 +158,7 @@ public class Route {
 		return this.assignedVehicle;
 	}
 	
-	public double getDurationAdmited() {
-		return assignedVehicle.getDuration();
-	}
+
 	
 	public double getLoadAdmited() {
 		return assignedVehicle.getCapacity();
