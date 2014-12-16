@@ -13,12 +13,27 @@ import com.mdvrp.Vehicle;
 @SuppressWarnings("serial")
 public class MySolution extends SolutionAdapter{
 
-	private Route route[];
+	private Route[] route;
 	private Cost cost; //Save the tot cost of the route
+	
+	public MySolution(){} //This is needed otherwise java gives random errors.. YES we love java <3
 	public MySolution(Instance instance) {
 		cost = new Cost();
 		initializeRoute(instance);
 		buildInitialRoute(instance);
+	}
+	
+	//This is needed for tabu search
+	public Object clone(){
+		MySolution copy = (MySolution) super.clone();
+		copy.cost = new Cost(this.cost);
+		
+		Route[] copyRoute = new Route[this.route.length];
+		for(int i=0; i < this.route.length;++i)
+			copyRoute[i] = new Route(this.route[i]);
+		copy.route = copyRoute;
+		
+		return copy;
 	}
 	
 	public void initializeRoute(Instance instance) {
@@ -39,7 +54,7 @@ public class MySolution extends SolutionAdapter{
 			// assign vehicle
 			Vehicle vehicle = new Vehicle();
 			/*
-			 * The following is a method that supposes there are multiple depots, so instead of
+			 * The following is a method that supposes that there are multiple depots, so instead of
 			 * changing everything in the mdvrp package, we just pass 0 as depot.
 			 */
 			vehicle.setCapacity(instance.getCapacity(0,0)); 
@@ -71,7 +86,6 @@ public class MySolution extends SolutionAdapter{
 			 * route.getLoadAdmited() returns the CAPACITY of the VEHICLE (which is the same for every vehicle)
 			 * superCustomerPtr.getServiceDuration() returns how much time we need to spend to serve the customer
 			 * route.getDuration() is the time we have spent so far since when we departed from depot
-			 * route.getDurationAdmited() is the maximum time we can travel before going back to depot.
 			 */
 				insertBestTravel(instance, route, superCustomerPtr);
 				evaluateRoute(route);
@@ -97,7 +111,7 @@ public class MySolution extends SolutionAdapter{
 			for(int j=0; j < superCustomerPtr.getNeighbours().size();++j){
 				customerChosenPtr = superCustomerPtr.getNeighbours().get(j);
 				if (customerChosenPtr.getCapacity() + route.getCost().load <= route.getLoadAdmited() &&
-						customerChosenPtr.getServiceDuration() + route.getDuration()  <= route.getDurationAdmited()){
+					customerChosenPtr.getWaitingTime()+route.getDuration() <= route.getCost().returnToDepotTime){
 					insertBestTravel(instance, route, customerChosenPtr);
 					evaluateRoute(route);
 				}				
@@ -152,7 +166,7 @@ public class MySolution extends SolutionAdapter{
 				}
 			}
 
-			// try between each customer
+			// Try between customers but exclude the last one (case done above)
 			for(int i = 0; i < route.getCustomersLength() - 1; ++i) {
 				if(route.getCustomer(i).getEndTw() <= customerChosenPtr.getEndTw() && customerChosenPtr.getEndTw() <= route.getCustomer(i + 1).getEndTw()) {
 					tempMinCost = instance.getTravelTime(route.getCustomerNr(i), customerChosenPtr.getNumber()) 
