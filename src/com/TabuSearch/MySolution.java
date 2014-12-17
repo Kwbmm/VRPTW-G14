@@ -13,11 +13,13 @@ import com.mdvrp.Vehicle;
 @SuppressWarnings("serial")
 public class MySolution extends SolutionAdapter{
 
+	private static Instance instance;
 	private Route[] route;
 	private Cost cost; //Save the tot cost of the route
 	
 	public MySolution(){} //This is needed otherwise java gives random errors.. YES we love java <3
 	public MySolution(Instance instance) {
+		MySolution.setInstance(instance);
 		cost = new Cost();
 		initializeRoute(instance);
 		buildInitialRoute(instance);
@@ -234,7 +236,7 @@ public class MySolution extends SolutionAdapter{
 			route.setDepotTwViol(twViol);
 			route.setReturnToDepotTime(totalTime);
 			route.getCost().setLoadViol(Math.max(0, route.getCost().load - route.getLoadAdmited()));
-			route.getCost().setDurationViol(Math.max(0, route.getDuration() - route.getDurationAdmited()));
+//			route.getCost().setDurationViol(Math.max(0, route.getDuration() - route.getDurationAdmited()));
 			
 			// update total violation
 			route.getCost().calculateTotalCostViol();
@@ -242,4 +244,12 @@ public class MySolution extends SolutionAdapter{
 		} // end if route not empty
 		
     } // end method evaluate route
+	
+	public static Instance getInstance(){
+		return instance;
+	}
+	
+	public static void setInstance(Instance instance){
+		MySolution.instance = instance;
+	}
 }

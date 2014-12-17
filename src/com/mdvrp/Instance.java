@@ -104,9 +104,6 @@ public class Instance {
 				customersNr++;
 			}// end for customers
 			in.close();
-			//For each customer, save how many customers we have
-			for(Customer c:customers)
-				c.initializeDistanceFromCustomers(customersNr);
 			
 			depot.setNumber(customersNr);
 			
@@ -253,8 +250,6 @@ public class Instance {
 					+ Math.pow(customers.get(i).getYCoordinate() - customers.get(j).getYCoordinate(), 2));
 					distances[i][j] = Math.floor(distances[i][j] * 10) / 10;
 					distances[j][i] = distances[i][j];
-					customers.get(i).setDistanceFromCustomer(distances[i][j],customers.get(j).getNumber());
-					customers.get(j).setDistanceFromCustomer(distances[i][j],customers.get(i).getNumber());
 	 
 				// case customer and depot
 				}else if(i < customersNr && j >= customersNr)

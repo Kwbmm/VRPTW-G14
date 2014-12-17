@@ -19,11 +19,12 @@ public class Customer {
 	private double waitingTime;         // time to wait until arriveTime equal start time window
 	private double twViol;              // value of time window violation, 0 if none
 	private double distanceFromDepot;
-	private double[] distanceFromCustomers;
+	private double distanceFromSuperCustomers;
 	private Random random;
 	private boolean isDistant=false;
 	private ArrayList<Customer> neighbours = new ArrayList<>();
 	private boolean isTaken=false;
+	private int superCustomerNr;	//Stores the supercustomer to which this customer belongs to
 	private double angleToCustomer;
 	/*
 	 * This stores the mean distance from the most distant customers. The amount of most distant customers
@@ -43,6 +44,7 @@ public class Customer {
 		waitingTime          = 0;
 		twViol               = 0;
 		distanceFromDepot 	 = 0;
+		distanceFromSuperCustomers = 0;
 	}
 	
 	public Customer(Customer customer) {
@@ -58,7 +60,7 @@ public class Customer {
 		this.waitingTime 		= new Double(customer.waitingTime);
 		this.twViol 			= new Double(customer.twViol);
 		this.distanceFromDepot = customer.distanceFromDepot;
-		this.distanceFromCustomers = customer.distanceFromCustomers;
+		this.distanceFromSuperCustomers = customer.distanceFromSuperCustomers;
 		this.angleToCustomer     =customer.angleToCustomer;
 	}
 
@@ -158,15 +160,23 @@ public class Customer {
 		return this.isDistant;
 	}
 	
-	//Instanciates an ArrayList with i positions ( 1 for each customer )
-	public void initializeDistanceFromCustomers(int i){
-		this.distanceFromCustomers = new double[i];
+	public void setBelongToSuperCustomerN(int i){
+		this.superCustomerNr = i;
 	}
 	
-	//Sets the distance from customer i
-	public void setDistanceFromCustomer(double distance,int i){
-		this.distanceFromCustomers[i] = distance;
+	public int getBelongToSuperCustomerN(){
+		return this.superCustomerNr;
 	}
+	
+	//Sets the distance from superCustomer
+	public void setDistanceFromSuperCustomer(double distance){
+		this.distanceFromSuperCustomers = distance;
+	}
+	
+	public double getDistanceFromSuperCustomer(){
+		return this.distanceFromSuperCustomers;
+	}
+	
 	//This is the mean distance from the most distant customers
 	public void setMeanDistance(double meanDistance){
 		this.meanDistance = meanDistance;
@@ -189,12 +199,24 @@ public class Customer {
 		 * The loop starts from the vehiclesUsed-th position bc customers from 0 -> vehiclesUsed-1 are
 		 * marked as most distant.
 		 */
+		
 		for(int i=vehiclesUsed; i<customers.size();++i){
-			distance = Math.abs(customers.get(i).getDistance()-this.getDistance());
+			/*
+			 * Don't use the distance matrix in the Instance class bc customers are not ordered
+			 * correctly (the customers ordered are in the Depot class!!)
+			 */
+			distance = Math.sqrt(Math.pow(this.getXCoordinate()-customers.get(i).getXCoordinate(), 2)+Math.pow(this.getYCoordinate()-customers.get(i).getYCoordinate(), 2));
 			if(distance <= randomRay && !customers.get(i).getIsTaken()){
 				neighbours.add(customers.get(i));
 				customers.get(i).setIsTaken();
+				customers.get(i).setDistanceFromSuperCustomer(distance);
+				customers.get(i).setBelongToSuperCustomerN(this.getNumber());
 			}
+		}
+		System.out.println("Supercustomer n: "+this.getNumber());
+		System.out.println("Random ray is: "+randomRay);
+		for(int i=0; i < this.neighbours.size();++i){
+			System.out.println("Customer "+(i+1)+" Distance from superCustomer: "+ this.neighbours.get(i).getDistanceFromSuperCustomer());
 		}
 	}
 
