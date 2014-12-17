@@ -24,6 +24,7 @@ public class Customer {
 	private boolean isDistant=false;
 	private ArrayList<Customer> neighbours = new ArrayList<>();
 	private boolean isTaken=false;
+	private double angleToCustomer;
 	/*
 	 * This stores the mean distance from the most distant customers. The amount of most distant customers
 	 * is equal to the amount of vehicles used initially
@@ -58,6 +59,7 @@ public class Customer {
 		this.twViol 			= new Double(customer.twViol);
 		this.distanceFromDepot = customer.distanceFromDepot;
 		this.distanceFromCustomers = customer.distanceFromCustomers;
+		this.angleToCustomer     =customer.angleToCustomer;
 	}
 
 	/**
@@ -305,6 +307,15 @@ public class Customer {
 	public void setTwViol(double twViol) {
 		this.twViol = twViol;
 	}
+
+	public double getAngleToCustomer() {
+		return angleToCustomer;
+	}
+
+	public void setAngleToCustomer(double angleToCustomer) {
+		this.angleToCustomer = angleToCustomer;
+	}
+
 
 
 	/*

@@ -267,6 +267,24 @@ public class Instance {
 				}
 			}
 	}
+public ArrayList<Customer> calculateAnglesToCustomer( Customer c) {
+		
+		ArrayList<Customer> list= getCustomers(); //get all customers
+		Customer swap = list.get(c.getNumber());
+        list.set(c.getNumber(), list.get(0));
+        list.set(0, swap); 						// set the customer considered in the first position
+		
+		for (int i = 1; i < customersNr; ++i) {
+			double angle = Math.atan2(list.get(i).getYCoordinate() - c.getYCoordinate(), list.get(i).getXCoordinate() - c.getXCoordinate());
+			list.get(i).setAngleToCustomer(angle);
+			
+		}
+		list.remove(0);
+		CopyOfQuick.sort(list);
+		return list;
+		
+		
+	}
 	
 	/**
 	 * @return distances as a string
@@ -363,6 +381,14 @@ public class Instance {
 	 */
 	public void setDaysNr(int daysNr) {
 		this.daysNr = daysNr;
+	}
+
+	public ArrayList<Customer> getCustomers() {
+		return customers;
+	}
+
+	public void setCustomers(ArrayList<Customer> customers) {
+		this.customers = customers;
 	}
 
 	public Depot getDepot(){
