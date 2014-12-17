@@ -16,6 +16,13 @@ public class MySolution extends SolutionAdapter{
 	private static Instance instance;
 	private Route[] route;
 	private Cost cost; //Save the tot cost of the route
+	private double alpha;		// a
+	private double beta;		// ß
+	private double gamma;		// ?
+	private double delta;		// d
+	private double upLimit;
+	private double resetValue;
+	private int[][] Bs;
 	
 	public MySolution(){} //This is needed otherwise java gives random errors.. YES we love java <3
 	public MySolution(Instance instance) {
@@ -23,6 +30,14 @@ public class MySolution extends SolutionAdapter{
 		cost = new Cost();
 		initializeRoute(instance);
 		buildInitialRoute(instance);
+		alpha 	= 1;
+    	beta 	= 1;
+    	gamma	= 1;
+    	delta	= 0.005;
+    	upLimit = 10000000;
+    	resetValue = 0.1;
+    
+    	Bs = new int[instance.getCustomersNr()][instance.getVehiclesNr()];		
 	}
 	
 	//This is needed for tabu search
@@ -33,11 +48,61 @@ public class MySolution extends SolutionAdapter{
 		Route[] copyRoute = new Route[this.route.length];
 		for(int i=0; i < this.route.length;++i)
 			copyRoute[i] = new Route(this.route[i]);
+        copy.alpha         = this.alpha;
+        copy.beta          = this.beta;
+        copy.gamma         = this.gamma;
+        copy.delta         = this.delta;
+        copy.Bs            = this.Bs;
 		copy.route = copyRoute;
 		
 		return copy;
 	}
+	public void incrementBs(MySwapMove move){
+		Bs[move.getCustomerNr()][move.getDeleteRouteNr()]++;
+	}
 	
+	public int getBs(MySwapMove move){
+		return Bs[move.getCustomerNr()][move.getDeleteRouteNr()];
+	}
+	
+	public Cost getCost(){
+		return cost;
+	}
+	public int getBsOfMove(MySwapMove move) {
+		return Bs[move.getCustomerNr()][move.getInsertRouteNr()][move.getInsertDepotNr()];
+	}
+	public void updateParameters(double a, double b, double g) {
+    	// capacity violation test
+    	if (a == 0) {
+    		alpha = alpha / (1 + delta);
+    	} else {
+    		alpha = alpha * (1 + delta);
+    		if(alpha > upLimit){
+    			alpha = resetValue;
+    		}
+    	}
+    	
+    	// duration violation test    	
+    	if (b == 0) {
+    		beta = beta / (1 + delta);
+    	} else {
+    		beta = beta * (1 + delta);
+    		if(beta > upLimit){
+    			beta = resetValue;
+    		}
+    	}
+    	
+    	// time window violation test
+    	if (g == 0) {
+    		gamma = gamma / (1 + delta);
+    	} else {
+    		gamma = gamma * (1 + delta);
+    		if(gamma > upLimit){
+    			gamma = resetValue;
+    		}
+    	}
+    	
+    }
 	public void initializeRoute(Instance instance) {
 		route = new Route[instance.getVehiclesUsed()];
 		// Creation of the routes; each route starts at the depot
@@ -245,14 +310,42 @@ public class MySolution extends SolutionAdapter{
 		
     } // end method evaluate route
 	
+	public double getAlpha() {
+		return alpha;
+	}
+
+	public double getBeta() {
+		return beta;
+	}
+
+	public double getGamma() {
+		return gamma;
+	}
+	
+	public void addTravelTime(double travelTime){
+		cost.travelTime += travelTime;
+	}
+
+	public void addServiceTime(double serviceTime) {
+		cost.serviceTime += serviceTime;
+		
+	}
+
+	public void addWaitingTime(double waitingTime) {
+		cost.waitingTime += waitingTime;
+		
+	}
+	public void setCost(Cost cost) {
+		this.cost = cost;
+		
+	}
+
+
 	public static Instance getInstance(){
 		return instance;
 	}
 	
-	public void updateParameters(double alpha, double beta, double gamma)
-	{
-		//TODO 
-	}
+	
 	
 	public static void setInstance(Instance instance){
 		MySolution.instance = instance;
