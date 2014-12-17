@@ -249,6 +249,11 @@ public class MySolution extends SolutionAdapter{
 		return instance;
 	}
 	
+	public void updateParameters(double alpha, double beta, double gamma)
+	{
+		//TODO 
+	}
+	
 	public static void setInstance(Instance instance){
 		MySolution.instance = instance;
 	}
