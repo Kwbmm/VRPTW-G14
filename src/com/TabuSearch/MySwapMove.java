@@ -23,14 +23,17 @@ public class MySwapMove implements ComplexMove{
 	private int customerIndex;
 	private Customer customer;
 
-    
+    private int deletePositionIndex;
+    private int insertPositionIndex;
     
     public MySwapMove( Instance instance, int routeIndexInsert, int routeIndexDelete, Customer customer){
     	this.routeIndexInsert = routeIndexInsert;
     	this.routeIndexDelete = routeIndexDelete;
     	this.customerIndex = customer.getNumber();
     	this.customer = customer;
-    	this.instance = instance;
+    	this.instance = instance;  	
+        this.deletePositionIndex = deletePositionIndex;
+
     	
     	
     }   // end constructor
@@ -128,6 +131,8 @@ public class MySwapMove implements ComplexMove{
 		route.addCustomer(customerChosenPtr, position);
 		
 	}
+    
+    
 /*	public Customer findCustomerToInsert(Route path, int n){
 		Route route = path;
 		ArrayList<Customer> list = new ArrayList<Customer>();
@@ -158,5 +163,73 @@ public class MySwapMove implements ComplexMove{
 	    return maxEntry.getKey();
 	}
 */
+    /**
+     * Set the insert position index of the move
+     * (is done in objective function, for performance factor)
+     * @param index
+     */
+    public void setInsertPositionIndex(int index) {
+    	this.insertPositionIndex = index;
+    }
+    
+	/**
+	 * @return the customer
+	 */
+	public Customer getCustomer() {
+		return customer;
+	}
 	
+	/**
+	 * @return the customer number
+	 */
+	public int getCustomerNr() {
+		return customer.getNumber();
+	}
+
+	/**
+	 * @param customer the customer to set
+	 */
+	public void setCustomer(Customer customer) {
+		this.customer = customer;
+	}
+    
+
+	/**
+	 * @return the deletePositionIndex
+	 */
+	public int getDeletePositionIndex() {
+		return deletePositionIndex;
+	}
+
+	/**
+	 * @param deletePositionIndex the deletePositionIndex to set
+	 */
+	public void setDeletePositionIndex(int deletePositionIndex) {
+		this.deletePositionIndex = deletePositionIndex;
+	}
+    
+	public int getRouteIndexInsert() {
+		return routeIndexInsert;
+	}
+
+
+
+	public void setRouteIndexInsert(int routeIndexInsert) {
+		this.routeIndexInsert = routeIndexInsert;
+	}
+
+
+
+	public int getRouteIndexDelete() {
+		return routeIndexDelete;
+	}
+
+
+
+	public void setRouteIndexDelete(int routeIndexDelete) {
+		this.routeIndexDelete = routeIndexDelete;
+	}
+    
+    
+    
 }

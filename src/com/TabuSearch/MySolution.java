@@ -22,7 +22,6 @@ public class MySolution extends SolutionAdapter{
 	private double delta;		// d
 	private double upLimit;
 	private double resetValue;
-	private int[][] Bs;
 	
 	public MySolution(){} //This is needed otherwise java gives random errors.. YES we love java <3
 	public MySolution(Instance instance) {
@@ -36,8 +35,7 @@ public class MySolution extends SolutionAdapter{
     	delta	= 0.005;
     	upLimit = 10000000;
     	resetValue = 0.1;
-    
-    	Bs = new int[instance.getCustomersNr()][instance.getVehiclesNr()];		
+
 	}
 	
 	//This is needed for tabu search
@@ -52,25 +50,16 @@ public class MySolution extends SolutionAdapter{
         copy.beta          = this.beta;
         copy.gamma         = this.gamma;
         copy.delta         = this.delta;
-        copy.Bs            = this.Bs;
 		copy.route = copyRoute;
 		
 		return copy;
 	}
-	public void incrementBs(MySwapMove move){
-		Bs[move.getCustomerNr()][move.getDeleteRouteNr()]++;
-	}
-	
-	public int getBs(MySwapMove move){
-		return Bs[move.getCustomerNr()][move.getDeleteRouteNr()];
-	}
+
 	
 	public Cost getCost(){
 		return cost;
 	}
-	public int getBsOfMove(MySwapMove move) {
-		return Bs[move.getCustomerNr()][move.getInsertRouteNr()][move.getInsertDepotNr()];
-	}
+
 	public void updateParameters(double a, double b, double g) {
     	// capacity violation test
     	if (a == 0) {
@@ -355,6 +344,10 @@ public class MySolution extends SolutionAdapter{
 	}
 	public Route getRoute(int index){
 		return route[index];
+	}
+	
+	public int getRouteNr(){
+		return route.length;
 	}
 	public void setRoute(Route[] route) {
 		this.route = route;
