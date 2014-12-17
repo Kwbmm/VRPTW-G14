@@ -15,6 +15,7 @@ public class Customer {
 	private int startTw;                // beginning of time window (earliest time for start of service),if any
 	private int endTw;                  // end of time window (latest time for start of service), if any
 	private Depot assignedDepot;        // the depot from which the customer will be served
+	private Route assignedRoute;		// the route to which the customer is assigned
 	private double arriveTime;          // time at which the car arrives to the customer
 	private double waitingTime;         // time to wait until arriveTime equal start time window
 	private double twViol;              // value of time window violation, 0 if none
@@ -37,7 +38,7 @@ public class Customer {
 		yCoordinate          = 0;
 		serviceDuration      = 0;
 		load                 = 0;
-
+		
 		startTw              = 0;
 		endTw                = 0;
 		arriveTime           = 0;
@@ -56,6 +57,7 @@ public class Customer {
 		this.startTw 			= customer.startTw;
 		this.endTw 				= customer.endTw;
 		this.assignedDepot 		= customer.assignedDepot;
+		this.assignedRoute 		= customer.assignedRoute;
 		this.arriveTime 		= new Double(customer.arriveTime);
 		this.waitingTime 		= new Double(customer.waitingTime);
 		this.twViol 			= new Double(customer.twViol);
@@ -90,6 +92,14 @@ public class Customer {
 		return arriveTime;
 	}
 	
+	public Route getAssignedRoute() {
+		return assignedRoute;
+	}
+
+	public void setAssignedRoute(Route assignedRoute) {
+		this.assignedRoute = assignedRoute;
+	}
+
 	/**
 	 * set the time at which the car arrives to the customer
 	 * @param dispatchtime

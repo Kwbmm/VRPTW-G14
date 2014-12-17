@@ -28,13 +28,81 @@ public class MySwapMove implements ComplexMove{
     	
     }   // end constructor
     
+    private void insertBestTravel(Route route, Customer customerChosenPtr) {
+		double minCost = Double.MAX_VALUE;
+		double tempMinCost = Double.MAX_VALUE;
+		int position = 0;
+		
+		// first position
+		//verifica se è possibile mettere questo customer in prima posizione
+		//se la finestra temporale del nuovo customer è minore di quella del customer in posizione zero
+		//aggiorna il valore di "TEMPOMINCOST" e gli assegna:
+		// tempo per andare dal deposito al customer attuale + tempo per andare dal customer attuale al customer in prima posizione
+		// meno il tempo per andare dal deposito al customer in prima posizione
+		if(customerChosenPtr.getEndTw() <= route.getCustomer(0).getEndTw()) 
+		{
+			tempMinCost = instance.getTravelTime(route.getDepotNr(), customerChosenPtr.getNumber()) 
+						+ instance.getTravelTime(customerChosenPtr.getNumber(), route.getFirstCustomerNr()) 
+						- instance.getTravelTime(route.getDepotNr(), route.getFirstCustomerNr());
+			if(minCost > tempMinCost) {
+				minCost = tempMinCost;
+				position = 0;
+			}
+		}
+			
+		// at the end
+		//se la timewindow dell'ultimo customer della rotta fin'ora inserito è minore della finestra attuale
+		//poi come su il ragionamento
+		if(route.getCustomer(route.getCustomersLength() - 1).getEndTw() <= customerChosenPtr.getEndTw()){
+				tempMinCost = instance.getTravelTime(route.getLastCustomerNr(), customerChosenPtr.getNumber()) 
+						+ instance.getTravelTime(customerChosenPtr.getNumber(), route.getDepotNr()) 
+						- instance.getTravelTime(route.getLastCustomerNr(), route.getDepotNr());
+				if(minCost > tempMinCost) {
+					minCost = tempMinCost;
+					position = route.getCustomersLength();
+				}
+			}
+			
+		// try between each customer
+		// controlla le time window a coppie tra precedente e successivo confrontandole con le mie
+		for(int i = 0; i < route.getCustomersLength() - 1; ++i) 
+		{
+			if(route.getCustomer(i).getEndTw() <= customerChosenPtr.getEndTw() && customerChosenPtr.getEndTw() <= route.getCustomer(i + 1).getEndTw()) {
+				tempMinCost = instance.getTravelTime(route.getCustomerNr(i), customerChosenPtr.getNumber()) 
+						+ instance.getTravelTime(customerChosenPtr.getNumber(), route.getCustomerNr(i + 1)) 
+						- instance.getTravelTime(route.getCustomerNr(i), route.getCustomerNr(i + 1));
+				if(minCost > tempMinCost) {
+					minCost = tempMinCost;
+					position = i + 1;
+				}
+			}
+		}
+//			return position;
+		
+		//inserisce la rotta nella posizione assegnata e in automatico gli altri elementi vengono shiftati
+		route.addCustomer(customerChosenPtr, position);
+		
+	}
 
 	@Override
 	public void operateOn(Solution soln) {
 		MySolution sol = (MySolution)soln;
     	Route route = sol.getRoute(insertDepotNr, insertRouteNr);
     	Cost initialInsertCost = new Cost(route.getCost());
-		
+    	Customer k = findCustomerToInsert(route, 5);
+    	Route r = k.getAssignedRoute();
+    	int indexRoute = r.getIndex();
+    	
+    	if(indexRoute != route.getIndex())
+    	{
+    		//Insert the customer in a new route
+    		insertBestTravel(route, k);
+    		
+    		//Delete the customer from the actual route
+    		List<Customer> lista = r.getCustomers();
+    		boolean verifica = lista.remove(k);
+    		System.out.println("Cancellato dalla rotta?? " + verifica);
+    	}		
 	}
 
 	@Override
@@ -77,7 +145,6 @@ public class MySwapMove implements ComplexMove{
 		}
 
 	    return maxEntry.getKey();
-		
 	}
 
 	
