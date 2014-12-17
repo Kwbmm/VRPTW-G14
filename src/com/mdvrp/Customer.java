@@ -15,39 +15,37 @@ public class Customer {
 	private int startTw;                // beginning of time window (earliest time for start of service),if any
 	private int endTw;                  // end of time window (latest time for start of service), if any
 	private Depot assignedDepot;        // the depot from which the customer will be served
-	private Route assignedRoute;		// the route to which the customer is assigned
 	private double arriveTime;          // time at which the car arrives to the customer
 	private double waitingTime;         // time to wait until arriveTime equal start time window
 	private double twViol;              // value of time window violation, 0 if none
 	private double distanceFromDepot;
-	private double distanceFromSuperCustomers;
+	private double[] distanceFromCustomers;
 	private Random random;
 	private boolean isDistant=false;
 	private ArrayList<Customer> neighbours = new ArrayList<>();
 	private boolean isTaken=false;
-	private int superCustomerNr;	//Stores the supercustomer to which this customer belongs to
 	private double angleToCustomer;
 	/*
 	 * This stores the mean distance from the most distant customers. The amount of most distant customers
 	 * is equal to the amount of vehicles used initially
 	 */
 	private double meanDistance;
+	private Route assignedRoute;
 	
 	public Customer() {
-		xCoordinate          = 0;
-		yCoordinate          = 0;
-		serviceDuration      = 0;
-		load                 = 0;
-		
-		startTw              = 0;
-		endTw                = 0;
-		arriveTime           = 0;
-		waitingTime          = 0;
-		twViol               = 0;
-		distanceFromDepot 	 = 0;
-		distanceFromSuperCustomers = 0;
+		xCoordinate = 0;
+		yCoordinate = 0;
+		serviceDuration = 0;
+		load = 0;
+
+		startTw = 0;
+		endTw = 0;
+		arriveTime = 0;
+		waitingTime = 0;
+		twViol = 0;
+		distanceFromDepot = 0;
 	}
-	
+
 	public Customer(Customer customer) {
 		this.number 			= customer.number;
 		this.xCoordinate 		= customer.xCoordinate;
@@ -57,13 +55,13 @@ public class Customer {
 		this.startTw 			= customer.startTw;
 		this.endTw 				= customer.endTw;
 		this.assignedDepot 		= customer.assignedDepot;
-		this.assignedRoute 		= customer.assignedRoute;
 		this.arriveTime 		= new Double(customer.arriveTime);
 		this.waitingTime 		= new Double(customer.waitingTime);
 		this.twViol 			= new Double(customer.twViol);
 		this.distanceFromDepot = customer.distanceFromDepot;
-		this.distanceFromSuperCustomers = customer.distanceFromSuperCustomers;
+		this.distanceFromCustomers = customer.distanceFromCustomers;
 		this.angleToCustomer     =customer.angleToCustomer;
+		this.assignedRoute       =customer.assignedRoute;
 	}
 
 	/**
@@ -92,14 +90,6 @@ public class Customer {
 		return arriveTime;
 	}
 	
-	public Route getAssignedRoute() {
-		return assignedRoute;
-	}
-
-	public void setAssignedRoute(Route assignedRoute) {
-		this.assignedRoute = assignedRoute;
-	}
-
 	/**
 	 * set the time at which the car arrives to the customer
 	 * @param dispatchtime
@@ -170,23 +160,15 @@ public class Customer {
 		return this.isDistant;
 	}
 	
-	public void setBelongToSuperCustomerN(int i){
-		this.superCustomerNr = i;
+	//Instanciates an ArrayList with i positions ( 1 for each customer )
+	public void initializeDistanceFromCustomers(int i){
+		this.distanceFromCustomers = new double[i];
 	}
 	
-	public int getBelongToSuperCustomerN(){
-		return this.superCustomerNr;
+	//Sets the distance from customer i
+	public void setDistanceFromCustomer(double distance,int i){
+		this.distanceFromCustomers[i] = distance;
 	}
-	
-	//Sets the distance from superCustomer
-	public void setDistanceFromSuperCustomer(double distance){
-		this.distanceFromSuperCustomers = distance;
-	}
-	
-	public double getDistanceFromSuperCustomer(){
-		return this.distanceFromSuperCustomers;
-	}
-	
 	//This is the mean distance from the most distant customers
 	public void setMeanDistance(double meanDistance){
 		this.meanDistance = meanDistance;
@@ -209,24 +191,12 @@ public class Customer {
 		 * The loop starts from the vehiclesUsed-th position bc customers from 0 -> vehiclesUsed-1 are
 		 * marked as most distant.
 		 */
-		
 		for(int i=vehiclesUsed; i<customers.size();++i){
-			/*
-			 * Don't use the distance matrix in the Instance class bc customers are not ordered
-			 * correctly (the customers ordered are in the Depot class!!)
-			 */
-			distance = Math.sqrt(Math.pow(this.getXCoordinate()-customers.get(i).getXCoordinate(), 2)+Math.pow(this.getYCoordinate()-customers.get(i).getYCoordinate(), 2));
+			distance = Math.abs(customers.get(i).getDistance()-this.getDistance());
 			if(distance <= randomRay && !customers.get(i).getIsTaken()){
 				neighbours.add(customers.get(i));
 				customers.get(i).setIsTaken();
-				customers.get(i).setDistanceFromSuperCustomer(distance);
-				customers.get(i).setBelongToSuperCustomerN(this.getNumber());
 			}
-		}
-		System.out.println("Supercustomer n: "+this.getNumber());
-		System.out.println("Random ray is: "+randomRay);
-		for(int i=0; i < this.neighbours.size();++i){
-			System.out.println("Customer "+(i+1)+" Distance from superCustomer: "+ this.neighbours.get(i).getDistanceFromSuperCustomer());
 		}
 	}
 
@@ -340,6 +310,14 @@ public class Customer {
 		this.twViol = twViol;
 	}
 
+	public Route getAssignedRoute() {
+		return assignedRoute;
+	}
+
+	public void setAssignedRoute(Route assignedRoute) {
+		this.assignedRoute = assignedRoute;
+	}
+
 	public double getAngleToCustomer() {
 		return angleToCustomer;
 	}
@@ -347,6 +325,7 @@ public class Customer {
 	public void setAngleToCustomer(double angleToCustomer) {
 		this.angleToCustomer = angleToCustomer;
 	}
+
 
 
 

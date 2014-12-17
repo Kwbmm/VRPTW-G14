@@ -44,7 +44,7 @@ public class MySolution extends SolutionAdapter{
 		for (int i = 0; i < instance.getVehiclesUsed(); ++i){
 			// initialization of routes
 			route[i] = new Route();
-//			route[i].setIndex(0*(instance.getVehiclesUsed()) + j);
+			route[i].setIndex(i);
 
 			// add the depot as the first node to the route
 			route[i].setDepot(instance.getDepot());
@@ -251,5 +251,14 @@ public class MySolution extends SolutionAdapter{
 	
 	public static void setInstance(Instance instance){
 		MySolution.instance = instance;
+	}
+	public Route[] getRoutes() {
+		return route;
+	}
+	public Route getRoute(int index){
+		return route[index];
+	}
+	public void setRoute(Route[] route) {
+		this.route = route;
 	}
 }

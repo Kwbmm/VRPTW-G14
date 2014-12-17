@@ -17,7 +17,7 @@ public class Parameters {
 	public Parameters() {
 		currDir 			= System.getProperty("user.dir");
 		outputFileName    	= currDir + "/output/solutions.csv";
-		movesType         	= MovesType.SWAP;
+		movesType         	= MovesType.RELOCATE;
 		precision         	= 1E-2;
 		iterations        	= 1000;
 		tabuTenure        	= -1;
@@ -32,7 +32,7 @@ public class Parameters {
 			for(int i = 0; i < args.length; i += 2){
 				switch (args[i]) {
 					case "-mT":
-						movesType = MovesType.SWAP;
+						movesType = MovesType.RELOCATE;
 						break;
 					case "-if":
 						inputFileName = args[i+1];

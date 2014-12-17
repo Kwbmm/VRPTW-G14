@@ -18,16 +18,61 @@ import com.mdvrp.Route;
 public class MySwapMove implements ComplexMove{
 	
 	private Instance instance;
-	private int insertDepotNr;
-	private int insertRouteNr;
+	private int routeIndexInsert;
+	private int routeIndexDelete;
+	private int customerIndex;
+	private Customer customer;
 
     
     
-    public MySwapMove( Instance instance){
+    public MySwapMove( Instance instance, int routeIndexInsert, int routeIndexDelete, Customer customer){
+    	this.routeIndexInsert = routeIndexInsert;
+    	this.routeIndexDelete = routeIndexDelete;
+    	this.customerIndex = customer.getNumber();
+    	this.customer = customer;
     	this.instance = instance;
+    	
     	
     }   // end constructor
     
+
+
+	@Override
+	public void operateOn(Solution soln) {
+		MySolution sol = (MySolution)soln;
+    	Route routeInsert = sol.getRoute(routeIndexInsert);
+    	Route routeDelete = sol.getRoute(routeIndexDelete);
+    	
+    	
+//Customer k = findCustomerToInsert(route, 5);
+//    	customer = k.getNumber();
+//    	Route r = k.getAssignedRoute();
+//    	deleteFromRoute = r.getIndex();
+//    	
+    	if(routeIndexInsert != routeIndexDelete)
+    	{
+    		//Insert the customer in a new route
+    		insertBestTravel(routeInsert, customer);
+    		
+    		//Delete the customer from the actual route
+    		List<Customer> lista = routeDelete.getCustomers();
+    		boolean verifica = lista.remove(customer);
+    		System.out.println("Cancellato dalla rotta?? " + verifica);
+    	}		
+	}
+
+	@Override
+	public int[] attributesDelete() {
+		
+		return new int[]{ routeIndexDelete, customerIndex, 0,0};
+	}
+
+	@Override
+	public int[] attributesInsert() {
+		return new int[]{ routeIndexInsert, customerIndex, 0,0};
+	
+		
+	}
     private void insertBestTravel(Route route, Customer customerChosenPtr) {
 		double minCost = Double.MAX_VALUE;
 		double tempMinCost = Double.MAX_VALUE;
@@ -83,41 +128,7 @@ public class MySwapMove implements ComplexMove{
 		route.addCustomer(customerChosenPtr, position);
 		
 	}
-
-	@Override
-	public void operateOn(Solution soln) {
-		MySolution sol = (MySolution)soln;
-    	Route route = sol.getRoute(insertDepotNr, insertRouteNr);
-    	Cost initialInsertCost = new Cost(route.getCost());
-    	Customer k = findCustomerToInsert(route, 5);
-    	Route r = k.getAssignedRoute();
-    	int indexRoute = r.getIndex();
-    	
-    	if(indexRoute != route.getIndex())
-    	{
-    		//Insert the customer in a new route
-    		insertBestTravel(route, k);
-    		
-    		//Delete the customer from the actual route
-    		List<Customer> lista = r.getCustomers();
-    		boolean verifica = lista.remove(k);
-    		System.out.println("Cancellato dalla rotta?? " + verifica);
-    	}		
-	}
-
-	@Override
-	public int[] attributesDelete() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public int[] attributesInsert() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	
-	public Customer findCustomerToInsert(Route path, int n){
+/*	public Customer findCustomerToInsert(Route path, int n){
 		Route route = path;
 		ArrayList<Customer> list = new ArrayList<Customer>();
 		ArrayList<Customer> cust= (ArrayList<Customer>) route.getCustomers();
@@ -146,6 +157,6 @@ public class MySwapMove implements ComplexMove{
 
 	    return maxEntry.getKey();
 	}
-
+*/
 	
 }
