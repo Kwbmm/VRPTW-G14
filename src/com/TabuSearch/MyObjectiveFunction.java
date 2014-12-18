@@ -39,7 +39,7 @@ public class MyObjectiveFunction implements ObjectiveFunction {
 
         // Else calculate incrementally
         else {
-        	MySwapMove move = ((MySwapMove)proposedMove);
+        	MyRelocateMove move = ((MyRelocateMove)proposedMove);
         	//pasar una constante en cambio de move.getinsertDepot, dato que es solo uno. *************************
         	Route insertRoute = sol.getRoute(move.getRouteIndexInsert());	// route on which is performed the insertion
         	Route deleteRoute = sol.getRoute(move.getRouteIndexDelete());
@@ -80,7 +80,7 @@ public class MyObjectiveFunction implements ObjectiveFunction {
         
     }   // end evaluate
     
-    private Cost getTotalCostVariation(MySolution sol, MySwapMove move,
+    private Cost getTotalCostVariation(MySolution sol, MyRelocateMove move,
 			Cost varInsertCost, Cost varDeleteCost) 
     {
     	Cost varCost = new Cost(sol.getCost());

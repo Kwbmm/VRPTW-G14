@@ -77,7 +77,7 @@ public class Parameters {
 		}
 	}
 	
-	/*
+	
 	public String toString(){
 		StringBuffer print = new StringBuffer();
 		print.append("\n" + "--- Parameters: -------------------------------------");
@@ -86,13 +86,13 @@ public class Parameters {
 		print.append("\n" + "| Output File Name= " + outputFileName);
 		print.append("\n" + "| Precision: " + precision);
 		print.append("\n" + "| Iterations: " + iterations);
-		print.append("\n" + "| Start Client: " + startClient);
+		print.append("\n" + "| Start Client: " );
 		print.append("\n" + "| Random Seed: " + randomSeed);
 		print.append("\n" + "| Tabu Tenure: " + tabuTenure);
 		print.append("\n" + "| Variable Tenure: " + variableTenure);
 		print.append("\n" + "------------------------------------------------------");
 		return print.toString();	
-	}*/
+	}
 
 	/**
 	 * @return the movesType

@@ -16,6 +16,7 @@ public class Instance {
 	private int customersNr;
 	private int daysNr = 1;
 	private ArrayList<Customer> customers 	= new ArrayList<>(); 		// vector of customers;
+	private ArrayList<Customer> allCustomers 	= new ArrayList<>();
 	private Depot depot;
 	private double[][] capacities;
 	private double[][] distances;
@@ -110,6 +111,7 @@ public class Instance {
 			if(parameters.getTabuTenure() == -1)
 				parameters.setTabuTenure((int)(Math.sqrt(getCustomersNr())));
 			
+			allCustomers = customers;
 			calculateDistances();
 			assignCustomersToDepots();			
 			sortAssignedCustomers();
@@ -265,17 +267,23 @@ public class Instance {
 public ArrayList<Customer> calculateAnglesToCustomer( Customer c) {
 		
 		ArrayList<Customer> list= getCustomers(); //get all customers
+		
 		Customer swap = list.get(c.getNumber());
         list.set(c.getNumber(), list.get(0));
         list.set(0, swap); 						// set the customer considered in the first position
 		
-		for (int i = 1; i < customersNr; ++i) {
+		for (int i = 1; i < list.size(); ++i) {
 			double angle = Math.atan2(list.get(i).getYCoordinate() - c.getYCoordinate(), list.get(i).getXCoordinate() - c.getXCoordinate());
 			list.get(i).setAngleToCustomer(angle);
 			
 		}
+		
 		list.remove(0);
 		CopyOfQuick.sort(list);
+		for (int z=0;z<list.size();z++){
+			System.out.println((list.get(z).getNumber()+1)+" "+list.get(z).getXCoordinate()+" "+list.get(z).getYCoordinate());
+			
+		}
 		return list;
 		
 		
@@ -379,11 +387,11 @@ public ArrayList<Customer> calculateAnglesToCustomer( Customer c) {
 	}
 
 	public ArrayList<Customer> getCustomers() {
-		return customers;
+		return allCustomers;
 	}
 
 	public void setCustomers(ArrayList<Customer> customers) {
-		this.customers = customers;
+		this.allCustomers = customers;
 	}
 
 	public Depot getDepot(){

@@ -59,11 +59,11 @@ public class MDVRPTW {
 	        duration.stop();
 	        
 	        // Count routes
-	        int routesNr = 0;
-	        for(int i =0; i < search.feasibleRoutes.length; ++i)
+	       int routesNr = 0;
+	       /* for(int i =0; i < search.feasibleRoutes.length; ++i)
 	        	for(int j=0; j < search.feasibleRoutes[i].length; ++j)
 	        		if(search.feasibleRoutes[i][j].getCustomersLength() > 0)
-	        			routesNr++;
+	        			routesNr++;*/
 	        // Print results
 	        String outSol = String.format("%s; %5.2f; %d; %4d\r\n" ,
 	        		instance.getParameters().getInputFileName(), search.feasibleCost.total,

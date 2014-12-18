@@ -17,6 +17,7 @@ public class MyMoveManager implements MoveManager {
 	private static Instance instance;
 	private MovesType movesType;
 
+	
 	public MyMoveManager(Instance instance) {
 		MyMoveManager.setInstance(instance);
 	}
@@ -26,13 +27,8 @@ public class MyMoveManager implements MoveManager {
 	public Move[] getAllMoves(Solution solution) {
 		MySolution sol = ((MySolution)solution);
 		
-		switch (movesType) {
-		case RELOCATE:
 			return getRelocateMoves(sol);
-
-		default:
-			return getRelocateMoves(sol);
-		}
+		
     
 	}
 	private Move[] getRelocateMoves(MySolution sol) {
@@ -42,10 +38,8 @@ public class MyMoveManager implements MoveManager {
          
          for (int i=0 ; i< routes.length; i++){
         	 Customer k = findCustomerToInsert(routes[i], 5);
-        	 moves [i] = new MySwapMove(instance, routes[i].getIndex(), k.getAssignedRoute().getIndex(), k); 
+        	 moves [i] = new MyRelocateMove(instance, routes[i].getIndex(), k.getAssignedRoute().getIndex(), k); 
          }
-         
-         
          
          return moves;
     }
@@ -88,5 +82,14 @@ public class MyMoveManager implements MoveManager {
 	public static void setInstance(Instance instance) {
 		MyMoveManager.instance = instance;
 	}
+	public MovesType getMovesType() {
+		return movesType;
+	}
+
+
+	public void setMovesType(MovesType movesType) {
+		this.movesType = movesType;
+	}
+
 
 }
