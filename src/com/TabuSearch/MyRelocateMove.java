@@ -46,7 +46,13 @@ public class MyRelocateMove implements ComplexMove{
     	Route routeInsert = sol.getRoute(routeIndexInsert);
     	Route routeDelete = sol.getRoute(routeIndexDelete);
     	
-    	   	
+    	System.out.println(this + "\nRotta iniziale prima della mossa: ");
+    	for (int i=0; i< routeInsert.getCustomersLength(); i++)
+    		System.out.printf("%d  ",routeInsert.getCustomer(i).getNumber());
+    	System.out.println("\nRotta vicina prima della mossa: ");
+    	for (int i=0; i< routeDelete.getCustomersLength(); i++)
+    		System.out.printf("%d  ", routeDelete.getCustomer(i).getNumber());
+    	
     	if(routeIndexInsert != routeIndexDelete)
     	{
     		
@@ -57,8 +63,16 @@ public class MyRelocateMove implements ComplexMove{
     		List<Customer> lista = routeDelete.getCustomers();
     		
     		boolean verifica = lista.remove(customer);
-    		System.out.println("Cancellato dalla rotta?? " + verifica);
+    		System.out.println("\nCancellato dalla rotta?? " + verifica);
     	}		
+    	System.out.println("Rotta vicina dopo mossa: ");
+    	for (int i=0; i< routeDelete.getCustomersLength(); i++)
+    		System.out.printf("%d  ", routeDelete.getCustomer(i).getNumber());
+
+    	System.out.println("\nRotta iniziale dopo mossa: ");
+    	for (int i=0; i< routeInsert.getCustomersLength(); i++)
+    		System.out.printf("%d  ",routeInsert.getCustomer(i).getNumber());
+		
 	}
 
 	@Override
@@ -126,6 +140,7 @@ public class MyRelocateMove implements ComplexMove{
 		
 		//inserisce la rotta nella posizione assegnata e in automatico gli altri elementi vengono shiftati
 		route.addCustomer(customerChosenPtr, position);
+		customerChosenPtr.setRouteIndex(route.getIndex());
 		
 	}
 
