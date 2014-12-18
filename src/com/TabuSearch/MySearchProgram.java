@@ -71,7 +71,7 @@ public class MySearchProgram implements TabuSearchListener{
 			System.out.println("It " + tabuSearch.getIterationsCompleted() +" - New solution " + sol.getCost().total);
 		}
 		
-		sol.updateParameters(sol.getObjectiveValue()[3], sol.getObjectiveValue()[4], sol.getObjectiveValue()[5]);
+		sol.updateParameters(sol.getObjectiveValue()[2], sol.getObjectiveValue()[3], sol.getObjectiveValue()[4]);
 	}
 
 	@Override

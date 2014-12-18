@@ -67,12 +67,12 @@ public class MyRelocateMove implements ComplexMove{
 	@Override
 	public int[] attributesDelete() {
 		
-		return new int[]{ routeIndexDelete, customerIndex, 0, 0, 0};
+		return new int[]{ 0, routeIndexDelete, customerIndex, 0, 0};
 	}
 
 	@Override
 	public int[] attributesInsert() {
-		return new int[]{ routeIndexInsert, customerIndex, 0, 0, 0};
+		return new int[]{ 0, routeIndexInsert, customerIndex, 0, 0};
 	
 		
 	}
