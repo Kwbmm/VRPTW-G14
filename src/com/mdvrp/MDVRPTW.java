@@ -61,7 +61,8 @@ public class MDVRPTW {
 	        // Count routes
 	        int routesNr = 0;
 	        for(int i =0; i < search.feasibleRoutes.length; ++i)
-        		if(search.feasibleRoutes[i].getCustomersLength() > 0)
+	        	for(int j=0; j < search.feasibleRoutes[i].length; ++j)
+	        		if(search.feasibleRoutes[i][j].getCustomersLength() > 0)
 	        			routesNr++;
 	        // Print results
 	        String outSol = String.format("%s; %5.2f; %d; %4d\r\n" ,
