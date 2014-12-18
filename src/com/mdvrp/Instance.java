@@ -102,6 +102,7 @@ public class Instance {
 							
 				// add customer to customers list
 				customers.add(customer);
+				allCustomers.add(customer);
 				customersNr++;
 			}// end for customers
 			in.close();
@@ -110,11 +111,6 @@ public class Instance {
 			
 			if(parameters.getTabuTenure() == -1)
 				parameters.setTabuTenure((int)(Math.sqrt(getCustomersNr())));
-			
-			for(int h=0; h<customers.size(); h++)
-			{
-				allCustomers.add(customers.get(h));
-			}
 			
 			calculateDistances();
 			assignCustomersToDepots();			
@@ -270,34 +266,41 @@ public class Instance {
 	}
 public ArrayList<Customer> calculateAnglesToCustomer( Customer c) {
 		
-		ArrayList<Customer> list= getCustomers(); //get all customers
+		ArrayList<Customer> list = (ArrayList<Customer>)allCustomers.clone(); //get all customers
+		
+		//System.out.println("ListSize: " + list.size());
+		/*for (Customer cc : list)
+		{	
+			System.out.println("CustomerPrima: " + cc.getNumber());
+		}*/
+		
 		Customer swap = new Customer();
 		for(int i=0; i<list.size(); i++)
 		{
 			Customer swap1 = list.get(i);
-			if(swap.getNumber() == c.getNumber())
+			if(swap1.getNumber() == c.getNumber())
 			{
 				swap = swap1;
 				list.set(i, list.get(0));
+				list.set(0, swap); 	// set the customer considered in the first position
 			}
 		}
 		
-		//Customer swap = list.get(c.getNumber());
-        //list.set(c.getNumber(), list.get(0));
-        list.set(0, swap); 						// set the customer considered in the first position
-		
+		/*for (Customer cc : list)
+		{	
+			System.out.println("CustomerDopo: " + cc.getNumber());
+		}*/
+        
 		for (int i = 1; i < list.size(); ++i) {
 			double angle = Math.atan2(list.get(i).getYCoordinate() - c.getYCoordinate(), list.get(i).getXCoordinate() - c.getXCoordinate());
 			list.get(i).setAngleToCustomer(angle);
-			
 		}
-		
 		
 		CopyOfQuick.sort(list);
-		for (int z=0;z<list.size();z++){
+		/*for (int z=0;z<list.size();z++){
 			System.out.println((list.get(z).getNumber()+1)+" "+list.get(z).getXCoordinate()+" "+list.get(z).getYCoordinate());
 			
-		}
+		}*/
 		return list;
 		
 		

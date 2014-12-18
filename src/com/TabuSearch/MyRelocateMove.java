@@ -46,19 +46,16 @@ public class MyRelocateMove implements ComplexMove{
     	Route routeInsert = sol.getRoute(routeIndexInsert);
     	Route routeDelete = sol.getRoute(routeIndexDelete);
     	
-    	
-//Customer k = findCustomerToInsert(route, 5);
-//    	customer = k.getNumber();
-//    	Route r = k.getAssignedRoute();
-//    	deleteFromRoute = r.getIndex();
-//    	
+    	   	
     	if(routeIndexInsert != routeIndexDelete)
     	{
+    		
     		//Insert the customer in a new route
     		insertBestTravel(routeInsert, customer);
     		
     		//Delete the customer from the actual route
     		List<Customer> lista = routeDelete.getCustomers();
+    		
     		boolean verifica = lista.remove(customer);
     		System.out.println("Cancellato dalla rotta?? " + verifica);
     	}		
@@ -131,38 +128,7 @@ public class MyRelocateMove implements ComplexMove{
 		route.addCustomer(customerChosenPtr, position);
 		
 	}
-    
-    
-/*	public Customer findCustomerToInsert(Route path, int n){
-		Route route = path;
-		ArrayList<Customer> list = new ArrayList<Customer>();
-		ArrayList<Customer> cust= (ArrayList<Customer>) route.getCustomers();
-		for (int i=0; i<route.getCustomersLength();i++){ // per ogni customer nella rotta
-			Customer k = cust.get(i);
-			ArrayList<Customer> orderedList= instance.calculateAnglesToCustomer(k);
-			list.addAll(orderedList.subList(0, n)); //prendi gli n customer vicini		
-			}
 
-		HashMap<Customer, Integer> counters = new HashMap<Customer, Integer>();
-		for(Customer c: list) {
-		       Integer i = counters.get(c);
-		       if (i ==  null) {
-		           i = 0;
-		       }
-		       counters.put(c, i + 1);
-		    }
-		
-		Entry<Customer, Integer> maxEntry = null;
-
-		for(Entry<Customer, Integer> entry : counters.entrySet()) {
-		    if (maxEntry == null || entry.getValue() > maxEntry.getValue()) {
-		        maxEntry = entry;
-		    }
-		}
-
-	    return maxEntry.getKey();
-	}
-*/
     /**
      * Set the insert position index of the move
      * (is done in objective function, for performance factor)

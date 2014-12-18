@@ -36,13 +36,15 @@ public class MyMoveManager implements MoveManager {
          Move[] moves = new Move[routes.length];
          
          
-         for (int i=0 ; i< routes.length; i++){
+         for (int i=0 ; i< 3; i++){
         	 Customer k = new Customer();
-        	 k = findCustomerToInsert(routes[i], 5);
-        	 System.out.println("IndiceRotta: " + routes[i].getIndex());
-        	 System.out.println("IndiceRottaCustomer: " + k.getRouteIndex());
-        	 moves [i] = new MyRelocateMove(instance, routes[i].getIndex(), k.getRouteIndex(), k);
+        	 k = findCustomerToInsert(routes[i], 30);
+
+        	 if(k!=null)
+        		 moves [i] = new MyRelocateMove(instance, routes[i].getIndex(), k.getRouteIndex(), k);
         	 System.out.println("MOSSA: " + moves[i]);
+        	 System.out.println("IndiceRotta: " + routes[i].getIndex());
+        	 System.out.println("IndiceRottaCustomerdaInserire: " + k.getRouteIndex());
          }
          
          return moves;
@@ -53,6 +55,7 @@ public class MyMoveManager implements MoveManager {
 		Route route = path;
 		ArrayList<Customer> list = new ArrayList<Customer>();
 		ArrayList<Customer> cust= (ArrayList<Customer>) route.getCustomers();
+		
 		for (int i=0; i<route.getCustomersLength();i++){ // per ogni customer nella rotta
 			Customer k = cust.get(i);
 			ArrayList<Customer> orderedList= instance.calculateAnglesToCustomer(k);
@@ -71,7 +74,7 @@ public class MyMoveManager implements MoveManager {
 		Entry<Customer, Integer> maxEntry = null;
 
 		for(Entry<Customer, Integer> entry : counters.entrySet()) {
-		    if (maxEntry == null || entry.getValue() > maxEntry.getValue()) {
+		    if (maxEntry==null || entry.getValue() > maxEntry.getValue()) {
 		        maxEntry = entry;
 		    }
 		}

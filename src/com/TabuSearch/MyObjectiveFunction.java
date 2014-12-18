@@ -66,8 +66,8 @@ public class MyObjectiveFunction implements ObjectiveFunction {
         		}
         	} // end for
         	
-        	varDeleteCost = evaluateDeleteRoute(deleteRoute, move.getCustomer(), move.getDeletePositionIndex());
-        	solCost = getTotalCostVariation(sol, move, varInsertCost, varDeleteCost);
+        	//varDeleteCost = evaluateDeleteRoute(deleteRoute, move.getCustomer(), move.getDeletePositionIndex());
+        	solCost = getTotalCostVariation(sol, move, varInsertCost, new Cost());
         	obj = solCost.total;
             //calculate the penalization
             if (sol.getObjectiveValue()[0] <= obj )
@@ -80,8 +80,7 @@ public class MyObjectiveFunction implements ObjectiveFunction {
         
     }   // end evaluate
     
-    private Cost getTotalCostVariation(MySolution sol, MyRelocateMove move,
-			Cost varInsertCost, Cost varDeleteCost) 
+    private Cost getTotalCostVariation(MySolution sol, MyRelocateMove move, Cost varInsertCost, Cost varDeleteCost) 
     {
     	Cost varCost = new Cost(sol.getCost());
     	// getInsertDeportNr()  sera un contasnte get ROute metod eliminated*********************************************+
@@ -387,7 +386,7 @@ public class MyObjectiveFunction implements ObjectiveFunction {
 	 * @param position
 	 * @return
 	 */
-    private Cost evaluateDeleteRoute(Route route, Customer customer, int position) {
+    /*private Cost evaluateDeleteRoute(Route route, Customer customer, int position) {
     	Cost varCost = new Cost(route.getCost());
     	double arriveNextCustomer = 0;
     	double waitingTimeNextCustomer = 0;
@@ -423,7 +422,8 @@ public class MyObjectiveFunction implements ObjectiveFunction {
 
 	    	}else{
 	    		double variation = 0;
-	    		Customer customerAfter = route.getCustomer(position + 1);
+	    		
+	    		Customer customerAfter = route.getCustomer(position);
 	    		// delete on the first position
 	    		if(position == 0){
 	    			// time before arrive at customer after
@@ -515,7 +515,7 @@ public class MyObjectiveFunction implements ObjectiveFunction {
 		
 		return varCost;
     } // end method evaluate delete route
-	
+	*/
 	
 
 	/**
