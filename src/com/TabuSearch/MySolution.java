@@ -236,6 +236,8 @@ public class MySolution extends SolutionAdapter{
 			}
 		}
 		route.addCustomer(customerChosenPtr, position);
+		//customerChosenPtr.setAssignedRoute(route);
+		customerChosenPtr.setRouteIndex(route.getIndex());
 	}
 	private void evaluateRoute(Route route) {
     	double totalTime = 0;

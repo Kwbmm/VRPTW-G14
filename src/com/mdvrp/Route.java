@@ -21,7 +21,7 @@ public class Route {
 	
 	public Route(Route route) {
 		
-		this.index = new Integer(route.index);
+		this.index = route.index;
 		this.cost = new Cost(route.cost);
 		this.assignedVehicle = route.assignedVehicle;
 		this.depot = route.depot;

@@ -31,13 +31,14 @@ public class Customer {
 	 */
 	private double meanDistance;
 	private Route assignedRoute;
+	private int routeIndex;
 	
 	public Customer() {
 		xCoordinate = 0;
 		yCoordinate = 0;
 		serviceDuration = 0;
 		load = 0;
-
+		number = 1;
 		startTw = 0;
 		endTw = 0;
 		arriveTime = 0;
@@ -324,6 +325,14 @@ public class Customer {
 
 	public void setAngleToCustomer(double angleToCustomer) {
 		this.angleToCustomer = angleToCustomer;
+	}
+
+	public int getRouteIndex() {
+		return routeIndex;
+	}
+
+	public void setRouteIndex(int routeIndex) {
+		this.routeIndex = routeIndex;
 	}
 
 

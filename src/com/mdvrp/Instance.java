@@ -111,7 +111,11 @@ public class Instance {
 			if(parameters.getTabuTenure() == -1)
 				parameters.setTabuTenure((int)(Math.sqrt(getCustomersNr())));
 			
-			allCustomers = customers;
+			for(int h=0; h<customers.size(); h++)
+			{
+				allCustomers.add(customers.get(h));
+			}
+			
 			calculateDistances();
 			assignCustomersToDepots();			
 			sortAssignedCustomers();
@@ -267,9 +271,19 @@ public class Instance {
 public ArrayList<Customer> calculateAnglesToCustomer( Customer c) {
 		
 		ArrayList<Customer> list= getCustomers(); //get all customers
+		Customer swap = new Customer();
+		for(int i=0; i<list.size(); i++)
+		{
+			Customer swap1 = list.get(i);
+			if(swap.getNumber() == c.getNumber())
+			{
+				swap = swap1;
+				list.set(i, list.get(0));
+			}
+		}
 		
-		Customer swap = list.get(c.getNumber());
-        list.set(c.getNumber(), list.get(0));
+		//Customer swap = list.get(c.getNumber());
+        //list.set(c.getNumber(), list.get(0));
         list.set(0, swap); 						// set the customer considered in the first position
 		
 		for (int i = 1; i < list.size(); ++i) {
@@ -278,7 +292,7 @@ public ArrayList<Customer> calculateAnglesToCustomer( Customer c) {
 			
 		}
 		
-		list.remove(0);
+		
 		CopyOfQuick.sort(list);
 		for (int z=0;z<list.size();z++){
 			System.out.println((list.get(z).getNumber()+1)+" "+list.get(z).getXCoordinate()+" "+list.get(z).getYCoordinate());

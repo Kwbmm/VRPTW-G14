@@ -37,8 +37,12 @@ public class MyMoveManager implements MoveManager {
          
          
          for (int i=0 ; i< routes.length; i++){
-        	 Customer k = findCustomerToInsert(routes[i], 5);
-        	 moves [i] = new MyRelocateMove(instance, routes[i].getIndex(), k.getAssignedRoute().getIndex(), k); 
+        	 Customer k = new Customer();
+        	 k = findCustomerToInsert(routes[i], 5);
+        	 System.out.println("IndiceRotta: " + routes[i].getIndex());
+        	 System.out.println("IndiceRottaCustomer: " + k.getRouteIndex());
+        	 moves [i] = new MyRelocateMove(instance, routes[i].getIndex(), k.getRouteIndex(), k);
+        	 System.out.println("MOSSA: " + moves[i]);
          }
          
          return moves;
