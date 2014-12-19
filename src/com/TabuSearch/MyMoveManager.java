@@ -2,6 +2,8 @@ package com.TabuSearch;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Random;
 import java.util.Map.Entry;
 
 import org.coinor.opents.Move;
@@ -34,29 +36,59 @@ public class MyMoveManager implements MoveManager {
 	private Move[] getRelocateMoves(MySolution sol) {
 	   	 ArrayList<Route> routes = sol.getRoutes();
          Move[] moves = new Move[routes.size()];
+         
+         
          for (int j=0; j<routes.size(); j++){
          
-     	for (int i=0; i< routes.get(j).getCustomersLength(); i++){
+     	/*for (int i=0; i< routes.get(j).getCustomersLength(); i++){
      		System.out.println("\nRotta "+ routes.get(j).getIndex());
      		System.out.printf("%d  ",routes.get(j).getCustomer(i).getNumber());
-     	}
+     	}*/
          }
          
          for (int i=0 ; i< routes.size(); i++){
-        	 Customer k = new Customer();
-        	 k = findCustomerToInsert(routes.get(i), 5);
-        	 System.out.println("\nCustomer selezionato: "+ k.getNumber() + " Rotta di appartenenza: "+ k.getRouteIndex());
+        	 Customer insertedCustomer = new Customer();
+        	 int evaluatedRouteIndex= routes.get(i).getIndex();
+        	 insertedCustomer = findCustomerToInsert(routes.get(i), 8);
+        	 int nextRouteIndex = insertedCustomer.getRouteIndex();
+        	 
+        	 //System.out.println("\nCustomer selezionato: "+ k.getNumber() + " Rotta di appartenenza: "+ k.getRouteIndex());
 
-        	 if(k!=null){
-        		 moves [i] = new MyRelocateMove(instance, routes.get(i).getIndex(), k.getRouteIndex(), k);
+        	 if(insertedCustomer!=null){
+        		 Customer deletedCustomer = insertNewCustomer(routes.get(i), sol.getRoute(nextRouteIndex), insertedCustomer);
+        		 moves [i] = new MyRelocateMove(instance, evaluatedRouteIndex ,nextRouteIndex, insertedCustomer, deletedCustomer);
         		 System.out.println("MOSSA: " + i);
         		 System.out.println("IndiceRotta: " + routes.get(i).getIndex());
-        		 System.out.println("IndiceRottaCustomerdaInserire: " + k.getRouteIndex());
+        		 System.out.println("IndiceRottaCustomerdaInserire: " + insertedCustomer.getRouteIndex());
         	 }
          }
          
          return moves;
     }
+	
+	public Customer insertNewCustomer(Route routeD, Route routeI, Customer customer)
+	{
+		Random random = new Random();
+		List<Customer> customersRouteI = routeI.getCustomers();
+		Customer k = new Customer();
+		int length, custIndex; 
+		int a = 0;
+		
+		while(a==0)
+		{
+			length = customersRouteI.size();
+			length = random.nextInt(length);
+			custIndex = customersRouteI.get(length).getNumber();
+			
+			if(custIndex != customer.getNumber())
+			{
+				a++;
+				k = customersRouteI.get(length);
+			}
+		}
+		
+		return k;
+	}
 	
 	
 	public Customer findCustomerToInsert(Route path, int n){
