@@ -28,7 +28,7 @@ public class MySolution extends SolutionAdapter{
 	public MySolution(Instance instance) {
 		MySolution.setInstance(instance);
 		cost = new Cost();
-		initializeRoute(instance,this.route);
+		initializeRoute(instance);
 		buildInitialRoute(instance);
 		alpha 	= 1;
     	beta 	= 1;
@@ -93,20 +93,20 @@ public class MySolution extends SolutionAdapter{
     	}
     	
     }
-	public void initializeRoute(Instance instance, ArrayList<Route> route) {
-//		route = new Route[instance.getVehiclesUsed()];
+	public void initializeRoute(Instance instance) {
+		Route tempRoute;
 		// Creation of the routes; each route starts at the depot
 		for (int i = 0; i < instance.getVehiclesUsed(); ++i){
 			// initialization of routes
-			route.add(new Route());
-			route.get(i).setIndex(i);
-
+			this.route.add(new Route());
+			tempRoute = this.route.get(route.size()-1);
+			tempRoute.setIndex(i);
 			// add the depot as the first node to the route
-			route.get(i).setDepot(instance.getDepot());
+			tempRoute.setDepot(instance.getDepot());
 
 			// set the cost of the route
 			Cost cost = new Cost();
-			route.get(i).setCost(cost);
+			tempRoute.setCost(cost);
 
 			// assign vehicle
 			Vehicle vehicle = new Vehicle();
@@ -115,8 +115,33 @@ public class MySolution extends SolutionAdapter{
 			 * changing everything in the mdvrp package, we just pass 0 as depot.
 			 */
 			vehicle.setCapacity(instance.getCapacity(0,0)); 
-			route.get(i).setAssignedVehicle(vehicle);		
+			tempRoute.setAssignedVehicle(vehicle);		
 		}
+	}
+	
+	public void addNewSingleRoute(Instance instance){
+		Route tempRoute;
+		Route lastKnownRoute = this.route.get(this.route.size()-1);
+		int oldVehiclesUsed = instance.getVehiclesUsed();
+		this.route.add(new Route());
+		tempRoute = this.route.get(route.size()-1);
+		tempRoute.setIndex(lastKnownRoute.getIndex()+1);
+		// add the depot as the first node to the route
+		tempRoute.setDepot(instance.getDepot());
+
+		// set the cost of the route
+		Cost cost = new Cost();
+		tempRoute.setCost(cost);
+
+		// assign vehicle
+		Vehicle vehicle = new Vehicle();
+		instance.setVehiclesUsed(oldVehiclesUsed+1);
+		/*
+		 * The following is a method that supposes that there are multiple depots, so instead of
+		 * changing everything in the mdvrp package, we just pass 0 as depot.
+		 */
+		vehicle.setCapacity(instance.getCapacity(0,0)); 
+		tempRoute.setAssignedVehicle(vehicle);
 	}
 	
 	public void buildInitialRoute(Instance instance) {
@@ -170,7 +195,17 @@ public class MySolution extends SolutionAdapter{
 				if (customerChosenPtr.getCapacity() + route.getCost().load <= route.getLoadAdmited()){
 					insertBestTravel(instance, route, customerChosenPtr);
 					evaluateRoute(route);
-				}				
+				}
+				/*
+				 * If the customer doesn't pass the test, we check if we have other vehicles available.
+				 * If so, we add one vehicle (and so we add one more route).
+				 */
+				else if(instance.getVehiclesUsed() < instance.getVehiclesNr()){
+					addNewSingleRoute(instance); //Add a new route into the route arraylist, initialize it
+					Route lastRoute = this.route.get(this.route.size()-1); //Get the new route added
+					insertBestTravel(instance,lastRoute,customerChosenPtr);
+					evaluateRoute(lastRoute);
+				}		
 			}
 		}
 		//Check if all customers belong to a neighbourhood. If not, add it to one route randomly
@@ -185,15 +220,6 @@ public class MySolution extends SolutionAdapter{
 				customerChosenPtr.setIsTaken();
 				insertBestTravel(instance,route,customerChosenPtr);
 				evaluateRoute(route);
-			}
-			/*
-			 * If the customer doesn't pass the test, we check if we have other vehicles available.
-			 * If so, we add one vehicle (and so we add one more route).
-			 */
-			else if(instance.getVehiclesUsed() < instance.getVehiclesNr()){
-				this.route.add(new Route());
-				this.route.get(i).setIndex(i);
-				
 			}
 		}
 		int totCRoutes=0;

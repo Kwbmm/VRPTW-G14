@@ -62,9 +62,9 @@ public class Instance {
 			vehiclesNr	= in.nextInt(); //Amount of vehicles
 			
 			if(parameters.getVehiclesToUse() == -1)
-				vehiclesUsed = random.nextInt(vehiclesNr-1+1)+1; //this generates a random integer between 1 and vehiclesNr (inclusive)
+				this.setVehiclesUsed(random.nextInt(vehiclesNr-1+1)+1); //this generates a random integer between 1 and vehiclesNr (inclusive)
 			else
-				vehiclesUsed = parameters.getVehiclesToUse();
+				this.setVehiclesUsed(parameters.getVehiclesToUse());
 			
 			// read D and Q
 			capacities	= new double[1][daysNr];
@@ -370,6 +370,10 @@ public ArrayList<Customer> calculateAnglesToCustomer( Customer c) {
 	 */
 	public void setVehiclesNr(int vehiclesNr) {
 		this.vehiclesNr = vehiclesNr;
+	}
+	
+	public void setVehiclesUsed(int vehicles){
+		this.vehiclesUsed = vehicles;
 	}
 
 
