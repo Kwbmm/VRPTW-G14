@@ -184,6 +184,7 @@ public class MySolution extends SolutionAdapter{
 				superCustomerPtr = instance.getDepot().getAssignedCustomer(superCustomer);
 			}
 		}
+		//TODO move neighbour generation into a method so that it can be recalled
 		//Now add the neighbours to the respective routes
 		for(i=0;i<instance.getVehiclesUsed();++i){
 			superCustomerPtr = instance.getDepot().getAssignedCustomer(i);
