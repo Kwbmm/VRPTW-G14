@@ -2,6 +2,7 @@ package com.TabuSearch;
 
 import java.io.PrintStream;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 
 import org.coinor.opents.*;
 
@@ -13,11 +14,11 @@ public class MySearchProgram implements TabuSearchListener{
 	public TabuSearch tabuSearch;
 	private MySolution sol;
 	public Instance instance;
-	public Route[] feasibleRoutes; 	 // stores the routes of the feasible solution if any
+	public ArrayList<Route> feasibleRoutes; 	 // stores the routes of the feasible solution if any
 	public Cost feasibleCost;		 // stores the total cost of feasible solution if any, otherwise totalcostviol = Double.Infinity
-	public Route[] bestRoutes;	 	 // stores the routes of with the best travel time
+	public ArrayList<Route> bestRoutes;	 	 // stores the routes of with the best travel time
 	public Cost bestCost;		     // stores the total cost of best travel time solution
-	public Route[] currentRoutes;	 // stores the routes of the current solution
+	public ArrayList<Route> currentRoutes;	 // stores the routes of the current solution
 	public Cost currentCost;		 // stores the total cost of current solution
 	public int feasibleIndex;
 	public int bestIndex;
@@ -122,10 +123,10 @@ public class MySearchProgram implements TabuSearchListener{
 	}
     
     // clone the routes passed as parameter
-    public Route[] cloneRoutes(Route[] routes){
-		Route[] routescopy = new Route[routes.length];
-        for (int i = 0; i < routes.length; ++i) {
-        	routescopy[i] = new Route(routes[i]);
+    public ArrayList<Route> cloneRoutes(ArrayList<Route> routes){
+		ArrayList<Route> routescopy = new ArrayList<Route>();
+        for (int i = 0; i < routes.size(); ++i) {
+        	routescopy.add(new Route(routes.get(i)));
         }
         return routescopy;
 	}

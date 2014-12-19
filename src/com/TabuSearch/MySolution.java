@@ -28,6 +28,7 @@ public class MySolution extends SolutionAdapter{
 	public MySolution(Instance instance) {
 		MySolution.setInstance(instance);
 		cost = new Cost();
+		route = new ArrayList<Route>();
 		initializeRoute(instance);
 		buildInitialRoute(instance);
 		alpha 	= 1;
@@ -43,15 +44,12 @@ public class MySolution extends SolutionAdapter{
 	public Object clone(){
 		MySolution copy = (MySolution) super.clone();
 		copy.cost = new Cost(this.cost);
+		copy.route = new ArrayList<Route>(this.route);
 		
-		ArrayList<Route> copyRoute = new ArrayList<Route>();
-		for(int i=0; i < this.route.size();++i)
-			copyRoute.add(new Route(this.route.get(i)));
         copy.alpha         = this.alpha;
         copy.beta          = this.beta;
         copy.gamma         = this.gamma;
         copy.delta         = this.delta;
-		copy.route = copyRoute;
 		
 		return copy;
 	}
@@ -201,10 +199,12 @@ public class MySolution extends SolutionAdapter{
 				 * If so, we add one vehicle (and so we add one more route).
 				 */
 				else if(instance.getVehiclesUsed() < instance.getVehiclesNr()){
+					//TODO if we are here remove PROPERLY the customer from the neighbourhood
 					addNewSingleRoute(instance); //Add a new route into the route arraylist, initialize it
 					Route lastRoute = this.route.get(this.route.size()-1); //Get the new route added
 					insertBestTravel(instance,lastRoute,customerChosenPtr);
 					evaluateRoute(lastRoute);
+					//If we are here this customer is now a superCustomer
 				}		
 			}
 		}
