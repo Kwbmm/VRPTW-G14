@@ -39,28 +39,36 @@ public class MyMoveManager implements MoveManager {
          
          
          for (int j=0; j<routes.size(); j++){
-         
-     	/*for (int i=0; i< routes.get(j).getCustomersLength(); i++){
-     		System.out.println("\nRotta "+ routes.get(j).getIndex());
+
+      		System.out.println("\nRotta "+ routes.get(j).getIndex());         
+     	for (int i=0; i< routes.get(j).getCustomersLength(); i++){
      		System.out.printf("%d  ",routes.get(j).getCustomer(i).getNumber());
-     	}*/
+     	}
          }
          
          for (int i=0 ; i< routes.size(); i++){
-        	 Customer insertedCustomer = new Customer();
-        	 int evaluatedRouteIndex= routes.get(i).getIndex();
-        	 insertedCustomer = findCustomerToInsert(routes.get(i), 8);
-        	 int nextRouteIndex = insertedCustomer.getRouteIndex();
         	 
-        	 //System.out.println("\nCustomer selezionato: "+ k.getNumber() + " Rotta di appartenenza: "+ k.getRouteIndex());
+        	 Customer insertedCustomer = new Customer();
+        	 int evaluatedRouteIndex= routes.get(i).getIndex(); // route you are evaluating 
+        	 
+        	 if( routes.get(i).getCustomersLength() > 1){ // if the route is no composed by only one customer
+        	 insertedCustomer = findCustomerToInsert(routes.get(i), 8); // customer you are going to insert in that route
+        	 int nextRouteIndex = insertedCustomer.getRouteIndex(); // index of the route to which the customer found belongs
+        	 
+        	 System.out.println("\nCustomer selezionato: "+ insertedCustomer.getNumber() + " Rotta di appartenenza: "+ insertedCustomer.getRouteIndex());
 
-        	 if(insertedCustomer!=null){
-        		 Customer deletedCustomer = insertNewCustomer(routes.get(i), sol.getRoute(nextRouteIndex), insertedCustomer);
+        	 if(insertedCustomer!=null && nextRouteIndex!=evaluatedRouteIndex ){
+        		 Customer deletedCustomer = insertNewCustomer(routes.get(i), sol.getRoute(nextRouteIndex), insertedCustomer); 
+        		 // variables passed: 1)route you are evaluating from which you are going to delete a customer, 2) route where to put the customer,
+        		 if (deletedCustomer != null){
         		 moves [i] = new MyRelocateMove(instance, evaluatedRouteIndex ,nextRouteIndex, insertedCustomer, deletedCustomer);
-        		 System.out.println("MOSSA: " + i);
+        		 System.out.println("MOSSA: " + moves[i]);
         		 System.out.println("IndiceRotta: " + routes.get(i).getIndex());
         		 System.out.println("IndiceRottaCustomerdaInserire: " + insertedCustomer.getRouteIndex());
+        		 }
         	 }
+        	 System.out.println("-----------------------------");
+         }
          }
          
          return moves;
@@ -77,6 +85,8 @@ public class MyMoveManager implements MoveManager {
 		while(a==0)
 		{
 			length = customersRouteI.size();
+			if(length==1)
+				break;
 			length = random.nextInt(length);
 			custIndex = customersRouteI.get(length).getNumber();
 			
@@ -85,6 +95,9 @@ public class MyMoveManager implements MoveManager {
 				a++;
 				k = customersRouteI.get(length);
 			}
+			
+			
+				
 		}
 		
 		return k;

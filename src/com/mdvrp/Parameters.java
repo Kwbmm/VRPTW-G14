@@ -19,7 +19,7 @@ public class Parameters {
 		outputFileName    	= currDir + "/output/solutions.csv";
 		movesType         	= MovesType.RELOCATE;
 		precision         	= 1E-2;
-		iterations        	= 20;
+		iterations        	= 7;
 		tabuTenure        	= -1;
 		randomSeed		  	= -1;
 		variableTenure    	= false;
