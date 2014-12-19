@@ -32,25 +32,25 @@ public class MyMoveManager implements MoveManager {
     
 	}
 	private Move[] getRelocateMoves(MySolution sol) {
-	   	 Route[] routes = sol.getRoutes();
-         Move[] moves = new Move[routes.length];
-         for (int j=0; j<routes.length; j++){
+	   	 ArrayList<Route> routes = sol.getRoutes();
+         Move[] moves = new Move[routes.size()];
+         for (int j=0; j<routes.size(); j++){
          
-     	for (int i=0; i< routes[j].getCustomersLength(); i++){
-     		System.out.println("\nRotta "+ routes[j].getIndex());
-     		System.out.printf("%d  ",routes[j].getCustomer(i).getNumber());
+     	for (int i=0; i< routes.get(j).getCustomersLength(); i++){
+     		System.out.println("\nRotta "+ routes.get(j).getIndex());
+     		System.out.printf("%d  ",routes.get(j).getCustomer(i).getNumber());
      	}
          }
          
-         for (int i=0 ; i< routes.length; i++){
+         for (int i=0 ; i< routes.size(); i++){
         	 Customer k = new Customer();
-        	 k = findCustomerToInsert(routes[i], 5);
+        	 k = findCustomerToInsert(routes.get(i), 5);
         	 System.out.println("\nCustomer selezionato: "+ k.getNumber() + " Rotta di appartenenza: "+ k.getRouteIndex());
 
-        	 if( k!=null && k.getRouteIndex() > i ){
-        		 moves [i] = new MyRelocateMove(instance, routes[i].getIndex(), k.getRouteIndex(), k);
+        	 if(k!=null){
+        		 moves [i] = new MyRelocateMove(instance, routes.get(i).getIndex(), k.getRouteIndex(), k);
         		 System.out.println("MOSSA: " + i);
-        		 System.out.println("IndiceRotta: " + routes[i].getIndex());
+        		 System.out.println("IndiceRotta: " + routes.get(i).getIndex());
         		 System.out.println("IndiceRottaCustomerdaInserire: " + k.getRouteIndex());
         	 }
          }

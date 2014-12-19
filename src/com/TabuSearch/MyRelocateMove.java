@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
+import java.util.Random;
 
 import org.coinor.opents.ComplexMove;
 import org.coinor.opents.Solution;
@@ -45,6 +46,7 @@ public class MyRelocateMove implements ComplexMove{
 		MySolution sol = (MySolution)soln;
     	Route routeInsert = sol.getRoute(routeIndexInsert);
     	Route routeDelete = sol.getRoute(routeIndexDelete);
+    	Customer k;
     	
     	System.out.println(this + "\nRotta iniziale prima della mossa: ");
     	for (int i=0; i< routeInsert.getCustomersLength(); i++)
@@ -55,7 +57,6 @@ public class MyRelocateMove implements ComplexMove{
     	
     	if(routeIndexInsert != routeIndexDelete)
     	{
-    		
     		//Insert the customer in a new route
     		insertBestTravel(routeInsert, customer);
     		
@@ -63,7 +64,17 @@ public class MyRelocateMove implements ComplexMove{
     		List<Customer> lista = routeDelete.getCustomers();
     		
     		boolean verifica = lista.remove(customer);
-    		System.out.println("\nCancellato dalla rotta?? " + verifica);
+    		System.out.println("\nCancellato dalla rotta 1?? " + verifica);
+    		
+    		//If a customer is deleted from one route, then one customer from the new route will be moved to the old one
+    		if(verifica==true)
+    		{
+    			k = insertNewCustomer(routeDelete, routeInsert, customer);
+    			insertBestTravel(routeDelete, k);
+    			List<Customer> lista2 = routeInsert.getCustomers();
+    			boolean verifica2 = lista2.remove(k);
+    			System.out.println("\nCancellato dalla rotta 2?? " + verifica);
+    		}
     	}		
     	System.out.println("Rotta vicina dopo mossa: ");
     	for (int i=0; i< routeDelete.getCustomersLength(); i++)
@@ -73,6 +84,30 @@ public class MyRelocateMove implements ComplexMove{
     	for (int i=0; i< routeInsert.getCustomersLength(); i++)
     		System.out.printf("%d  ",routeInsert.getCustomer(i).getNumber());
 		
+	}
+	
+	public Customer insertNewCustomer(Route routeD, Route routeI, Customer customer)
+	{
+		Random random = new Random();
+		List<Customer> customersRouteI = routeI.getCustomers();
+		Customer k = new Customer();
+		int length, custIndex; 
+		int a = 0;
+		
+		while(a==0)
+		{
+			length = customersRouteI.size();
+			length = random.nextInt(length);
+			custIndex = customersRouteI.get(length).getNumber();
+			
+			if(custIndex != customer.getNumber())
+			{
+				a++;
+				k = customersRouteI.get(length);
+			}
+		}
+		
+		return k;
 	}
 
 	@Override
