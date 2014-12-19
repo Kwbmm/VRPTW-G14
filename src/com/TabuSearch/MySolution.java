@@ -1,6 +1,7 @@
 package com.TabuSearch;
 
 import java.util.Random;
+import java.util.ArrayList;
 
 import org.coinor.opents.SolutionAdapter;
 
@@ -14,10 +15,10 @@ import com.mdvrp.Vehicle;
 public class MySolution extends SolutionAdapter{
 
 	private static Instance instance;
-	private Route[] route;
+	private ArrayList<Route> route;
 	private Cost cost; //Save the tot cost of the route
 	private double alpha;		// a
-	private double beta;		// ß
+	private double beta;		// ï¿½
 	private double gamma;		// ?
 	private double delta;		// d
 	private double upLimit;
@@ -27,7 +28,7 @@ public class MySolution extends SolutionAdapter{
 	public MySolution(Instance instance) {
 		MySolution.setInstance(instance);
 		cost = new Cost();
-		initializeRoute(instance);
+		initializeRoute(instance,this.route);
 		buildInitialRoute(instance);
 		alpha 	= 1;
     	beta 	= 1;
@@ -43,9 +44,9 @@ public class MySolution extends SolutionAdapter{
 		MySolution copy = (MySolution) super.clone();
 		copy.cost = new Cost(this.cost);
 		
-		Route[] copyRoute = new Route[this.route.length];
-		for(int i=0; i < this.route.length;++i)
-			copyRoute[i] = new Route(this.route[i]);
+		ArrayList<Route> copyRoute = new ArrayList<Route>();
+		for(int i=0; i < this.route.size();++i)
+			copyRoute.add(new Route(this.route.get(i)));
         copy.alpha         = this.alpha;
         copy.beta          = this.beta;
         copy.gamma         = this.gamma;
@@ -92,20 +93,20 @@ public class MySolution extends SolutionAdapter{
     	}
     	
     }
-	public void initializeRoute(Instance instance) {
-		route = new Route[instance.getVehiclesUsed()];
+	public void initializeRoute(Instance instance, ArrayList<Route> route) {
+//		route = new Route[instance.getVehiclesUsed()];
 		// Creation of the routes; each route starts at the depot
 		for (int i = 0; i < instance.getVehiclesUsed(); ++i){
 			// initialization of routes
-			route[i] = new Route();
-			route[i].setIndex(i);
+			route.add(new Route());
+			route.get(i).setIndex(i);
 
 			// add the depot as the first node to the route
-			route[i].setDepot(instance.getDepot());
+			route.get(i).setDepot(instance.getDepot());
 
 			// set the cost of the route
 			Cost cost = new Cost();
-			route[i].setCost(cost);
+			route.get(i).setCost(cost);
 
 			// assign vehicle
 			Vehicle vehicle = new Vehicle();
@@ -114,7 +115,7 @@ public class MySolution extends SolutionAdapter{
 			 * changing everything in the mdvrp package, we just pass 0 as depot.
 			 */
 			vehicle.setCapacity(instance.getCapacity(0,0)); 
-			route[i].setAssignedVehicle(vehicle);		
+			route.get(i).setAssignedVehicle(vehicle);		
 		}
 	}
 	
@@ -135,7 +136,7 @@ public class MySolution extends SolutionAdapter{
 		 */
 		for(i=0; i<instance.getVehiclesUsed();++i){
 			superCustomerPtr = instance.getDepot().getAssignedCustomer(i);
-			route = this.route[i];
+			route = this.route.get(i);
 			/*
 			 * superCustomerPtr.getCapacity() returns the DEMAND of the CUSTOMER
 			 * route.getCost().load is the total load we have so far (i.e the sum of the already served customer's load)
@@ -163,11 +164,10 @@ public class MySolution extends SolutionAdapter{
 		//Now add the neighbours to the respective routes
 		for(i=0;i<instance.getVehiclesUsed();++i){
 			superCustomerPtr = instance.getDepot().getAssignedCustomer(i);
-			route = this.route[i];
+			route = this.route.get(i);
 			for(int j=0; j < superCustomerPtr.getNeighbours().size();++j){
 				customerChosenPtr = superCustomerPtr.getNeighbours().get(j);
-				if (customerChosenPtr.getCapacity() + route.getCost().load <= route.getLoadAdmited() &&
-					customerChosenPtr.getWaitingTime()+route.getDuration() <= route.getCost().returnToDepotTime){
+				if (customerChosenPtr.getCapacity() + route.getCost().load <= route.getLoadAdmited()){
 					insertBestTravel(instance, route, customerChosenPtr);
 					evaluateRoute(route);
 				}				
@@ -179,11 +179,34 @@ public class MySolution extends SolutionAdapter{
 			customerChosenPtr = instance.getDepot().getAssignedCustomer(i);
 			if(!customerChosenPtr.getIsTaken()){
 				randomRoute = random.nextInt(instance.getVehiclesUsed());
-				route = this.route[randomRoute];
+				route = this.route.get(randomRoute);
+				superCustomerPtr = instance.getDepot().getAssignedCustomer(randomRoute);
+				superCustomerPtr.addCustomerToNeighbour(customerChosenPtr);
+				customerChosenPtr.setIsTaken();
 				insertBestTravel(instance,route,customerChosenPtr);
 				evaluateRoute(route);
 			}
+			/*
+			 * If the customer doesn't pass the test, we check if we have other vehicles available.
+			 * If so, we add one vehicle (and so we add one more route).
+			 */
+			else if(instance.getVehiclesUsed() < instance.getVehiclesNr()){
+				this.route.add(new Route());
+				this.route.get(i).setIndex(i);
+				
+			}
 		}
+		int totCRoutes=0;
+		int totCNeighb=0;
+		for(i=0; i < this.route.size();++i)
+			totCRoutes+=this.route.get(i).getCustomersLength();
+		//+1 bc we add also the superCustomers
+		for(i=0;i<instance.getVehiclesUsed();++i)
+			totCNeighb += instance.getDepot().getAssignedCustomer(i).getNeighbours().size()+1;
+		
+		System.out.println("Total customers in routes: "+totCRoutes);
+		System.out.println("Total customers among neighbours: "+totCNeighb);
+		
 	}
 	private void insertBestTravel(Instance instance, Route route, Customer customerChosenPtr) {
 		double minCost = Double.MAX_VALUE;
@@ -343,17 +366,17 @@ public class MySolution extends SolutionAdapter{
 	public static void setInstance(Instance instance){
 		MySolution.instance = instance;
 	}
-	public Route[] getRoutes() {
+	public ArrayList<Route> getRoutes() {
 		return route;
 	}
 	public Route getRoute(int index){
-		return route[index];
+		return route.get(index);
 	}
 	
 	public int getRouteNr(){
-		return route.length;
+		return route.size();
 	}
-	public void setRoute(Route[] route) {
+	public void setRoute(ArrayList<Route> route) {
 		this.route = route;
 	}
 }

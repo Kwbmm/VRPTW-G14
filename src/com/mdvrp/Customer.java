@@ -200,6 +200,10 @@ public class Customer {
 			}
 		}
 	}
+	
+	public void addCustomerToNeighbour(Customer customer){
+		this.neighbours.add(customer);
+	}
 
 	public ArrayList<Customer> getNeighbours(){
 		return this.neighbours;
