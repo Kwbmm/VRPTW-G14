@@ -160,69 +160,57 @@ public class MySolution extends SolutionAdapter{
 		for(i=0; i<instance.getVehiclesUsed();++i){
 			superCustomerPtr = instance.getDepot().getAssignedCustomer(i);
 			route = this.route.get(i);
-			/*
-			 * superCustomerPtr.getCapacity() returns the DEMAND of the CUSTOMER
-			 * route.getCost().load is the total load we have so far (i.e the sum of the already served customer's load)
-			 * route.getLoadAdmited() returns the CAPACITY of the VEHICLE (which is the same for every vehicle)
-			 * superCustomerPtr.getServiceDuration() returns how much time we need to spend to serve the customer
-			 * route.getDuration() is the time we have spent so far since when we departed from depot
-			 */
-				insertBestTravel(instance, route, superCustomerPtr);
-				evaluateRoute(route);
-		}
-		//For the most distant customers, compute their neighbourhood
-		for(i=0;i<instance.getVehiclesUsed();++i){
-			superCustomerPtr = instance.getDepot().getAssignedCustomer(i);
+			insertBestTravel(instance, route, superCustomerPtr);
+			evaluateRoute(route);
 			superCustomerPtr.generateNeighbours(instance.getDepot().getAssignedcustomers(), instance.getVehiclesUsed());
-		}
-		//Check that all customers belong to a neighbourhood
-		for(i=instance.getVehiclesUsed(); i < instance.getDepot().getAssignedCustomersNr();++i){
-			customerChosenPtr = instance.getDepot().getAssignedCustomer(i);
-			//If a customer is not taken by anyone, assign it randomly
-			if(!customerChosenPtr.getIsTaken()){
-				superCustomer = random.nextInt((instance.getVehiclesUsed() - 0) + 1);
-				superCustomerPtr = instance.getDepot().getAssignedCustomer(superCustomer);
-			}
-		}
-		//TODO move neighbour generation into a method so that it can be recalled
-		//Now add the neighbours to the respective routes
-		for(i=0;i<instance.getVehiclesUsed();++i){
-			superCustomerPtr = instance.getDepot().getAssignedCustomer(i);
-			route = this.route.get(i);
-			for(int j=0; j < superCustomerPtr.getNeighbours().size();++j){
+			for(int j=0; j < superCustomerPtr.getNeighbours().size();++j){ //Try to add the customer to the route
 				customerChosenPtr = superCustomerPtr.getNeighbours().get(j);
 				if (customerChosenPtr.getCapacity() + route.getCost().load <= route.getLoadAdmited()){
 					insertBestTravel(instance, route, customerChosenPtr);
 					evaluateRoute(route);
 				}
-				/*
-				 * If the customer doesn't pass the test, we check if we have other vehicles available.
-				 * If so, we add one vehicle (and so we add one more route).
-				 */
-				else if(instance.getVehiclesUsed() < instance.getVehiclesNr()){
-					//TODO if we are here remove PROPERLY the customer from the neighbourhood
-					addNewSingleRoute(instance); //Add a new route into the route arraylist, initialize it
-					Route lastRoute = this.route.get(this.route.size()-1); //Get the new route added
-					insertBestTravel(instance,lastRoute,customerChosenPtr);
-					evaluateRoute(lastRoute);
-					//If we are here this customer is now a superCustomer
-				}		
+				else{
+					superCustomerPtr.getNeighbours().remove(customerChosenPtr); //Remove the customer from the neighbours
+					customerChosenPtr.setIsTaken(false); //Remove the marking
+				}
 			}
 		}
-		//Check if all customers belong to a neighbourhood. If not, add it to one route randomly
-		int randomRoute;
-		for(i=instance.getVehiclesUsed(); i<instance.getCustomersNr();++i){
+		/*
+		 * At this point the customers left alone are:
+		 * - Those not belonging to any neighbourhood bc they're to far from every superCustomer.
+		 * - Those not belonging to any neighbourhood bc they're violating capacity constraints
+		 * All these customers have IsTaken variable = false
+		 * We try to merge them together
+		 */
+		int notTaken =0;
+		for(i=0;i<instance.getDepot().getAssignedCustomersNr();++i){
 			customerChosenPtr = instance.getDepot().getAssignedCustomer(i);
 			if(!customerChosenPtr.getIsTaken()){
-				randomRoute = random.nextInt(instance.getVehiclesUsed());
-				route = this.route.get(randomRoute);
-				superCustomerPtr = instance.getDepot().getAssignedCustomer(randomRoute);
-				superCustomerPtr.addCustomerToNeighbour(customerChosenPtr);
-				customerChosenPtr.setIsTaken();
-				insertBestTravel(instance,route,customerChosenPtr);
-				evaluateRoute(route);
+				System.out.print("Customer "+customerChosenPtr.getNumber()+" | ");
+				 notTaken++;
 			}
 		}
+		System.out.println("\n"+notTaken);
+		//TODO debug here and see the error: notTaken == getVehiclesUsed!! WTF?
+		for(i=instance.getVehiclesUsed();i<instance.getDepot().getAssignedCustomersNr(); ++i){
+			int customerChosen = instance.getVehiclesUsed() + i% instance.getDepot().getAssignedCustomersNr();
+			customerChosenPtr = instance.getDepot().getAssignedCustomer(i);
+			if(!customerChosenPtr.getIsTaken()){ //If the customer is not taken
+				if(instance.getVehiclesUsed()< instance.getVehiclesNr()){ //If there are vehicles available, we generate new routes
+					addNewSingleRoute(instance);
+					route = this.route.get(this.route.size()-1);
+					insertBestTravel(instance,route,customerChosenPtr);
+					evaluateRoute(route);
+				}
+				else{ //We add the customer anyway without checking anything
+					int randomRouteNr = random.nextInt(instance.getVehiclesUsed());
+					route = this.route.get(randomRouteNr);
+					insertBestTravel(instance,route,customerChosenPtr);
+					evaluateRoute(route);
+				}
+			}
+		}
+		
 		int totCRoutes=0;
 		int totCNeighb=0;
 		for(i=0; i < this.route.size();++i)
@@ -286,7 +274,6 @@ public class MySolution extends SolutionAdapter{
 			}
 		}
 		route.addCustomer(customerChosenPtr, position);
-		//customerChosenPtr.setAssignedRoute(route);
 		customerChosenPtr.setRouteIndex(route.getIndex());
 //		System.out.println("Rotta: " + route.getIndex());
 //		System.out.println("Customer: "+ customerChosenPtr.getNumber() + "Assegnazione Indice: " + customerChosenPtr.getRouteIndex());

@@ -175,8 +175,8 @@ public class Customer {
 		this.meanDistance = meanDistance;
 	}
 	
-	public void setIsTaken(){
-		this.isTaken = true;
+	public void setIsTaken(boolean value){
+		this.isTaken = value;
 	}
 	
 	public boolean getIsTaken(){
@@ -196,7 +196,7 @@ public class Customer {
 			distance = Math.abs(customers.get(i).getDistance()-this.getDistance());
 			if(distance <= randomRay && !customers.get(i).getIsTaken()){
 				neighbours.add(customers.get(i));
-				customers.get(i).setIsTaken();
+				customers.get(i).setIsTaken(true);
 			}
 		}
 	}
