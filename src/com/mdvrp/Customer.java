@@ -46,6 +46,7 @@ public class Customer {
 		twViol = 0;
 		distanceFromDepot = 0;
 		distanceFromSupercustomer = 0;
+		routeIndex =-1;
 	}
 
 	public Customer(Customer customer) {
@@ -64,6 +65,7 @@ public class Customer {
 		this.distanceFromSupercustomer = customer.distanceFromSupercustomer;
 		this.angleToCustomer     =customer.angleToCustomer;
 		this.assignedRoute       =customer.assignedRoute;
+		this.routeIndex = customer.routeIndex;
 	}
 
 	/**
@@ -183,22 +185,18 @@ public class Customer {
 	}
 	
 	public void generateNeighbours(ArrayList<Customer> customers,int vehiclesUsed){
-		//Generate a random number between 10 (minimum threshold for ray) and meanDistance
-//		random = new Random();
-//		double randomRay = meanDistance + (this.getDistance() - meanDistance) * random.nextDouble();
 		double distance;
 		Customer cSelected = new Customer();
-		/*
-		 * The loop starts from the vehiclesUsed-th position bc customers from 0 -> vehiclesUsed-1 are
-		 * marked as most distant.
-		 */
-		for(int i=vehiclesUsed; i<customers.size();++i){
+
+		for(int i=0; i<customers.size();++i){
 			cSelected = customers.get(i);
-			distance = Math.sqrt(Math.pow(this.getXCoordinate()-cSelected.getXCoordinate(),2)+Math.pow(this.getYCoordinate()-cSelected.getYCoordinate(), 2));
-			if(distance <= meanDistance && !cSelected.getIsTaken()){
-				neighbours.add(cSelected);
-				cSelected.setIsTaken(true);
-				cSelected.setDistanceFromSupercustomer(distance);
+			if(!cSelected.getIsDistant()){
+				distance = Math.sqrt(Math.pow(this.getXCoordinate()-cSelected.getXCoordinate(),2)+Math.pow(this.getYCoordinate()-cSelected.getYCoordinate(), 2));
+				if(distance <= meanDistance && !cSelected.getIsTaken()){
+					neighbours.add(cSelected);
+					cSelected.setIsTaken(true);
+					cSelected.setDistanceFromSupercustomer(distance);
+				}
 			}
 		}
 	}

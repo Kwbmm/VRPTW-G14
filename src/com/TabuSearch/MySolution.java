@@ -147,7 +147,6 @@ public class MySolution extends SolutionAdapter{
 		Customer customerChosenPtr; // stores the pointer to the customer chosen from depots list assigned customers
 		Customer superCustomerPtr; //Store the pointer to the super customers
 		Random random = new Random();
-		int superCustomer;
 		int i;
 		/*
 		 * Customers of the DEPOT are ordered from the most distant to the closet (closest is
@@ -170,7 +169,7 @@ public class MySolution extends SolutionAdapter{
 					evaluateRoute(route);
 				}
 				else{
-					superCustomerPtr.getNeighbours().remove(customerChosenPtr); //Remove the customer from the neighbours
+					superCustomerPtr.getNeighbours().remove(customerChosenPtr);
 					customerChosenPtr.setIsTaken(false); //Remove the marking
 					customerChosenPtr.setDistanceFromSupercustomer(0);
 				}
@@ -209,46 +208,58 @@ public class MySolution extends SolutionAdapter{
 							evaluateRoute(route);
 						}
 						else{ //These are very unlucky customers, they are all left alone... :(
-							customerChosenPtr.getNeighbours().remove(subCustomerPtr);
+							boolean returnVal;
+							returnVal = customerChosenPtr.getNeighbours().remove(subCustomerPtr);
 							subCustomerPtr.setIsTaken(false); //Remove the marking
 							subCustomerPtr.setDistanceFromSupercustomer(0);
+							System.out.println("2: "+returnVal);
 						}
 					}
 				}
-				else{ //We add the customer anyway without checking anything
+				else{ //We don't have any more vehicles, we add the customer to a random route
 					int randomRouteNr = random.nextInt(this.route.size());
 					route = this.route.get(randomRouteNr);
+					customerChosenPtr.setIsTaken(true); //Mark it anyway even if it's not into a neighbourhood
 					insertBestTravel(instance,route,customerChosenPtr);
 					evaluateRoute(route);
 				}
 			}
 		}
-		for(i=instance.getVehiclesUsed(); i < instance.getDepot().getAssignedCustomersNr(); ++i){
+		
+		/*
+		 * Clearly we have an issue and we are forgetting, somewhere, to remove the marking isTaken
+		 * from the customers.
+		 * However, by using routeindex, we can easily add the missing customers to the routes
+		 * even if they are marked as already taken.
+		 */
+		for(i=0; i < instance.getDepot().getAssignedCustomersNr(); ++i){
 			customerChosenPtr = instance.getDepot().getAssignedCustomer(i);
-			if(!customerChosenPtr.getIsTaken()){
-				if(customerChosenPtr.getIsDistant()){
-					//When we get here it means we did something wrong bc all scustomers should've already been skipped (i=instance.getVehiclesUsed())
-					System.out.println("We got a problem");
-				}
-				else{
-					int randomRouteNr = random.nextInt(this.route.size());
-					route = this.route.get(randomRouteNr);
-					insertBestTravel(instance,route,customerChosenPtr);
-					evaluateRoute(route);
-				}
+			if(customerChosenPtr.getRouteIndex() == -1){
+				int randomRouteNr = random.nextInt(this.route.size());
+				route = this.route.get(randomRouteNr);
+//				System.out.println("taken before change: "+customerChosenPtr.getIsTaken());
+//				System.out.println("Is distant: "+customerChosenPtr.getIsDistant());
+				customerChosenPtr.setIsTaken(true); //Mark it anyway
+				insertBestTravel(instance,route,customerChosenPtr);
+				evaluateRoute(route);
 			}
 		}
+		/*
+		 * DEBUG starts
+		 */
 		int totCRoutes=0;
-		int totCNeighb=0;
 		for(i=0; i < this.route.size();++i)
 			totCRoutes+=this.route.get(i).getCustomersLength();
-		//+1 bc we add also the superCustomers
-		for(i=0;i<instance.getVehiclesUsed();++i)
-			totCNeighb += instance.getDepot().getAssignedCustomer(i).getNeighbours().size()+1;
 		
 		System.out.println("Total customers in routes: "+totCRoutes);
-		System.out.println("Total customers among neighbours: "+totCNeighb);
-		
+		for(i=0; i< instance.getCustomersNr();++i){
+			if(instance.getDepot().getAssignedCustomer(i).getRouteIndex() == -1)
+				System.out.println("Customer "+instance.getDepot().getAssignedCustomer(i).getNumber()+" doesn't belong to any route");
+		}
+		System.out.println("");
+		/*
+		 * DEBUG ends
+		 */
 	}
 	private void insertBestTravel(Instance instance, Route route, Customer customerChosenPtr) {
 		double minCost = Double.MAX_VALUE;

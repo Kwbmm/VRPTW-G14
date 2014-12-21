@@ -62,7 +62,7 @@ public class Instance {
 			vehiclesNr	= in.nextInt(); //Amount of vehicles
 			
 			if(parameters.getVehiclesToUse() == -1)
-				this.setVehiclesUsed(random.nextInt(vehiclesNr-1+1)+1); //this generates a random integer between 1 and vehiclesNr (inclusive)
+				this.setVehiclesUsed(random.nextInt(vehiclesNr-10+1)+10); //this generates a random integer between 10 and vehiclesNr (inclusive)
 			else
 				this.setVehiclesUsed(parameters.getVehiclesToUse());
 			
@@ -127,20 +127,28 @@ public class Instance {
 	 */
 	public void sortAssignedCustomers() {
 			Quick.sort(depot.getAssignedcustomers(), 0);
+			for(int i=0;i<vehiclesUsed;++i)
+				depot.getAssignedCustomer(i).setIsDistant();
 			setSCustomersMeanDistance();
 	}
 	
 	public void setSCustomersMeanDistance(){
 		double[] meanDistances = new double[vehiclesUsed]; //meanDistance from s-customer i to the others s-customers
 		Customer c1=new Customer(),c2=new Customer();
+		ArrayList<Customer> superCustomers = new ArrayList<Customer>();
 		double sumOfDistances=0,totalSumOfDistances =0;
 		double meanDistance;
 		int i;
-		for(i=0;i < vehiclesUsed;++i){
-			c1 = depot.getAssignedCustomer(i);
-			for(int j=0;j< vehiclesUsed;++j){
+		for(i=0; i< depot.getAssignedCustomersNr();++i){
+			if(depot.getAssignedCustomer(i).getIsDistant())
+				superCustomers.add(depot.getAssignedCustomer(i));
+		}
+		for(i=0;i < superCustomers.size();++i){
+			c1 = superCustomers.get(i);
+			if(c1.getIsDistant())
+			for(int j=0;j< superCustomers.size();++j){
 				if(i!=j){
-					c2 = depot.getAssignedCustomer(j);
+					c2 = superCustomers.get(j);
 					sumOfDistances += Math.sqrt(Math.pow(c1.getXCoordinate()-c2.getXCoordinate(), 2)+Math.pow(c1.getYCoordinate()-c2.getYCoordinate(),2));
 				}
 			}
@@ -149,8 +157,8 @@ public class Instance {
 			sumOfDistances = 0;
 		}
 		meanDistance = totalSumOfDistances / vehiclesUsed;
-		for(i=0;i<vehiclesUsed;++i){
-			depot.getAssignedCustomer(i).setMeanDistance(meanDistance);
+		for(i=0;i<superCustomers.size();++i){
+			superCustomers.get(i).setMeanDistance(meanDistance);
 		}
 	}
 	
