@@ -123,19 +123,35 @@ public class Instance {
 	}
 	
 	/**
-	 * Order for each depot the list containing the assigned customers based on angles
+	 * Order for each depot the list containing the assigned customers based on distances
 	 */
 	public void sortAssignedCustomers() {
 			Quick.sort(depot.getAssignedcustomers(), 0);
-			double sumOfDistances=0;
-			double meanDistance;
-			int i;
-			for(i=0;i<vehiclesUsed;++i){
-				sumOfDistances += depot.getAssignedCustomer(i).getDistance();
+			setSCustomersMeanDistance();
+	}
+	
+	public void setSCustomersMeanDistance(){
+		double[] meanDistances = new double[vehiclesUsed]; //meanDistance from s-customer i to the others s-customers
+		Customer c1=new Customer(),c2=new Customer();
+		double sumOfDistances=0,totalSumOfDistances =0;
+		double meanDistance;
+		int i;
+		for(i=0;i < vehiclesUsed;++i){
+			c1 = depot.getAssignedCustomer(i);
+			for(int j=0;j< vehiclesUsed;++j){
+				if(i!=j){
+					c2 = depot.getAssignedCustomer(j);
+					sumOfDistances += Math.sqrt(Math.pow(c1.getXCoordinate()-c2.getXCoordinate(), 2)+Math.pow(c1.getYCoordinate()-c2.getYCoordinate(),2));
+				}
 			}
-			meanDistance = sumOfDistances / vehiclesUsed;
-			for(i=0;i<vehiclesUsed;++i)
-				depot.getAssignedCustomer(i).setMeanDistance(meanDistance);
+			meanDistances[i] = sumOfDistances / (vehiclesUsed -1);
+			totalSumOfDistances += meanDistances[i];
+			sumOfDistances = 0;
+		}
+		meanDistance = totalSumOfDistances / vehiclesUsed;
+		for(i=0;i<vehiclesUsed;++i){
+			depot.getAssignedCustomer(i).setMeanDistance(meanDistance);
+		}
 	}
 	
 	/**

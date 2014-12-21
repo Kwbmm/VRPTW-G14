@@ -172,6 +172,7 @@ public class MySolution extends SolutionAdapter{
 				else{
 					superCustomerPtr.getNeighbours().remove(customerChosenPtr); //Remove the customer from the neighbours
 					customerChosenPtr.setIsTaken(false); //Remove the marking
+					customerChosenPtr.setDistanceFromSupercustomer(0);
 				}
 			}
 		}
@@ -181,36 +182,62 @@ public class MySolution extends SolutionAdapter{
 		 * - Those not belonging to any neighbourhood bc they're violating capacity constraints
 		 * All these customers have IsTaken variable = false
 		 * We try to merge them together
+		 *
+		 * Here down we try to add a new vehicles and a new route (if available).
+		 * If we can, then customerChosenPtr becomes a superCustomer: we recompute the distance from
+		 * the other supercustomers (instance.setSCustomersMeanDistance()), generate its new neighbourhood,
+		 * insert it into our new route, evaluate the route and then for its neighbourhood
+		 * we try to add each neighbour to the route. If this fails, we remove the customer from the
+		 * neighbourhood and remove the marking.
 		 */
-		int notTaken =0;
-		for(i=0;i<instance.getDepot().getAssignedCustomersNr();++i){
-			customerChosenPtr = instance.getDepot().getAssignedCustomer(i);
-			if(!customerChosenPtr.getIsTaken()){
-				System.out.print("Customer "+customerChosenPtr.getNumber()+" | ");
-				 notTaken++;
-			}
-		}
-		System.out.println("\n"+notTaken);
-		//TODO debug here and see the error: notTaken == getVehiclesUsed!! WTF?
 		for(i=instance.getVehiclesUsed();i<instance.getDepot().getAssignedCustomersNr(); ++i){
-			int customerChosen = instance.getVehiclesUsed() + i% instance.getDepot().getAssignedCustomersNr();
 			customerChosenPtr = instance.getDepot().getAssignedCustomer(i);
 			if(!customerChosenPtr.getIsTaken()){ //If the customer is not taken
 				if(instance.getVehiclesUsed()< instance.getVehiclesNr()){ //If there are vehicles available, we generate new routes
 					addNewSingleRoute(instance);
 					route = this.route.get(this.route.size()-1);
+					customerChosenPtr.setIsDistant(); //Mark the customer as supercustomer
+					instance.setSCustomersMeanDistance();
+					customerChosenPtr.generateNeighbours(instance.getDepot().getAssignedcustomers(), instance.getVehiclesUsed());
 					insertBestTravel(instance,route,customerChosenPtr);
 					evaluateRoute(route);
+					//Loop through all the neighbours of this scustomer and try to add them to the route
+					for(int j=0;j< customerChosenPtr.getNeighbours().size();++j){
+						Customer subCustomerPtr = customerChosenPtr.getNeighbours().get(j);
+						if(subCustomerPtr.getCapacity()+route.getCost().load <= route.getLoadAdmited()){
+							insertBestTravel(instance,route,subCustomerPtr);
+							evaluateRoute(route);
+						}
+						else{ //These are very unlucky customers, they are all left alone... :(
+							customerChosenPtr.getNeighbours().remove(subCustomerPtr);
+							subCustomerPtr.setIsTaken(false); //Remove the marking
+							subCustomerPtr.setDistanceFromSupercustomer(0);
+						}
+					}
 				}
 				else{ //We add the customer anyway without checking anything
-					int randomRouteNr = random.nextInt(instance.getVehiclesUsed());
+					int randomRouteNr = random.nextInt(this.route.size());
 					route = this.route.get(randomRouteNr);
 					insertBestTravel(instance,route,customerChosenPtr);
 					evaluateRoute(route);
 				}
 			}
 		}
-		
+		for(i=instance.getVehiclesUsed(); i < instance.getDepot().getAssignedCustomersNr(); ++i){
+			customerChosenPtr = instance.getDepot().getAssignedCustomer(i);
+			if(!customerChosenPtr.getIsTaken()){
+				if(customerChosenPtr.getIsDistant()){
+					//When we get here it means we did something wrong bc all scustomers should've already been skipped (i=instance.getVehiclesUsed())
+					System.out.println("We got a problem");
+				}
+				else{
+					int randomRouteNr = random.nextInt(this.route.size());
+					route = this.route.get(randomRouteNr);
+					insertBestTravel(instance,route,customerChosenPtr);
+					evaluateRoute(route);
+				}
+			}
+		}
 		int totCRoutes=0;
 		int totCNeighb=0;
 		for(i=0; i < this.route.size();++i)
