@@ -26,8 +26,6 @@ public class MyRelocateMove implements ComplexMove{
 	private Customer insertedCustomer;
 	private Customer deletedCustomer;
 
-    private int deletePositionIndex;
-    private int insertPositionIndex;
     
     public MyRelocateMove( Instance instance, int routeIndexInsert, int routeIndexDelete, Customer insertedCustomer, Customer deletedCustomer){
     	this.routeIndexInsert = routeIndexInsert;
@@ -37,9 +35,6 @@ public class MyRelocateMove implements ComplexMove{
     	this.insertedCustomer = insertedCustomer;
     	this.deletedCustomer = deletedCustomer;
     	this.instance = instance;  	
-        this.deletePositionIndex = deletePositionIndex;
-
-    	
     	
     }   // end constructor
     
@@ -62,12 +57,13 @@ public class MyRelocateMove implements ComplexMove{
     	if(routeIndexInsert != routeIndexDelete)
     	{
     		//Insert the customer in a new route
-    		insertBestTravel(routeInsert, insertedCustomer);
-    		
+    		insertBestTravelAndDelete(routeInsert, insertedCustomer, routeDelete);
+    		/*
     		//Delete the customer from the actual route
     		List<Customer> lista = routeDelete.getCustomers();
     		
     		boolean verifica = lista.remove(insertedCustomer);
+    		
     		System.out.println("\nCancellato dalla rotta 1?? " + verifica);
     		
     		//If a customer is deleted from one route, then one customer from the new route will be moved to the old one
@@ -77,17 +73,17 @@ public class MyRelocateMove implements ComplexMove{
     			List<Customer> lista2 = routeInsert.getCustomers();
     			boolean verifica2 = lista2.remove(deletedCustomer);
     			System.out.println("\nCancellato dalla rotta 2?? " + verifica2);
-    		}
+    		}*/
     	}
     			
-    	System.out.println("Rotta vicina dopo mossa: ");
+    	System.out.println("\nRotta vicina dopo mossa: ");
     	for (int i=0; i< routeDelete.getCustomersLength(); i++)
     		System.out.printf("%d  ", routeDelete.getCustomer(i).getNumber());
 
     	System.out.println("\nRotta iniziale dopo mossa: ");
     	for (int i=0; i< routeInsert.getCustomersLength(); i++)
     		System.out.printf("%d  ",routeInsert.getCustomer(i).getNumber());
-		
+    	System.out.println("\n");
 	}
 
 	@Override
@@ -102,7 +98,7 @@ public class MyRelocateMove implements ComplexMove{
 	
 		
 	}
-    private void insertBestTravel(Route route, Customer customerChosenPtr) {
+    private void insertBestTravelAndDelete(Route route, Customer customerChosenPtr, Route routeDelete) {
 		double minCost = Double.MAX_VALUE;
 		double tempMinCost = Double.MAX_VALUE;
 		int position = 0;
@@ -156,19 +152,11 @@ public class MyRelocateMove implements ComplexMove{
 		//inserisce la rotta nella posizione assegnata e in automatico gli altri elementi vengono shiftati
 		route.addCustomer(customerChosenPtr, position);
 		customerChosenPtr.setRouteIndex(route.getIndex());
+		routeDelete.removeCustomerK(customerChosenPtr);
 		
 	}
 
-    /**
-     * Set the insert position index of the move
-     * (is done in objective function, for performance factor)
-     * @param index
-     */
-    
-    public void setInsertPositionIndex(int index) {
-    	this.insertPositionIndex = index;
-    }
-    
+  
 	/**
 	 * @return the customer
 	 */
@@ -188,21 +176,6 @@ public class MyRelocateMove implements ComplexMove{
 	 */
 	public void setCustomer(Customer customer) {
 		this.insertedCustomer = customer;
-	}
-    
-
-	/**
-	 * @return the deletePositionIndex
-	 */
-	public int getDeletePositionIndex() {
-		return deletePositionIndex;
-	}
-
-	/**
-	 * @param deletePositionIndex the deletePositionIndex to set
-	 */
-	public void setDeletePositionIndex(int deletePositionIndex) {
-		this.deletePositionIndex = deletePositionIndex;
 	}
     
 	public int getRouteIndexInsert() {

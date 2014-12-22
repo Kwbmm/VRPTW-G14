@@ -49,7 +49,7 @@ public class MyObjectiveFunction implements ObjectiveFunction {
         	double penalization = 0;
         	
         	varInsertCost.total = Double.POSITIVE_INFINITY;
-        	// evaluate each position of the route to find the best insertion of the getCustomer(); start from 0 and consider also the last position
+        /*	// evaluate each position of the route to find the best insertion of the getCustomer(); start from 0 and consider also the last position
         	for (int i = 0; i <= insertRoute.getCustomersLength(); ++i) {
         		// evaluate insertion of the customer in the list
         		Cost varCost = evaluateInsertRoute(insertRoute, move.getCustomer(), i);
@@ -65,7 +65,7 @@ public class MyObjectiveFunction implements ObjectiveFunction {
         			varInsertCost = new Cost(varCost);
         		}
         	} // end for
-        	
+        	*/
         	//varDeleteCost = evaluateDeleteRoute(deleteRoute, move.getCustomer(), move.getDeletePositionIndex());
         	solCost = getTotalCostVariation(sol, move, varInsertCost, new Cost());
         	obj = solCost.total;
@@ -143,6 +143,7 @@ public class MyObjectiveFunction implements ObjectiveFunction {
     	double waitingTime = 0;
     	double twViol = 0;
     	Customer customerK;
+    	//initialize the costs to zero
     	route.initializeTimes();
     	// do the math only if the route is not empty
 		if(!route.isEmpty()){

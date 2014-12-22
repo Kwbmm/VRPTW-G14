@@ -230,5 +230,8 @@ public class Route {
 
 	
 
+	public void removeCustomerK(Customer k){
+		this.customers.remove(k);
+	}
 	  
 }

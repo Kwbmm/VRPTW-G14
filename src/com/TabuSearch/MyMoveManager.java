@@ -35,8 +35,8 @@ public class MyMoveManager implements MoveManager {
 	}
 	private Move[] getRelocateMoves(MySolution sol) {
 	   	 ArrayList<Route> routes = sol.getRoutes();
-         Move[] moves = new Move[routes.size()];
-         
+	   	 Move[] buffer  = new Move[routes.size()];
+         int nextBufferPos = 0;
          
          for (int j=0; j<routes.size(); j++){
 
@@ -51,8 +51,8 @@ public class MyMoveManager implements MoveManager {
         	 Customer insertedCustomer = new Customer();
         	 int evaluatedRouteIndex= routes.get(i).getIndex(); // route you are evaluating 
         	 
-        	 if( routes.get(i).getCustomersLength() > 1){ // if the route is no composed by only one customer
-        	 insertedCustomer = findCustomerToInsert(routes.get(i), 8); // customer you are going to insert in that route
+        	 if( routes.get(i).getCustomersLength() > 1){ // if the route is not composed by only one customer
+        	 insertedCustomer = findCustomerToInsert(routes.get(i), 3); // customer you are going to insert in that route
         	 int nextRouteIndex = insertedCustomer.getRouteIndex(); // index of the route to which the customer found belongs
         	 
         	 System.out.println("\nCustomer selezionato: "+ insertedCustomer.getNumber() + " Rotta di appartenenza: "+ insertedCustomer.getRouteIndex());
@@ -61,16 +61,20 @@ public class MyMoveManager implements MoveManager {
         		 Customer deletedCustomer = insertNewCustomer(routes.get(i), sol.getRoute(nextRouteIndex), insertedCustomer); 
         		 // variables passed: 1)route you are evaluating from which you are going to delete a customer, 2) route where to put the customer,
         		 if (deletedCustomer != null){
-        		 moves [i] = new MyRelocateMove(instance, evaluatedRouteIndex ,nextRouteIndex, insertedCustomer, deletedCustomer);
-        		 System.out.println("MOSSA: " + moves[i]);
-        		 System.out.println("IndiceRotta: " + routes.get(i).getIndex());
-        		 System.out.println("IndiceRottaCustomerdaInserire: " + insertedCustomer.getRouteIndex());
+        			 buffer[nextBufferPos++] =  new MyRelocateMove(instance, evaluatedRouteIndex ,nextRouteIndex, insertedCustomer, deletedCustomer);
+        		 System.out.println("MOSSA: " + buffer[i]);
+        		 System.out.println("IndiceRottaDestinazione: " + routes.get(i).getIndex());
+        		 System.out.println("IndiceRottaProvenienza: " + insertedCustomer.getRouteIndex());
         		 }
         	 }
         	 System.out.println("-----------------------------");
          }
          }
          
+         
+         Move[] moves = new Move[ nextBufferPos];
+         System.arraycopy( buffer, 0, moves, 0, nextBufferPos );
+
          return moves;
     }
 	
