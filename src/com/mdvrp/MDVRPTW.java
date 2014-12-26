@@ -2,6 +2,7 @@
 
 import java.io.FileWriter;
 import java.io.PrintStream;
+import java.util.ArrayList;
 
 import org.coinor.opents.TabuList;
 
@@ -60,11 +61,15 @@ public class MDVRPTW {
 	        
 	        // Count routes
 	       int routesNr = 0;
-	       /* for(int i =0; i < search.feasibleRoutes.length; ++i)
-	        	for(int j=0; j < search.feasibleRoutes[i].length; ++j)
-	        		if(search.feasibleRoutes[i][j].getCustomersLength() > 0)
-	        			routesNr++;*/
-	        // Print results
+	       ArrayList<Route> list = search.getFeasibleRoutes();
+	       
+	       for(int i =0; i < list.size(); ++i)
+	       {
+	        		if(list.get(i).getCustomersLength() > 0)
+	        			routesNr++;
+	       }
+	       
+	       // Print results
 	        String outSol = String.format("%s; %5.2f; %d; %4d\r\n" ,
 	        		instance.getParameters().getInputFileName(), search.feasibleCost.total,
 	            	duration.getSeconds(), routesNr);

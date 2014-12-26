@@ -144,4 +144,12 @@ public class MySearchProgram implements TabuSearchListener{
 	public static void setIterationsDone(int iterationsDone) {
 		MySearchProgram.iterationsDone = iterationsDone;
 	}
+
+	public ArrayList<Route> getFeasibleRoutes() {
+		return feasibleRoutes;
+	}
+
+	public void setFeasibleRoutes(ArrayList<Route> feasibleRoutes) {
+		this.feasibleRoutes = feasibleRoutes;
+	}
 }
