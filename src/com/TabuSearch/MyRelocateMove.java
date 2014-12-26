@@ -23,17 +23,20 @@ public class MyRelocateMove implements ComplexMove{
 	private int routeIndexDelete;
 	private int insertedCustomerIndex;
 	private int deletedCustomerIndex;
+	private int insertPositionIndex;
+	private int deletePositionIndex;
 	private Customer insertedCustomer;
 	private Customer deletedCustomer;
 
     
-    public MyRelocateMove( Instance instance, int routeIndexInsert, int routeIndexDelete, Customer insertedCustomer, Customer deletedCustomer){
+    public MyRelocateMove( Instance instance, int routeIndexInsert, int routeIndexDelete, Customer insertedCustomer, Customer deletedCustomer, int deletePositionIndex){
     	this.routeIndexInsert = routeIndexInsert;
     	this.routeIndexDelete = routeIndexDelete;
     	this.insertedCustomerIndex = insertedCustomer.getNumber();
     	this.deletedCustomerIndex = deletedCustomer.getNumber();
     	this.insertedCustomer = insertedCustomer;
     	this.deletedCustomer = deletedCustomer;
+    	this.deletePositionIndex = deletePositionIndex;
     	this.instance = instance;  	
     	
     }   // end constructor
@@ -222,6 +225,30 @@ public class MyRelocateMove implements ComplexMove{
 
 	public void setDeletedCustomerIndex(int deletedCustomerIndex) {
 		this.deletedCustomerIndex = deletedCustomerIndex;
+	}
+
+
+
+	public int getInsertPositionIndex() {
+		return insertPositionIndex;
+	}
+
+
+
+	public void setInsertPositionIndex(int insertPositionIndex) {
+		this.insertPositionIndex = insertPositionIndex;
+	}
+
+
+
+	public int getDeletePositionIndex() {
+		return deletePositionIndex;
+	}
+
+
+
+	public void setDeletePositionIndex(int deletePositionIndex) {
+		this.deletePositionIndex = deletePositionIndex;
 	}
     
     

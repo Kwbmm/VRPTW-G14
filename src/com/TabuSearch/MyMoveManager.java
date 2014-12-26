@@ -37,6 +37,7 @@ public class MyMoveManager implements MoveManager {
 	   	 ArrayList<Route> routes = sol.getRoutes();
 	   	 Move[] buffer  = new Move[routes.size()];
          int nextBufferPos = 0;
+         int deletePositionIndex;
          
          for (int j=0; j<routes.size(); j++){
 
@@ -61,7 +62,8 @@ public class MyMoveManager implements MoveManager {
         		 Customer deletedCustomer = insertNewCustomer(routes.get(i), sol.getRoute(nextRouteIndex), insertedCustomer); 
         		 // variables passed: 1)route you are evaluating from which you are going to delete a customer, 2) route where to put the customer,
         		 if (deletedCustomer != null){
-        			 buffer[nextBufferPos++] =  new MyRelocateMove(instance, evaluatedRouteIndex ,nextRouteIndex, insertedCustomer, deletedCustomer);
+        			 deletePositionIndex = getPositionInRoute(deletedCustomer, sol);
+        			 buffer[nextBufferPos++] =  new MyRelocateMove(instance, evaluatedRouteIndex ,nextRouteIndex, insertedCustomer, deletedCustomer, deletePositionIndex);
         		 System.out.println("MOSSA: " + buffer[i]);
         		 System.out.println("IndiceRottaDestinazione: " + routes.get(i).getIndex());
         		 System.out.println("IndiceRottaProvenienza: " + insertedCustomer.getRouteIndex());
@@ -77,6 +79,27 @@ public class MyMoveManager implements MoveManager {
 
          return moves;
     }
+	
+	public int getPositionInRoute(Customer deletedCustomer, MySolution sol)
+	{
+		int position = 0;
+		int routeIndex = deletedCustomer.getRouteIndex();
+		
+		if(routeIndex>0)
+		{
+			List<Customer> lista = sol.getRoute(routeIndex).getCustomers();
+		
+			for(Customer c : lista)
+			{
+				if(c.getNumber() == deletedCustomer.getNumber())
+					break;
+				
+				position++;
+			}
+		}
+		System.out.println("POSITION: " + position);
+		return position;
+	}
 	
 	public Customer insertNewCustomer(Route routeD, Route routeI, Customer customer)
 	{
