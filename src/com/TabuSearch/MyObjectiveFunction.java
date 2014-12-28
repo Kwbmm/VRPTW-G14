@@ -42,10 +42,9 @@ public class MyObjectiveFunction implements ObjectiveFunction {
 
         // Else calculate incrementally
         else {
-        	System.out.println("ELSE");
-        	MyRelocateMove move = ((MyRelocateMove)proposedMove);
-        	Route insertRoute = sol.getRoute(move.getRouteIndexInsert());	// route on which is performed the insertion
-        	Route deleteRoute = sol.getRoute(move.getRouteIndexDelete());
+        	MySwapMove move = ((MySwapMove)proposedMove);
+        	Route insertRoute = sol.getRoute( move.getInsertRouteNr());	// route on which is performed the insertion
+        	Route deleteRoute = sol.getRoute( move.getDeleteRouteNr());
         	Cost varInsertCost = new Cost();
         	Cost varDeleteCost;
         	Cost solCost;
@@ -73,7 +72,7 @@ public class MyObjectiveFunction implements ObjectiveFunction {
         	obj = solCost.total;
             //calculate the penalization
             if (sol.getObjectiveValue()[0] <= obj )
-            	penalization = lambda * solCost.total;// * sol.getBs(move);
+            	penalization = lambda * solCost.total ;
             
             double[] returnArray = new double[]{obj + penalization, obj, solCost.travelTime, solCost.loadViol, solCost.twViol};
             
@@ -82,22 +81,18 @@ public class MyObjectiveFunction implements ObjectiveFunction {
         
     }   // end evaluate
     
-    private Cost getTotalCostVariation(MySolution sol, MyRelocateMove move,
+    private Cost getTotalCostVariation(MySolution sol, MySwapMove move,
 			Cost varInsertCost, Cost varDeleteCost) 
     {
     	Cost varCost = new Cost(sol.getCost());
-    	Route insertRoute = sol.getRoute(move.getRouteIndexInsert());
-    	Route deleteRoute = sol.getRoute(move.getRouteIndexDelete());
-    	
+    	Route insertRoute = sol.getRoute(move.getInsertRouteNr());
+    	Route deleteRoute = sol.getRoute(move.getDeleteRouteNr());
     	varCost.travelTime += -  deleteRoute.getCost().travelTime - insertRoute.getCost().travelTime
     			              + varInsertCost.travelTime + varDeleteCost.travelTime;
-    	
     	varCost.loadViol += - deleteRoute.getCost().loadViol- insertRoute.getCost().loadViol
-    			                + varInsertCost.loadViol + varDeleteCost.loadViol;          
-    	
+    			                + varInsertCost.loadViol + varDeleteCost.loadViol;             
     	varCost.twViol += - deleteRoute.getCost().twViol - insertRoute.getCost().twViol
     			          + varInsertCost.twViol + varDeleteCost.twViol;
-    	
     	varCost.waitingTime = Math.abs(varCost.waitingTime) < instance.getPrecision() ? 0 : varCost.waitingTime;
     	varCost.loadViol = Math.abs(varCost.loadViol) < instance.getPrecision() ? 0 : varCost.loadViol;
     	varCost.twViol = Math.abs(varCost.twViol) < instance.getPrecision() ? 0 : varCost.twViol;
@@ -114,27 +109,25 @@ public class MyObjectiveFunction implements ObjectiveFunction {
      */
     private void evaluateAbsolutely(Solution solution){
     	MySolution sol = (MySolution)solution;
-    	//Route route;
+    	Route route;
+    	ArrayList<Route> routes =sol.getRoutes();
     	
     	sol.getCost().initialize();
-    	ArrayList<Route> listRoute = sol.getRoutes();
-		
-    	for(Route route : listRoute)
-    	{
-	    	// do the math only if the route is not empty
-			if(!route.isEmpty()) {
-				evaluateRoute(route);
-				sol.getCost().travelTime += route.getCost().getTravel();
-				sol.getCost().load += route.getCost().load;
-				sol.getCost().serviceTime += route.getCost().serviceTime;
-				sol.getCost().waitingTime += route.getCost().waitingTime;
-				sol.getCost().addLoadViol(route.getCost().getLoadViol());
-				//sol.getCost().addDurationViol(route.getCost().getDurationViol());
-				sol.getCost().addTWViol(route.getCost().getTwViol());
-				
-			} // end if route not empty
-		}// end for vehicles
-		
+		for (int i=0; i<routes.size(); i++){
+				route = routes.get(i);
+		    	// do the math only if the route is not empty
+				if(!route.isEmpty()) {
+					evaluateRoute(route);
+					sol.getCost().travelTime += route.getCost().getTravel();
+					sol.getCost().load += route.getCost().load;
+					sol.getCost().serviceTime += route.getCost().serviceTime;
+					sol.getCost().waitingTime += route.getCost().waitingTime;
+					sol.getCost().addLoadViol(route.getCost().getLoadViol());
+					sol.getCost().addTWViol(route.getCost().getTwViol());
+					
+				} // end if route not empty
+			}// end for vehicles
+		// end for depots
 		sol.getCost().calculateTotalCostViol();
 	}// end method evaluateAbsolutely
     
@@ -195,7 +188,6 @@ public class MyObjectiveFunction implements ObjectiveFunction {
 			route.setDepotTwViol(twViol);
 			route.setReturnToDepotTime(totalTime);
 			route.getCost().setLoadViol(Math.max(0, route.getCost().load - route.getLoadAdmited()));
-//			route.getCost().setDurationViol(Math.max(0, route.getDuration() - route.getDurationAdmited()));
 			
 			route.getCost().setTravelTime(route.getCost().travelTime);
 			// update total violation
@@ -373,8 +365,7 @@ public class MyObjectiveFunction implements ObjectiveFunction {
 		varCost.twViol = Math.abs(varCost.twViol) < instance.getPrecision() ? 0 : varCost.twViol;
     	
 		varCost.setLoadViol(Math.max(0, varCost.load - route.getLoadAdmited()));
-	//	varCost.setDurationViol(Math.max(0, varCost.getDuration() - route.getDurationAdmited()));
-
+		
 		return varCost;
     } // end method evaluate insert route
 	
@@ -514,7 +505,6 @@ public class MyObjectiveFunction implements ObjectiveFunction {
 		varCost.twViol = Math.abs(varCost.twViol) < instance.getPrecision() ? 0 : varCost.twViol;
 		
 		varCost.setLoadViol(Math.max(0, varCost.load - route.getLoadAdmited()));
-	//	varCost.setDurationViol(Math.max(0, varCost.getDuration() - route.getDurationAdmited()));
 		
 		return varCost;
     } // end method evaluate delete route

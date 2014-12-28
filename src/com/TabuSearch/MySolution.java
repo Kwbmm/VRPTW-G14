@@ -2,6 +2,7 @@ package com.TabuSearch;
 
 import java.util.Random;
 import java.util.ArrayList;
+import java.util.List;
 
 import org.coinor.opents.SolutionAdapter;
 
@@ -29,17 +30,44 @@ public class MySolution extends SolutionAdapter{
 		MySolution.setInstance(instance);
 		cost = new Cost();
 		route = new ArrayList<Route>();
-		initializeRoute(instance);
-		buildInitialRoute(instance);
+		initializeRoutesBis(instance);
+		buildInitialRoutesBis(instance);
+//		initializeRoute(instance);
+//		buildInitialRoute(instance);
 		alpha 	= 1;
     	beta 	= 1;
     	gamma	= 1;
     	delta	= 0.005;
     	upLimit = 10000000;
     	resetValue = 0.1;
+    	
 
 	}
-	
+	public void initializeRoutesBis(Instance instance) {
+		route = new ArrayList<Route>(instance.getVehiclesNr());
+		for (int j = 0; j < instance.getVehiclesNr(); ++j)
+		{
+			// initialization of routes
+			Route r = new Route();
+			r.setIndex(j);
+
+			// add the depot as the first node to the route
+			r.setDepot(instance.getDepot());
+
+			// set the cost of the route
+			Cost cost = new Cost();
+			r.setCost(cost);
+
+			// assign vehicle
+			Vehicle vehicle = new Vehicle();
+			vehicle.setCapacity(instance.getCapacity(0, 0));
+			r.setAssignedVehicle(vehicle);
+			
+			//add the new route into the arrayList
+			route.add(r);
+		}
+	}
+
 	//This is needed for tabu search
 	public Object clone(){
 		MySolution copy = (MySolution) super.clone();
@@ -91,176 +119,64 @@ public class MySolution extends SolutionAdapter{
     	}
     	
     }
-	public void initializeRoute(Instance instance) {
-		Route tempRoute;
-		// Creation of the routes; each route starts at the depot
-		for (int i = 0; i < instance.getVehiclesUsed(); ++i){
-			// initialization of routes
-			this.route.add(new Route());
-			tempRoute = this.route.get(route.size()-1);
-			tempRoute.setIndex(i);
-			// add the depot as the first node to the route
-			tempRoute.setDepot(instance.getDepot());
-
-			// set the cost of the route
-			Cost cost = new Cost();
-			tempRoute.setCost(cost);
-
-			// assign vehicle
-			Vehicle vehicle = new Vehicle();
-			/*
-			 * The following is a method that supposes that there are multiple depots, so instead of
-			 * changing everything in the mdvrp package, we just pass 0 as depot.
-			 */
-			vehicle.setCapacity(instance.getCapacity(0,0)); 
-			tempRoute.setAssignedVehicle(vehicle);		
-		}
-	}
 	
-	public void addNewSingleRoute(Instance instance){
-		Route tempRoute;
-		Route lastKnownRoute = this.route.get(this.route.size()-1);
-		int oldVehiclesUsed = instance.getVehiclesUsed();
-		this.route.add(new Route());
-		tempRoute = this.route.get(route.size()-1);
-		tempRoute.setIndex(lastKnownRoute.getIndex()+1);
-		// add the depot as the first node to the route
-		tempRoute.setDepot(instance.getDepot());
-
-		// set the cost of the route
-		Cost cost = new Cost();
-		tempRoute.setCost(cost);
-
-		// assign vehicle
-		Vehicle vehicle = new Vehicle();
-		instance.setVehiclesUsed(oldVehiclesUsed+1);
-		/*
-		 * The following is a method that supposes that there are multiple depots, so instead of
-		 * changing everything in the mdvrp package, we just pass 0 as depot.
-		 */
-		vehicle.setCapacity(instance.getCapacity(0,0)); 
-		tempRoute.setAssignedVehicle(vehicle);
-	}
 	
-	public void buildInitialRoute(Instance instance) {
-		Route route; // stores the pointer to the current route
-		Customer customerChosenPtr; // stores the pointer to the customer chosen from depots list assigned customers
-		Customer superCustomerPtr; //Store the pointer to the super customers
-		Random random = new Random();
-		int i;
-		/*
-		 * Customers of the DEPOT are ordered from the most distant to the closet (closest is
-		 * at the end of the array).
-		 * After knowing how many starting vehicles we want to use, we assign to them the
-		 * distant customers.
-		 * Then for each distant customer (which from now on we will call "super customer")
-		 * we create its neighbourhood of near customers that our vehicle will visit. 
-		 */
-		for(i=0; i<instance.getVehiclesUsed();++i){
-			superCustomerPtr = instance.getDepot().getAssignedCustomer(i);
-			route = this.route.get(i);
-			insertBestTravel(instance, route, superCustomerPtr);
-			evaluateRoute(route);
-			superCustomerPtr.generateNeighbours(instance.getDepot().getAssignedcustomers(), instance.getVehiclesUsed());
-			for(int j=0; j < superCustomerPtr.getNeighbours().size();++j){ //Try to add the customer to the route
-				customerChosenPtr = superCustomerPtr.getNeighbours().get(j);
-				if (customerChosenPtr.getCapacity() + route.getCost().load <= route.getLoadAdmited()){
-					insertBestTravel(instance, route, customerChosenPtr);
-					evaluateRoute(route);
-				}
-				else{
-					superCustomerPtr.getNeighbours().remove(customerChosenPtr);
-					customerChosenPtr.setIsTaken(false); //Remove the marking
-					customerChosenPtr.setDistanceFromSupercustomer(0);
-				}
-			}
-		}
-		/*
-		 * At this point the customers left alone are:
-		 * - Those not belonging to any neighbourhood bc they're to far from every superCustomer.
-		 * - Those not belonging to any neighbourhood bc they're violating capacity constraints
-		 * All these customers have IsTaken variable = false
-		 * We try to merge them together
-		 *
-		 * Here down we try to add a new vehicles and a new route (if available).
-		 * If we can, then customerChosenPtr becomes a superCustomer: we recompute the distance from
-		 * the other supercustomers (instance.setSCustomersMeanDistance()), generate its new neighbourhood,
-		 * insert it into our new route, evaluate the route and then for its neighbourhood
-		 * we try to add each neighbour to the route. If this fails, we remove the customer from the
-		 * neighbourhood and remove the marking.
-		 */
-		for(i=instance.getVehiclesUsed();i<instance.getDepot().getAssignedCustomersNr(); ++i){
-			customerChosenPtr = instance.getDepot().getAssignedCustomer(i);
-			if(!customerChosenPtr.getIsTaken()){ //If the customer is not taken
-				if(instance.getVehiclesUsed()< instance.getVehiclesNr()){ //If there are vehicles available, we generate new routes
-					addNewSingleRoute(instance);
-					route = this.route.get(this.route.size()-1);
-					customerChosenPtr.setIsDistant(); //Mark the customer as supercustomer
-					instance.setSCustomersMeanDistance();
-					customerChosenPtr.generateNeighbours(instance.getDepot().getAssignedcustomers(), instance.getVehiclesUsed());
-					insertBestTravel(instance,route,customerChosenPtr);
-					evaluateRoute(route);
-					//Loop through all the neighbours of this scustomer and try to add them to the route
-					for(int j=0;j< customerChosenPtr.getNeighbours().size();++j){
-						Customer subCustomerPtr = customerChosenPtr.getNeighbours().get(j);
-						if(subCustomerPtr.getCapacity()+route.getCost().load <= route.getLoadAdmited()){
-							insertBestTravel(instance,route,subCustomerPtr);
-							evaluateRoute(route);
-						}
-						else{ //These are very unlucky customers, they are all left alone... :(
-							boolean returnVal;
-							returnVal = customerChosenPtr.getNeighbours().remove(subCustomerPtr);
-							subCustomerPtr.setIsTaken(false); //Remove the marking
-							subCustomerPtr.setDistanceFromSupercustomer(0);
-							System.out.println("2: "+returnVal);
-						}
+	public void buildInitialRoutesBis(Instance instance) 
+	{
+		Route r; // stores the pointer to the current route
+		ArrayList<Customer> list = instance.getSortedCustomers();
+		Customer customer;
+		double totalDemand = 0;
+		int customerNr = 0;
+		int position;
+		boolean good = false;
+		int k;
+		
+		for(int i=0; i<route.size(); i++)
+		{
+			r = route.get(i);
+			totalDemand = 0;
+			customerNr = 0;
+		//	System.out.println("RottaValutata: " + r.getIndex());
+			for(int j=0; j<list.size(); j++)
+			{
+				customer = list.get(j);
+				if(!customer.getIsTaken() && customerNr<=9)
+				{
+					if(totalDemand+customer.getCapacity()<=r.getLoadAdmited())
+					{
+						totalDemand = totalDemand + customer.getCapacity();
+						customerNr++;
+						//position = 
+						insertBestTravel(instance, r, customer);
+						evaluateRoute(r);
+						/*good = evaluateRouteBis(instance, r, customer, position);
+						if(good)
+						{
+							customer.setRouteIndex(r.getIndex());
+							customer.setIsTaken(true);
+							r.addCustomer(customer, position);
+						}*/
 					}
 				}
-				else{ //We don't have any more vehicles, we add the customer to a random route
-					int randomRouteNr = random.nextInt(this.route.size());
-					route = this.route.get(randomRouteNr);
-					customerChosenPtr.setIsTaken(true); //Mark it anyway even if it's not into a neighbourhood
-					insertBestTravel(instance,route,customerChosenPtr);
-					evaluateRoute(route);
-				}
 			}
 		}
 		
-		/*
-		 * Clearly we have an issue and we are forgetting, somewhere, to remove the marking isTaken
-		 * from the customers.
-		 * However, by using routeindex, we can easily add the missing customers to the routes
-		 * even if they are marked as already taken.
-		 */
-		for(i=0; i < instance.getDepot().getAssignedCustomersNr(); ++i){
-			customerChosenPtr = instance.getDepot().getAssignedCustomer(i);
-			if(customerChosenPtr.getRouteIndex() == -1){
-				int randomRouteNr = random.nextInt(this.route.size());
-				route = this.route.get(randomRouteNr);
-//				System.out.println("taken before change: "+customerChosenPtr.getIsTaken());
-//				System.out.println("Is distant: "+customerChosenPtr.getIsDistant());
-				customerChosenPtr.setIsTaken(true); //Mark it anyway
-				insertBestTravel(instance,route,customerChosenPtr);
-				evaluateRoute(route);
-			}
-		}
-		/*
-		 * DEBUG starts
-		 */
-		int totCRoutes=0;
-		for(i=0; i < this.route.size();++i)
-			totCRoutes+=this.route.get(i).getCustomersLength();
-		
-		System.out.println("Total customers in routes: "+totCRoutes);
-		for(i=0; i< instance.getCustomersNr();++i){
-			if(instance.getDepot().getAssignedCustomer(i).getRouteIndex() == -1)
-				System.out.println("Customer "+instance.getDepot().getAssignedCustomer(i).getNumber()+" doesn't belong to any route");
-		}
-		System.out.println("");
-		/*
-		 * DEBUG ends
-		 */
+/*		for(Customer c : list)
+		{
+			System.out.println("Customer: " + c.getNumber() + "\tAngle: " + c.getAngleFromDepot());
+			System.out.println("Capacità: " + c.getCapacity());
+		}*/
+		//System.exit(-1);
 	}
+	
+	private boolean evaluateRouteBis(Instance instance, Route route, Customer customer, int position)
+	{
+		boolean good = false;
+		
+		return good;
+	}
+	
 	private void insertBestTravel(Instance instance, Route route, Customer customerChosenPtr) {
 		double minCost = Double.MAX_VALUE;
 		double tempMinCost = Double.MAX_VALUE;
@@ -274,7 +190,7 @@ public class MySolution extends SolutionAdapter{
 			 * We do this because all the customers that are set as "distant"
 			 * will generate their neighbours
 			 */
-			customerChosenPtr.setIsDistant();
+			//customerChosenPtr.setIsDistant();
 		}else {
 			// first position
 			if(customerChosenPtr.getEndTw() <= route.getCustomer(0).getEndTw()) {
@@ -311,8 +227,10 @@ public class MySolution extends SolutionAdapter{
 				}
 			}
 		}
-		route.addCustomer(customerChosenPtr, position);
 		customerChosenPtr.setRouteIndex(route.getIndex());
+		customerChosenPtr.setIsTaken(true);
+		route.addCustomer(customerChosenPtr, position);
+		//return position;
 //		System.out.println("Rotta: " + route.getIndex());
 //		System.out.println("Customer: "+ customerChosenPtr.getNumber() + "Assegnazione Indice: " + customerChosenPtr.getRouteIndex());
 	}
@@ -381,40 +299,27 @@ public class MySolution extends SolutionAdapter{
 	public double getAlpha() {
 		return alpha;
 	}
-
 	public double getBeta() {
 		return beta;
 	}
-
 	public double getGamma() {
 		return gamma;
 	}
-	
 	public void addTravelTime(double travelTime){
 		cost.travelTime += travelTime;
 	}
-
 	public void addServiceTime(double serviceTime) {
-		cost.serviceTime += serviceTime;
-		
+		cost.serviceTime += serviceTime;	
 	}
-
 	public void addWaitingTime(double waitingTime) {
 		cost.waitingTime += waitingTime;
-		
 	}
 	public void setCost(Cost cost) {
-		this.cost = cost;
-		
+		this.cost = cost;	
 	}
-
-
 	public static Instance getInstance(){
 		return instance;
 	}
-	
-	
-	
 	public static void setInstance(Instance instance){
 		MySolution.instance = instance;
 	}
@@ -424,11 +329,188 @@ public class MySolution extends SolutionAdapter{
 	public Route getRoute(int index){
 		return route.get(index);
 	}
-	
 	public int getRouteNr(){
 		return route.size();
 	}
 	public void setRoute(ArrayList<Route> route) {
 		this.route = route;
 	}
+	public void deleteFromSolution (Route route){
+		this.route.remove(route);
+	}
+	
+	
+	/*	public void initializeRoute(Instance instance) {
+	Route tempRoute;
+	// Creation of the routes; each route starts at the depot
+	for (int i = 0; i < instance.getVehiclesUsed(); ++i){
+		// initialization of routes
+		this.route.add(new Route());
+		tempRoute = this.route.get(route.size()-1);
+		tempRoute.setIndex(i);
+		// add the depot as the first node to the route
+		tempRoute.setDepot(instance.getDepot());
+
+		// set the cost of the route
+		Cost cost = new Cost();
+		tempRoute.setCost(cost);
+
+		// assign vehicle
+		Vehicle vehicle = new Vehicle();
+		
+		 * The following is a method that supposes that there are multiple depots, so instead of
+		 * changing everything in the mdvrp package, we just pass 0 as depot.
+		 
+		vehicle.setCapacity(instance.getCapacity(0,0)); 
+		tempRoute.setAssignedVehicle(vehicle);		
+	}
+}*/
+	/*public void addNewSingleRoute(Instance instance){
+	Route tempRoute;
+	Route lastKnownRoute = this.route.get(this.route.size()-1);
+	int oldVehiclesUsed = instance.getVehiclesUsed();
+	this.route.add(new Route());
+	tempRoute = this.route.get(route.size()-1);
+	tempRoute.setIndex(lastKnownRoute.getIndex()+1);
+	// add the depot as the first node to the route
+	tempRoute.setDepot(instance.getDepot());
+
+	// set the cost of the route
+	Cost cost = new Cost();
+	tempRoute.setCost(cost);
+
+	// assign vehicle
+	Vehicle vehicle = new Vehicle();
+	instance.setVehiclesUsed(oldVehiclesUsed+1);
+	
+	 * The following is a method that supposes that there are multiple depots, so instead of
+	 * changing everything in the mdvrp package, we just pass 0 as depot.
+	 
+	vehicle.setCapacity(instance.getCapacity(0,0)); 
+	tempRoute.setAssignedVehicle(vehicle);
+}*/
+
+/*public void buildInitialRoute(Instance instance) {
+	Route route; // stores the pointer to the current route
+	Customer customerChosenPtr; // stores the pointer to the customer chosen from depots list assigned customers
+	Customer superCustomerPtr; //Store the pointer to the super customers
+	Random random = new Random();
+	int i;
+	
+	 * Customers of the DEPOT are ordered from the most distant to the closet (closest is
+	 * at the end of the array).
+	 * After knowing how many starting vehicles we want to use, we assign to them the
+	 * distant customers.
+	 * Then for each distant customer (which from now on we will call "super customer")
+	 * we create its neighbourhood of near customers that our vehicle will visit. 
+	 
+	for(i=0; i<instance.getVehiclesUsed();++i){
+		superCustomerPtr = instance.getDepot().getAssignedCustomer(i);
+		route = this.route.get(i);
+		insertBestTravel(instance, route, superCustomerPtr);
+		evaluateRoute(route);
+		superCustomerPtr.generateNeighbours(instance.getDepot().getAssignedcustomers(), instance.getVehiclesUsed());
+		for(int j=0; j < superCustomerPtr.getNeighbours().size();++j){ //Try to add the customer to the route
+			customerChosenPtr = superCustomerPtr.getNeighbours().get(j);
+			if (customerChosenPtr.getCapacity() + route.getCost().load <= route.getLoadAdmited()){
+				Customer k= route.getCustomer(route.getCustomersLength()-1);
+				if(customerChosenPtr.getStartTw() > k.getStartTw()){
+				insertBestTravel(instance, route, customerChosenPtr);
+				evaluateRoute(route);
+			}}
+			else{
+				superCustomerPtr.getNeighbours().remove(customerChosenPtr);
+				customerChosenPtr.setIsTaken(false); //Remove the marking
+				customerChosenPtr.setDistanceFromSupercustomer(0);
+			}
+		}
+	}
+	
+	 * At this point the customers left alone are:
+	 * - Those not belonging to any neighbourhood bc they're to far from every superCustomer.
+	 * - Those not belonging to any neighbourhood bc they're violating capacity constraints
+	 * All these customers have IsTaken variable = false
+	 * We try to merge them together
+	 *
+	 * Here down we try to add a new vehicles and a new route (if available).
+	 * If we can, then customerChosenPtr becomes a superCustomer: we recompute the distance from
+	 * the other supercustomers (instance.setSCustomersMeanDistance()), generate its new neighbourhood,
+	 * insert it into our new route, evaluate the route and then for its neighbourhood
+	 * we try to add each neighbour to the route. If this fails, we remove the customer from the
+	 * neighbourhood and remove the marking.
+	 
+	for(i=instance.getVehiclesUsed();i<instance.getDepot().getAssignedCustomersNr(); ++i){
+		customerChosenPtr = instance.getDepot().getAssignedCustomer(i);
+		if(!customerChosenPtr.getIsTaken()){ //If the customer is not taken
+			if(instance.getVehiclesUsed()< instance.getVehiclesNr()){ //If there are vehicles available, we generate new routes
+				addNewSingleRoute(instance);
+				route = this.route.get(this.route.size()-1);
+				customerChosenPtr.setIsDistant(); //Mark the customer as supercustomer
+				instance.setSCustomersMeanDistance();
+				customerChosenPtr.generateNeighbours(instance.getDepot().getAssignedcustomers(), instance.getVehiclesUsed());
+				insertBestTravel(instance,route,customerChosenPtr);
+				evaluateRoute(route);
+				//Loop through all the neighbours of this scustomer and try to add them to the route
+				for(int j=0;j< customerChosenPtr.getNeighbours().size();++j){
+					Customer subCustomerPtr = customerChosenPtr.getNeighbours().get(j);
+					if(subCustomerPtr.getCapacity()+route.getCost().load <= route.getLoadAdmited()){
+						//if(subCustomerPtr.getStartTw()> subCustomerPtr.ge){
+						insertBestTravel(instance,route,subCustomerPtr);
+						evaluateRoute(route);
+						//}
+					}
+					else{ //These are very unlucky customers, they are all left alone... :(
+						boolean returnVal;
+						returnVal = customerChosenPtr.getNeighbours().remove(subCustomerPtr);
+						subCustomerPtr.setIsTaken(false); //Remove the marking
+						subCustomerPtr.setDistanceFromSupercustomer(0);
+						System.out.println("2: "+returnVal);
+					}
+				}
+			}
+			else{ //We don't have any more vehicles, we add the customer to a random route
+				int randomRouteNr = random.nextInt(this.route.size());
+				route = this.route.get(randomRouteNr);
+				customerChosenPtr.setIsTaken(true); //Mark it anyway even if it's not into a neighbourhood
+				insertBestTravel(instance,route,customerChosenPtr);
+				evaluateRoute(route);
+			}
+		}
+	}
+	
+	
+	 * Clearly we have an issue and we are forgetting, somewhere, to remove the marking isTaken
+	 * from the customers.
+	 * However, by using routeindex, we can easily add the missing customers to the routes
+	 * even if they are marked as already taken.
+	 
+	for(i=0; i < instance.getDepot().getAssignedCustomersNr(); ++i){
+		customerChosenPtr = instance.getDepot().getAssignedCustomer(i);
+		if(customerChosenPtr.getRouteIndex() == -1){
+			int randomRouteNr = random.nextInt(this.route.size());
+			route = this.route.get(randomRouteNr);
+//			System.out.println("taken before change: "+customerChosenPtr.getIsTaken());
+//			System.out.println("Is distant: "+customerChosenPtr.getIsDistant());
+			customerChosenPtr.setIsTaken(true); //Mark it anyway
+			insertBestTravel(instance,route,customerChosenPtr);
+			evaluateRoute(route);
+		}
+	}
+	
+	 * DEBUG starts
+	 
+	int totCRoutes=0;
+	for(i=0; i < this.route.size();++i)
+		totCRoutes+=this.route.get(i).getCustomersLength();
+	
+	System.out.println("Total customers in routes: "+totCRoutes);
+	for(i=0; i< instance.getCustomersNr();++i){
+		if(instance.getDepot().getAssignedCustomer(i).getRouteIndex() == -1)
+			System.out.println("Customer "+instance.getDepot().getAssignedCustomer(i).getNumber()+" doesn't belong to any route");
+	}
+	System.out.println("");
+	
+	 * DEBUG ends
+	 
+}*/
 }

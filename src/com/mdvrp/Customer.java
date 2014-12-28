@@ -19,6 +19,7 @@ public class Customer {
 	private double waitingTime;         // time to wait until arriveTime equal start time window
 	private double twViol;              // value of time window violation, 0 if none
 	private double distanceFromDepot;
+	private double angleFromDepot;
 	private double distanceFromSupercustomer;
 	private Random random;
 	private boolean isDistant=false;
@@ -199,6 +200,8 @@ public class Customer {
 				}
 			}
 		}
+		
+		
 	}
 
 	public ArrayList<Customer> getNeighbours(){
@@ -333,6 +336,14 @@ public class Customer {
 
 	public void setRouteIndex(int routeIndex) {
 		this.routeIndex = routeIndex;
+	}
+
+	public double getAngleFromDepot() {
+		return angleFromDepot;
+	}
+
+	public void setAngleFromDepot(double angleFromDepot) {
+		this.angleFromDepot = angleFromDepot;
 	}
 
 

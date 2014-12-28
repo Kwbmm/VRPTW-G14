@@ -50,43 +50,27 @@ public class MyRelocateMove implements ComplexMove{
     	Route routeDelete = sol.getRoute(routeIndexDelete);
     	
     	
-    	System.out.println(this + "\nRotta iniziale prima della mossa: ");
-    	for (int i=0; i< routeInsert.getCustomersLength(); i++)
-    		System.out.printf("%d  ",routeInsert.getCustomer(i).getNumber());
-    	System.out.println("\nRotta vicina prima della mossa: ");
-    	for (int i=0; i< routeDelete.getCustomersLength(); i++)
-    		System.out.printf("%d  ", routeDelete.getCustomer(i).getNumber());
+    	//System.out.println(this + "\nRotta iniziale prima della mossa: ");
+    	//for (int i=0; i< routeInsert.getCustomersLength(); i++)
+    	//	System.out.printf("%d  ",routeInsert.getCustomer(i).getNumber());
+    	//System.out.println("\nRotta vicina prima della mossa: ");
+    	//for (int i=0; i< routeDelete.getCustomersLength(); i++)
+    	//	System.out.printf("%d  ", routeDelete.getCustomer(i).getNumber());
     	
     	if(routeIndexInsert != routeIndexDelete)
     	{
     		//Insert the customer in a new route
     		insertBestTravelAndDelete(routeInsert, insertedCustomer, routeDelete);
-    		/*
-    		//Delete the customer from the actual route
-    		List<Customer> lista = routeDelete.getCustomers();
-    		
-    		boolean verifica = lista.remove(insertedCustomer);
-    		
-    		System.out.println("\nCancellato dalla rotta 1?? " + verifica);
-    		
-    		//If a customer is deleted from one route, then one customer from the new route will be moved to the old one
-    		if(verifica==true )
-    		{
-    			insertBestTravel(routeDelete, deletedCustomer);
-    			List<Customer> lista2 = routeInsert.getCustomers();
-    			boolean verifica2 = lista2.remove(deletedCustomer);
-    			System.out.println("\nCancellato dalla rotta 2?? " + verifica2);
-    		}*/
     	}
     			
-    	System.out.println("\nRotta vicina dopo mossa: ");
+/*    	System.out.println("\nRotta vicina dopo mossa: ");
     	for (int i=0; i< routeDelete.getCustomersLength(); i++)
     		System.out.printf("%d  ", routeDelete.getCustomer(i).getNumber());
 
     	System.out.println("\nRotta iniziale dopo mossa: ");
     	for (int i=0; i< routeInsert.getCustomersLength(); i++)
     		System.out.printf("%d  ",routeInsert.getCustomer(i).getNumber());
-    	System.out.println("\n");
+    	System.out.println("\n");*/
 	}
 
 	@Override

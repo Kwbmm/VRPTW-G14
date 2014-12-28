@@ -1,6 +1,6 @@
 package com.TabuSearch;
 
-import org.coinor.opents.ComplexTabuList;
+import org.coinor.opents.*;
 import org.coinor.opents.TabuSearchEvent;
 import org.coinor.opents.TabuSearchListener;
 
@@ -9,48 +9,48 @@ public class MyTabuList extends ComplexTabuList implements TabuSearchListener{
 
 	public MyTabuList(int tenure, int[] attrDim) {
 		super(tenure, attrDim);
-		// TODO Auto-generated constructor stub
+		//  Auto-generated constructor stub
 	}
 
 	@Override
-	public void tabuSearchStarted(TabuSearchEvent e) {
-		// TODO Auto-generated method stub
+	public void tabuSearchStarted(TabuSearchEvent arg0) {
+		//  Auto-generated method stub
 		
 	}
 
 	@Override
-	public void tabuSearchStopped(TabuSearchEvent e) {
-		// TODO Auto-generated method stub
+	public void tabuSearchStopped(TabuSearchEvent arg0) {
+		//  Auto-generated method stub
 		
 	}
 
 	@Override
-	public void newBestSolutionFound(TabuSearchEvent e) {
-		// TODO Auto-generated method stub
+	public void newBestSolutionFound(TabuSearchEvent arg0) {
+		//  Auto-generated method stub
 		
 	}
 
 	@Override
-	public void newCurrentSolutionFound(TabuSearchEvent e) {
-		// TODO Auto-generated method stub
+	public void newCurrentSolutionFound(TabuSearchEvent arg0) {
+		//  Auto-generated method stub
 		
 	}
 
 	@Override
-	public void unimprovingMoveMade(TabuSearchEvent e) {
-		// TODO Auto-generated method stub
+	public void unimprovingMoveMade(TabuSearchEvent arg0) {
+		//  Auto-generated method stub
 		
 	}
 
 	@Override
-	public void improvingMoveMade(TabuSearchEvent e) {
-		// TODO Auto-generated method stub
+	public void improvingMoveMade(TabuSearchEvent arg0) {
+		//  Auto-generated method stub
 		
 	}
 
 	@Override
-	public void noChangeInValueMoveMade(TabuSearchEvent e) {
-		// TODO Auto-generated method stub
+	public void noChangeInValueMoveMade(TabuSearchEvent arg0) {
+		//  Auto-generated method stub
 		
 	}
 

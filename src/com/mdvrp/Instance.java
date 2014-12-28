@@ -3,6 +3,8 @@
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedList;
 import java.util.Random;
 import java.util.Scanner;
 
@@ -113,19 +115,35 @@ public class Instance {
 				parameters.setTabuTenure((int)(Math.sqrt(getCustomersNr())));
 			
 			calculateDistances();
-			assignCustomersToDepots();			
-			sortAssignedCustomers();
+			assignCustomersToDepots();	
+			//Collections.sort(customers, new CompareDistance());
+			calculateAngles();
+			Collections.sort(customers, new CompareAngle());
+/*			for(Customer c : customers)
+			{
+				System.out.println("Numero: " + c.getNumber());
+				System.out.println("Distanza: " + c.getDistance());
+				System.out.println("Angolo: " + c.getAngleFromDepot());
+			}	*/		
+			//sortAssignedCustomers();
 		} catch (FileNotFoundException e) {
 			// File not found
 			System.out.println("File not found!");
 			System.exit(-1);
 		}
 	}
-	
+
+	public void calculateAngles()
+	{
+		for (int i = 0; i < customers.size(); ++i) {
+			double angle = Math.atan2(customers.get(i).getYCoordinate() - depot.getYCoordinate(), customers.get(i).getXCoordinate() - depot.getXCoordinate());
+			customers.get(i).setAngleFromDepot(angle);
+		}
+	}
 	/**
 	 * Order for each depot the list containing the assigned customers based on distances
 	 */
-	public void sortAssignedCustomers() {
+	/*public void sortAssignedCustomers() {
 			Quick.sort(depot.getAssignedcustomers(), 0);
 			for(int i=0;i<vehiclesUsed;++i)
 				depot.getAssignedCustomer(i).setIsDistant();
@@ -160,7 +178,7 @@ public class Instance {
 		for(i=0;i<superCustomers.size();++i){
 			superCustomers.get(i).setMeanDistance(meanDistance);
 		}
-	}
+	}*/
 	
 	/**
 	 * Get the depot number found at the passed position
@@ -241,33 +259,14 @@ public class Instance {
 	}
 	
 	/**
-	 * Print for the list of customers their number on a row separated by space
-	 * Used for debugging
-	 */
-	public String printCustomersNumber(ArrayList<Customer> customers) {
-		StringBuffer print = new StringBuffer();
-		print.append("Customers:");
-		for(int i=0; i < depot.getAssignedCustomersNr();++i){
-			print.append(" " + depot.getAssignedCustomer(i).getNumber());
-			print.append(" "+ depot.getAssignedCustomer(i).getDistance());
-			print.append("\n");
-		}
-//		for (int i = 0; i < customers.size(); ++i) {
-//			print.append(" " + customers.get(i).getNumber());
-//			print.append(" "+ customers.);
-//		}
-		print.append("\n");
-		return print.toString();
-	}
-	
-	/**
 	* Calculate the symmetric euclidean matrix of costs
 	*/
 	public void calculateDistances() 
 	{
 		distances = new double[customersNr + 1][customersNr + 1];
-		for (int i = 0; i  < customersNr; ++i)
-			for (int j = i + 1; j < customersNr +  1; ++j)
+		for (int i = 0; i  < customersNr + 1; ++i)
+		{			//for (int j = i + 1; j < customersNr +  1; ++j)
+			for (int j = 0; j < customersNr +  1; ++j)
 			{
 				//case both customers
 				if(i < customersNr && j < customersNr)
@@ -287,17 +286,12 @@ public class Instance {
 					customers.get(i).setDistanceFromDepot(distances[i][j]);
 				}
 			}
+		}
 	}
 public ArrayList<Customer> calculateAnglesToCustomer( Customer c) {
 		
 		ArrayList<Customer> list = (ArrayList<Customer>)allCustomers.clone(); //get all customers
-		
-		//System.out.println("ListSize: " + list.size());
-		/*for (Customer cc : list)
-		{	
-			System.out.println("CustomerPrima: " + cc.getNumber());
-		}*/
-		
+
 		Customer swap = new Customer();
 		for(int i=0; i<list.size(); i++)
 		{
@@ -309,53 +303,15 @@ public ArrayList<Customer> calculateAnglesToCustomer( Customer c) {
 				list.set(0, swap); 	// set the customer considered in the first position
 			}
 		}
-		
-		/*for (Customer cc : list)
-		{	
-			System.out.println("CustomerDopo: " + cc.getNumber());
-		}*/
-        
+
 		for (int i = 1; i < list.size(); ++i) {
 			double angle = Math.atan2(list.get(i).getYCoordinate() - c.getYCoordinate(), list.get(i).getXCoordinate() - c.getXCoordinate());
 			list.get(i).setAngleToCustomer(angle);
 		}
 		
 		CopyOfQuick.sort(list);
-		/*for (int z=0;z<list.size();z++){
-			System.out.println((list.get(z).getNumber()+1)+" "+list.get(z).getXCoordinate()+" "+list.get(z).getYCoordinate());
-			
-		}*/
 		return list;
-		
-		
 	}
-	
-	/**
-	 * @return distances as a string
-	 */
-	/*
-	public String printDistances() {
-		StringBuffer print = new StringBuffer();
-		for	(int i = 0; i < customersNr + depotsNr; ++i) {
-			for	(int j = 0; j < customersNr + depotsNr; ++j)
-				print.append(distances[i][j] + " ");
-			print.append("\n");
-		}
-		return print.toString();
-	}*/
-	
-	
-	/**
-	 * @return all the customers as string
-	 */
-	/*
-	public String printCustomers() {
-		StringBuffer print = new StringBuffer();
-		for (int i = 0; i < customersNr; ++i) {
-			print.append(customers.get(i));
-		}
-		return print.toString();
-	}*/
 	
 	/**
 	 * @param costs the costs to set
@@ -438,6 +394,11 @@ public ArrayList<Customer> calculateAnglesToCustomer( Customer c) {
 	public void setCustomers(ArrayList<Customer> customers) {
 		this.allCustomers = customers;
 	}
+	
+	public ArrayList<Customer> getSortedCustomers()
+	{
+		return customers;
+	}
 
 	public Depot getDepot(){
 		return depot;
@@ -454,6 +415,14 @@ public ArrayList<Customer> calculateAnglesToCustomer( Customer c) {
 	 */
 	public Random getRandom() {
 		return random;
+	}
+
+	public double[][] getDistances() {
+		return distances;
+	}
+
+	public void setDistances(double[][] distances) {
+		this.distances = distances;
 	}
 
 	/**
@@ -473,4 +442,50 @@ public ArrayList<Customer> calculateAnglesToCustomer( Customer c) {
 	public int getVehiclesUsed(){
 		return this.vehiclesUsed;
 	}
+	
+	/**
+	 * Print for the list of customers their number on a row separated by space
+	 * Used for debugging
+	 */
+	/*public String printCustomersNumber(ArrayList<Customer> customers) {
+		StringBuffer print = new StringBuffer();
+		print.append("Customers:");
+		for(int i=0; i < depot.getAssignedCustomersNr();++i){
+			print.append(" " + depot.getAssignedCustomer(i).getNumber());
+			print.append(" "+ depot.getAssignedCustomer(i).getDistance());
+			print.append("\n");
+		}
+		for (int i = 0; i < customers.size(); ++i) {
+			print.append(" " + customers.get(i).getNumber());
+			print.append(" "+ customers.);
+		}
+		print.append("\n");
+		return print.toString();
+	}*/
+	
+	/**
+	 * @return distances as a string
+	 */
+	/*
+	public String printDistances() {
+		StringBuffer print = new StringBuffer();
+		for	(int i = 0; i < customersNr + depotsNr; ++i) {
+			for	(int j = 0; j < customersNr + depotsNr; ++j)
+				print.append(distances[i][j] + " ");
+			print.append("\n");
+		}
+		return print.toString();
+	}*/
+	
+	/**
+	 * @return all the customers as string
+	 */
+	/*
+	public String printCustomers() {
+		StringBuffer print = new StringBuffer();
+		for (int i = 0; i < customersNr; ++i) {
+			print.append(customers.get(i));
+		}
+		return print.toString();
+	}*/
 }

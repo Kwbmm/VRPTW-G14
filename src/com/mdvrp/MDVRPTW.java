@@ -34,6 +34,7 @@ public class MDVRPTW {
 			}
 			
 			duration.start();
+			
 
 			// get the instance from the file			
 			instance = new Instance(parameters); 
@@ -58,6 +59,7 @@ public class MDVRPTW {
 	        search.tabuSearch.startSolving();
 	        
 	        duration.stop();
+	       // System.out.println("Duration: " + duration.getMilliSeconds());
 	        
 	        // Count routes
 	       int routesNr = 0;
@@ -69,10 +71,11 @@ public class MDVRPTW {
 	        			routesNr++;
 	       }
 	       
-	       // Print results
+	       
+	        // Print results
 	        String outSol = String.format("%s; %5.2f; %d; %4d\r\n" ,
 	        		instance.getParameters().getInputFileName(), search.feasibleCost.total,
-	            	duration.getSeconds(), routesNr);
+	        		 duration.getMinutes()*60+duration.getSeconds(), routesNr);
 	        System.out.println(outSol);
 	        FileWriter fw = new FileWriter(parameters.getOutputFileName(),true);
 	        fw.write(outSol);
