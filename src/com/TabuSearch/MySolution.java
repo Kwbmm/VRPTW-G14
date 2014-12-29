@@ -178,8 +178,8 @@ public class MySolution extends SolutionAdapter{
 		int customerNr = 0;
 		Random random = new Random();;
 		
-		int minCustomersPerRoute = 5;
-		int maxCustomersPerRoute = 10;
+		int minCustomersPerRoute = 4;
+		int maxCustomersPerRoute = 9;
 		int customerNrThreshold = random.nextInt(maxCustomersPerRoute-minCustomersPerRoute+1)+minCustomersPerRoute;
 		for(int i=0; i<route.size(); i++)
 		{

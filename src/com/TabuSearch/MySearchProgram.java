@@ -145,7 +145,7 @@ public class MySearchProgram implements TabuSearchListener{
 		{
 			//System.out.println("CAMBIO MOSSA");
 			//instance.getParameters().setMovesType(MovesType.SWAP);
-			manager.setMovesType(MovesType.RELOCATE);
+			manager.setMovesType(MovesType.SWAP);
 		}
 	}
 	
