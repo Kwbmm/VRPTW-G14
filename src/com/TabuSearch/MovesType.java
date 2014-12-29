@@ -1,5 +1,5 @@
 package com.TabuSearch;
 
 public enum MovesType {
-	RELOCATE
+	RELOCATE, SWAP
 }

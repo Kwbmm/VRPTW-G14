@@ -2,6 +2,7 @@ package com.TabuSearch;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
 import java.util.Map.Entry;
@@ -19,51 +20,50 @@ public class MyMoveManager implements MoveManager {
 	private static Instance instance;
 	private MovesType movesType;
 
-	
 	public MyMoveManager(Instance instance) {
 		MyMoveManager.setInstance(instance);
 	}
 
-
 	@Override
 	public Move[] getAllMoves(Solution solution) {
 		MySolution sol = ((MySolution)solution);
+
+		switch(movesType)
+		{
+			case RELOCATE:
+			//	System.out.println("RELOCATE - Iteration: " + MySearchProgram.getIterationsDone());
+				return getRelocateMoves(sol);
+			case SWAP:
+				//System.out.println("SWAP - Iteration: " + MySearchProgram.getIterationsDone());
+				return getSwapMoves(sol);
+				
+			default:
+				//System.out.println("RELOCATE2 - Iteration: " + MySearchProgram.getIterationsDone());
+				return getRelocateMoves(sol);
+		}
 		
+		/*if(movesType.equals("RELOCATE"))
+		{
+			System.out.println("RELOCATE - Iteration: " + MySearchProgram.getIterationsDone());
+			return getRelocateMoves(sol);
+		}
+		else if(movesType.equals("SWAP"))
+		{
+			System.out.println("SWAP - Iteration: " + MySearchProgram.getIterationsDone());
 			return getSwapMoves(sol);
-		
-    
+		}
+		else
+		{
+			System.out.println("RELOCATE2 - Iteration: " + MySearchProgram.getIterationsDone());
+			return getRelocateMoves(sol);
+		}*/
 	}
-	
-	
-	
+		
 	public Move[] getSwapMoves(MySolution solution){
 		ArrayList<Route> routes = solution.getRoutes();
 		Move[] buffer = new Move[ getInstance().getCustomersNr() * getInstance().getVehiclesNr() ];
 		int nextBufferPos = 0;
 		
-		
-
-		/*
-         	 // iterates depots
-         for (int i = 0; i < routes.length; ++i) {
-         	// iterates routes
-         	for (int j = 0; j < routes[i].length; ++j) {
-         		// iterates customers in the route
-         		for (int k = 0; k < routes[i][j].getCustomersLength(); ++k) {
-         			for(int l = 0; l < routes.length; ++l){
-	         			// iterate each route for that deposit and generate move to it if is different from the actual route
-	         			for (int r = 0; r < routes[l].length; ++r) { 
-	         				if (!(r == j && i == l)) {
-	         					Customer customer = routes[i][j].getCustomer(k);
-	         					buffer[nextBufferPos++] = new MySwapMove(getInstance(), customer, i, j, k, l, r);
-	         				}
-	         			}
-         			}
-         		}
-         	}
-         	( Instance instance, Customer customer, int deleteDepotNr, int deleteRouteNr, int deletePositionIndex, int insertDepotNr , int insertRouteNr)
-         }
-         	}*/
 		for (int j = 0; j < routes.size(); ++j) { // for each route 
 			for (int k = 0; k < routes.get(j).getCustomersLength(); ++k) { // for each customer of the route
 				for(int l = 0; l < routes.size(); ++l){ // for all the other routes 
@@ -91,59 +91,81 @@ public class MyMoveManager implements MoveManager {
 		return moves;
 	}
 	 
-	 
 	private Move[] getRelocateMoves(MySolution sol) {
 	   	 ArrayList<Route> routes = sol.getRoutes();
-	   	 Move[] buffer  = new Move[routes.size()];
+	   	 Move[] buffer  = new Move[instance.getCustomersNr()*instance.getVehiclesNr()];
          int nextBufferPos = 0;
          int deletePositionIndex;
          int insertPositionIndex;
-         
-/*         for (int j=0; j<routes.size(); j++){
-
+         int customerRouteindex;
+         int thisRouteIndex;
+        /* for (int j=0; j<routes.size(); j++){
+        	 if(!routes.get(j).isEmpty()){
       		System.out.println("\nRotta "+ routes.get(j).getIndex());         
      	for (int i=0; i< routes.get(j).getCustomersLength(); i++){
      		
      		System.out.printf("%d  ",routes.get(j).getCustomer(i).getNumber());
-     	}
+     	}}
          }*/
          
          for (int i=0 ; i< routes.size(); i++){
         	 if(!routes.get(i).isEmpty()){
-        	 Customer insertedCustomer = new Customer();
-        	 int evaluatedRouteIndex= routes.get(i).getIndex(); // route you are evaluating 
-        	 
-        	// if( routes.get(i).getCustomersLength() > 1){ // if the route is not composed by only one customer
-        	 insertedCustomer = findCustomerToInsert(routes.get(i), 6); // customer you are going to insert in that route
-        	 insertPositionIndex= insertBestTravel(routes.get(i), insertedCustomer);
-        	 int nextRouteIndex = insertedCustomer.getRouteIndex(); // index of the route to which the customer found belongs
-        	 
-        	// System.out.println("\nCustomer selezionato: "+ insertedCustomer.getNumber() + " Rotta di appartenenza: "+ insertedCustomer.getRouteIndex());
+        		 Customer customer;
+        		 thisRouteIndex= routes.get(i).getIndex(); 				// route you are evaluating 
+        		 ArrayList<Customer> customers = findCustomersForSwap(routes.get(i)); // the list of all the customers near to the route (can include the customer of the route itself)
 
-        	 if(insertedCustomer!=null && nextRouteIndex!=evaluatedRouteIndex ){
-        		 Customer deletedCustomer = insertNewCustomer(routes.get(i), sol.getRoute(nextRouteIndex), insertedCustomer); 
-        		 // variables passed: 1)route you are evaluating from which you are going to delete a customer, 2) route where to put the customer,
-        		 if (deletedCustomer != null){
-        			 deletePositionIndex = getPositionInRoute(deletedCustomer, sol);
-        			 //buffer[nextBufferPos++] =  new MyRelocateMove(instance, evaluatedRouteIndex ,nextRouteIndex, insertedCustomer, deletedCustomer, deletePositionIndex, insertPositionIndex);
-        		 //System.out.println("MOSSA: " + buffer[i]);
-        		//	 System.out.println("IndiceRottaProvenienza: " + insertedCustomer.getRouteIndex());
-        		// System.out.println("IndiceRottaDestinazione: " + routes.get(i).getIndex());
-        		
+        		 for(int z=0; z<customers.size(); z++){
+        			 customer = customers.get(z); // iterate each customer of the list
+        			 customerRouteindex = customer.getRouteIndex(); // index of the route to which the customer found belongs
+
+        			 if(customerRouteindex != thisRouteIndex){
+        				 insertPositionIndex= insertBestTravel(routes.get(i), customer);
+        				 deletePositionIndex = sol.getRoute(customerRouteindex).getCustomers().indexOf(customer);
+        				 buffer[nextBufferPos++] =  new MyRelocateMove(instance, customer, customerRouteindex,  deletePositionIndex, thisRouteIndex , insertPositionIndex);
+//        				 System.out.println("MOSSA: " + buffer[nextBufferPos]);
+//        				 System.out.println("IndiceRottaProvenienza: " + customer.getRouteIndex());
+//        				 System.out.println("IndiceRottaDestinazione: " + routes.get(i).getIndex());
+
+        			 }
         		 }
         	 }
-        	 //System.out.println("-----------------------------");
          }
-         }
-         
-         
+	
          Move[] moves = new Move[ nextBufferPos];
          System.arraycopy( buffer, 0, moves, 0, nextBufferPos );
-         //for (int i =0 ; i< moves.length; i++)
-        	 //System.out.println(moves[i]);
-
+     /*    for (int i =0 ; i< moves.length; i++){
+        	 MyRelocateMove mov =(MyRelocateMove)moves[i];
+        	 System.out.printf( "\nMossa %d ---- RottaProvenienza: %d RottaDestinazione: %d Customer: %d", i, mov.getDeleteRouteNr(), mov.getInsertRouteNr(), mov.getCustomer().getNumber());
+         }
+*/
          return moves;
     }
+	public ArrayList<Customer> findCustomersForSwap(Route path){
+			Route route = path;
+			
+			ArrayList<Customer> list = new ArrayList<Customer>();
+			ArrayList<Customer> cust= (ArrayList<Customer>) route.getCustomers();
+			
+			//System.out.println("\nRotta valutata: " + route.getIndex());
+	    	//for (int i=0; i< cust.size(); i++)
+	    		//System.out.printf("%d  ", cust.get(i).getNumber());
+			
+			for (int i=0; i<route.getCustomersLength();i++){ // per ogni customer nella rotta
+				Customer k = cust.get(i);
+				ArrayList<Customer> orderedList= instance.calculateAnglesToCustomer(k);
+				list.addAll(orderedList.subList(0, instance.getCustomersNr()/2)); //prendi gli n customer vicini		
+				}
+			
+			
+			// add elements to al, including duplicates
+			HashSet<Customer> hs = new HashSet<Customer>();
+			hs.addAll(list);
+			list.clear();
+			list.addAll(hs);
+			
+		return list;
+		
+	}
 	
 	public int getPositionInRoute(Customer deletedCustomer, MySolution sol)
 	{
@@ -247,7 +269,7 @@ public class MyMoveManager implements MoveManager {
 	}
 	
 	
-	public Customer findCustomerToInsert(Route path, int n){
+/*	public Customer findCustomerToInsert(Route path, int n){
 		Route route = path;
 		ArrayList<Customer> list = new ArrayList<Customer>();
 		
@@ -284,7 +306,7 @@ public class MyMoveManager implements MoveManager {
 
 	    return maxEntry.getKey();
 	}
-
+*/
 	public static Instance getInstance() {
 		return instance;
 	}

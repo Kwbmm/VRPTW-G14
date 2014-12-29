@@ -13,7 +13,7 @@ import com.mdvrp.Route;
 @SuppressWarnings("serial")
 public class MyObjectiveFunction implements ObjectiveFunction {
 	private static Instance instance;
- 	private double lambda;		// λ
+ 	private double lambda;		
     
     public MyObjectiveFunction( Instance instance ) 
     {   
@@ -30,6 +30,9 @@ public class MyObjectiveFunction implements ObjectiveFunction {
      */
     public double[] evaluate(Solution solution, Move proposedMove) {
     	MySolution sol = (MySolution)solution;
+    	
+    	
+    		
     	double obj;
         // If move is null, calculate distance from scratch
         if( proposedMove == null ) {
@@ -42,10 +45,13 @@ public class MyObjectiveFunction implements ObjectiveFunction {
 
         // Else calculate incrementally
         else {
+        	if (proposedMove instanceof MySwapMove){
+        		
         	MySwapMove move = ((MySwapMove)proposedMove);
         	Route insertRoute = sol.getRoute( move.getInsertRouteNr());	// route on which is performed the insertion
         	Route deleteRoute = sol.getRoute( move.getDeleteRouteNr());
         	Cost varInsertCost = new Cost();
+        	//= new Cost()
         	Cost varDeleteCost;
         	Cost solCost;
         	double penalization = 0;
@@ -67,8 +73,9 @@ public class MyObjectiveFunction implements ObjectiveFunction {
         		}
         	} // end for
         	
+        	//System.out.println("Customer : "+move.getCustomerNr() +"delete position: "+move.getDeletePositionIndex()+" from route "+move.getDeleteRouteNr());
         	varDeleteCost = evaluateDeleteRoute(deleteRoute, move.getCustomer(), move.getDeletePositionIndex());
-        	solCost = getTotalCostVariation(sol, move, varInsertCost, varDeleteCost);
+        	solCost = getTotalCostSwapVariation(sol, move, varInsertCost, varDeleteCost);
         	obj = solCost.total;
             //calculate the penalization
             if (sol.getObjectiveValue()[0] <= obj )
@@ -79,9 +86,35 @@ public class MyObjectiveFunction implements ObjectiveFunction {
             return returnArray;
         }   // end else: calculate incremental
         
+        else
+        {
+        	MyRelocateMove move = ((MyRelocateMove)proposedMove);
+        	Route insertRoute = sol.getRoute( move.getInsertRouteNr());	// route on which is performed the insertion
+        	Route deleteRoute = sol.getRoute( move.getDeleteRouteNr());
+        	Cost varInsertCost = new Cost();
+        	//= new Cost()
+        	Cost varDeleteCost;
+        	Cost solCost;
+        	double penalization = 0;
+        	
+        	varInsertCost.total = Double.POSITIVE_INFINITY;
+
+        	varInsertCost = evaluateInsertRoute(insertRoute, move.getCustomer(), move.getInsertPositionIndex());
+        	varDeleteCost = evaluateDeleteRoute(deleteRoute, move.getCustomer(), move.getDeletePositionIndex());
+        	solCost = getTotalCostVariation(sol, move, varInsertCost, varDeleteCost);
+        	obj = solCost.total;
+            //calculate the penalization
+            if (sol.getObjectiveValue()[0] <= obj )
+            	penalization = lambda * solCost.total ;
+            
+            double[] returnArray = new double[]{obj + penalization, obj, solCost.travelTime, solCost.loadViol, solCost.twViol};
+            
+            return returnArray;
+        }
+        }
     }   // end evaluate
     
-    private Cost getTotalCostVariation(MySolution sol, MySwapMove move,
+    private Cost getTotalCostVariation(MySolution sol, MyRelocateMove move,
 			Cost varInsertCost, Cost varDeleteCost) 
     {
     	Cost varCost = new Cost(sol.getCost());
@@ -101,7 +134,26 @@ public class MyObjectiveFunction implements ObjectiveFunction {
 		    	
     	return varCost;
 	}
-        
+    private Cost getTotalCostSwapVariation(MySolution sol, MySwapMove move,
+			Cost varInsertCost, Cost varDeleteCost) 
+    {
+    	Cost varCost = new Cost(sol.getCost());
+    	Route insertRoute = sol.getRoute(move.getInsertRouteNr());
+    	Route deleteRoute = sol.getRoute(move.getDeleteRouteNr());
+    	varCost.travelTime += -  deleteRoute.getCost().travelTime - insertRoute.getCost().travelTime
+    			              + varInsertCost.travelTime + varDeleteCost.travelTime;
+    	varCost.loadViol += - deleteRoute.getCost().loadViol- insertRoute.getCost().loadViol
+    			                + varInsertCost.loadViol + varDeleteCost.loadViol;             
+    	varCost.twViol += - deleteRoute.getCost().twViol - insertRoute.getCost().twViol
+    			          + varInsertCost.twViol + varDeleteCost.twViol;
+    	varCost.waitingTime = Math.abs(varCost.waitingTime) < instance.getPrecision() ? 0 : varCost.waitingTime;
+    	varCost.loadViol = Math.abs(varCost.loadViol) < instance.getPrecision() ? 0 : varCost.loadViol;
+    	varCost.twViol = Math.abs(varCost.twViol) < instance.getPrecision() ? 0 : varCost.twViol;
+    	
+		varCost.calculateTotal(sol.getAlpha(), sol.getBeta(), sol.getGamma());
+		    	
+    	return varCost;
+	}
     
     /**
      * This function calculates costs for each route in the solution and each of these is added to the total cost of the solution

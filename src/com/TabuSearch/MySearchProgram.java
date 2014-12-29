@@ -22,6 +22,8 @@ public class MySearchProgram implements TabuSearchListener{
 	public Cost currentCost;		 // stores the total cost of current solution
 	public int feasibleIndex;
 	public int bestIndex;
+	public int numberFeasibleSol;
+	public MyMoveManager manager;
 	public DecimalFormat df = new DecimalFormat("#.##");
 	
 	public MySearchProgram(Instance instance, Solution initialSol, MoveManager moveManager, ObjectiveFunction objFunc, TabuList tabuList, boolean minmax, PrintStream outPrintStream)
@@ -29,19 +31,24 @@ public class MySearchProgram implements TabuSearchListener{
 		tabuSearch = new SingleThreadedTabuSearch(initialSol, moveManager, objFunc,tabuList,	new BestEverAspirationCriteria(), minmax );
 		feasibleIndex = -1;
 		bestIndex = 0;
+		numberFeasibleSol = 0;
 		this.instance = instance;
 		MySearchProgram.setIterationsDone(0);
 		tabuSearch.addTabuSearchListener( this );
 		tabuSearch.addTabuSearchListener((MyTabuList)tabuList);
+		this.manager = (MyMoveManager) moveManager;
 	}
 
-	public void improvingMoveMade(TabuSearchEvent event) {}
+	public void improvingMoveMade(TabuSearchEvent event) {
+	//	System.out.println("improve move");
+	}
 
 	/**
 	 * when a new best solution event occur save and print it
 	 */
 	@Override
 	public void newBestSolutionFound(TabuSearchEvent event) {
+	//	System.out.println("best sol");
 		sol = ((MySolution)tabuSearch.getBestSolution());
 		bestCost 	= getCostFromObjective(sol.getObjectiveValue());
 		bestRoutes 	= cloneRoutes(sol.getRoutes());
@@ -56,8 +63,19 @@ public class MySearchProgram implements TabuSearchListener{
 	 */
 	@Override
 	public void newCurrentSolutionFound(TabuSearchEvent event) {
+		//System.out.println("new current");
+		ArrayList<Route> array =  sol.getRoutes();
+    	/*for(int z=0;z<array.size(); z++){
+    		if(!array.get(z).isEmpty()){
+    			System.out.println("\nRotta " + array.get(z).getIndex());
+    			for(int x=0;x< array.get(z).getCustomersLength(); x++)
+    				System.out.printf("%d ", array.get(z).getCustomerNr(x) );
+    		}
+    		
+    	}*/
 		sol = ((MySolution)tabuSearch.getCurrentSolution());
 		currentCost = getCostFromObjective(sol.getObjectiveValue());
+		
 		MySearchProgram.iterationsDone += 1;
 	//	System.out.println("Iteration: " + iterationsDone);
 	//	System.out.println("Precision: " + (feasibleCost.total-instance.getPrecision()));
@@ -72,9 +90,18 @@ public class MySearchProgram implements TabuSearchListener{
 			// set the new best to the current one
 			tabuSearch.setBestSolution(sol);
 			System.out.println("It " + tabuSearch.getIterationsCompleted() +" - New solution " + sol.getCost().total+ " travel time: "+ sol.getCost().getTravelTime());
+			numberFeasibleSol++;
+			//System.out.println("FEASIBLE: " + numberFeasibleSol);
+			
+			if(iterationsDone>=5000 && numberFeasibleSol<10)
+			{
+				//System.out.println("CAMBIO MOSSA");
+				//instance.getParameters().setMovesType(MovesType.SWAP);
+				manager.setMovesType(MovesType.SWAP);
+			}
 		}
 		
-	//	sol.updateParameters(sol.getObjectiveValue()[2], sol.getObjectiveValue()[3], sol.getObjectiveValue()[4]);
+		sol.updateParameters(sol.getObjectiveValue()[2], sol.getObjectiveValue()[3], sol.getObjectiveValue()[4]);
 	}
 
 	@Override
@@ -122,6 +149,8 @@ public class MySearchProgram implements TabuSearchListener{
 		cost.travelTime   = objective[2];
 		cost.loadViol     = objective[3];
 		cost.twViol       = objective[4];
+		//System.out.printf("total: %f \n traveltime: %f\n loadviol: %f\n twviol: %f\n",objective[1], objective[2],objective[3], objective[4]);
+
 
 		return cost;
 	}
@@ -155,5 +184,13 @@ public class MySearchProgram implements TabuSearchListener{
 
 	public void setFeasibleRoutes(ArrayList<Route> feasibleRoutes) {
 		this.feasibleRoutes = feasibleRoutes;
+	}
+
+	public int getNumberFeasibleSol() {
+		return numberFeasibleSol;
+	}
+
+	public void setNumberFeasibleSol(int numberFeasibleSol) {
+		this.numberFeasibleSol = numberFeasibleSol;
 	}
 }
