@@ -120,7 +120,7 @@ public class MySolution extends SolutionAdapter{
     	
     }
 	
-	
+	/*
 	public void buildInitialRoutesBis(Instance instance) 
 	{
 		Route r; // stores the pointer to the current route
@@ -150,26 +150,70 @@ public class MySolution extends SolutionAdapter{
 						//position = 
 						insertBestTravel(instance, r, customer);
 						evaluateRoute(r);
-						/*good = evaluateRouteBis(instance, r, customer, position);
-						if(good)
-						{
-							customer.setRouteIndex(r.getIndex());
-							customer.setIsTaken(true);
-							r.addCustomer(customer, position);
-						}*/
+						good = evaluateRouteBis(instance, r, customer, position);
+//						if(good)
+//						{
+//							customer.setRouteIndex(r.getIndex());
+//							customer.setIsTaken(true);
+//							r.addCustomer(customer, position);
+//						}
 					}
 				}
 			}
 		}
 		
-/*		for(Customer c : list)
+//		for(Customer c : list)
+//		{
+//			System.out.println("Customer: " + c.getNumber() + "\tAngle: " + c.getAngleFromDepot());
+//			System.out.println("Capacitï¿½: " + c.getCapacity());
+//		}
+//		System.exit(-1);
+	}*/
+	public void buildInitialRoutesBis(Instance instance) 
+	{
+		Route r; // stores the pointer to the current route
+		ArrayList<Customer> list = instance.getSortedCustomers();
+		Customer customer;
+		double totalDemand = 0;
+		int customerNr = 0;
+		Random random = new Random();;
+		
+		int minCustomersPerRoute = 5;
+		int maxCustomersPerRoute = 10;
+		int customerNrThreshold = random.nextInt(maxCustomersPerRoute-minCustomersPerRoute+1)+minCustomersPerRoute;
+		for(int i=0; i<route.size(); i++)
 		{
-			System.out.println("Customer: " + c.getNumber() + "\tAngle: " + c.getAngleFromDepot());
-			System.out.println("Capacità: " + c.getCapacity());
-		}*/
-		//System.exit(-1);
+			r = route.get(i);
+			totalDemand = 0;
+			customerNr = 0;
+			for(int j=0; j<list.size(); j++)
+			{
+				customer = list.get(j);
+				if(!customer.getIsTaken() && customerNr<customerNrThreshold)
+				{
+					if(totalDemand+customer.getCapacity()<=r.getLoadAdmited())
+					{
+						totalDemand = totalDemand + customer.getCapacity();
+						customerNr++;
+						insertBestTravel(instance, r, customer);
+						evaluateRoute(r);
+					}
+				}
+			}
+		}
+		trimRoutes(this.route);
 	}
-	
+	private void trimRoutes(ArrayList<Route> route){
+		Route r;
+		for(int i=0; i < route.size();i++){
+			r = route.get(i);
+			if(r.getCustomersLength() == 0){
+				route.remove(i);
+				i--;
+			}
+		}
+		route.trimToSize();
+	}
 	private boolean evaluateRouteBis(Instance instance, Route route, Customer customer, int position)
 	{
 		boolean good = false;
