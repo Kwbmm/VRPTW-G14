@@ -176,7 +176,7 @@ public class MySolution extends SolutionAdapter{
 		Customer customer;
 		double totalDemand = 0;
 		int customerNr = 0;
-		Random random = new Random();;
+		Random random = new Random();
 		
 		int minCustomersPerRoute = 4;
 		int maxCustomersPerRoute = 9;
