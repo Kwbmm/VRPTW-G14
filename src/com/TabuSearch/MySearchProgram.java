@@ -93,12 +93,12 @@ public class MySearchProgram implements TabuSearchListener{
 			numberFeasibleSol++;
 			//System.out.println("FEASIBLE: " + numberFeasibleSol);
 			
-			if(iterationsDone>=5000 && numberFeasibleSol<10)
+/*			if(iterationsDone>=4500 && numberFeasibleSol<10)
 			{
 				//System.out.println("CAMBIO MOSSA");
 				//instance.getParameters().setMovesType(MovesType.SWAP);
 				manager.setMovesType(MovesType.SWAP);
-			}
+			}*/
 		}
 		
 		sol.updateParameters(sol.getObjectiveValue()[2], sol.getObjectiveValue()[3], sol.getObjectiveValue()[4]);
@@ -140,7 +140,14 @@ public class MySearchProgram implements TabuSearchListener{
 	}
 
 	@Override
-	public void unimprovingMoveMade(TabuSearchEvent event) {}
+	public void unimprovingMoveMade(TabuSearchEvent event) {
+		if(iterationsDone>=3500)
+		{
+			//System.out.println("CAMBIO MOSSA");
+			//instance.getParameters().setMovesType(MovesType.SWAP);
+			manager.setMovesType(MovesType.RELOCATE);
+		}
+	}
 	
 	// return a new created cost from the objective vector passed as parameter
 	private Cost getCostFromObjective(double[] objective) {

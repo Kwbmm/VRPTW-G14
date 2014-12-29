@@ -39,7 +39,7 @@ public class MyMoveManager implements MoveManager {
 				
 			default:
 				//System.out.println("RELOCATE2 - Iteration: " + MySearchProgram.getIterationsDone());
-				return getRelocateMoves(sol);
+				return getSwapMoves(sol);
 		}
 		
 		/*if(movesType.equals("RELOCATE"))

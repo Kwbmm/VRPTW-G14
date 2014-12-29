@@ -290,7 +290,7 @@ public class MySwapMove implements ComplexMove {
     	} // end if else route is empty
     	
     	route.addCustomer(customer, position);
-    	customer.setAssignedRoute(route);
+    	customer.setRouteIndex(route.getIndex());
 //    	// be careful about precision; if there are subtraction
 		varCost.waitingTime = Math.abs(varCost.waitingTime) < instance.getPrecision() ? 0 : varCost.waitingTime;
 		varCost.twViol = Math.abs(varCost.twViol) < instance.getPrecision() ? 0 : varCost.twViol;
