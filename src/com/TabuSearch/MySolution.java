@@ -34,7 +34,7 @@ public class MySolution extends SolutionAdapter{
 //		initializeRoute(instance);
 //		buildInitialRoute(instance);
 		alpha 	= 1;
-    	//beta 	= 1;
+    	beta 	= 1;
     	gamma	= 1;
     	delta	= 0.005;
     	upLimit = 10000000;
@@ -86,12 +86,30 @@ public class MySolution extends SolutionAdapter{
 		return cost;
 	}
 	
-	public void updateAB (double a, double b){
-		a= a/2;
-		b= b/2;
+	public void update (boolean a, boolean b){
+		if(a == true){ //capacity violated 10 times
+			alpha= alpha*2;
+			if(alpha > upLimit){
+    			alpha = resetValue;};}
+		else {
+			alpha= alpha/2;
+			}
+		
+		if(b == true) {//tw violated 10 times;
+			gamma = gamma*2;
+
+			//System.out.println(gamma);
+			}
+		else {
+			gamma = gamma/2;
+			if(gamma > upLimit){
+    			gamma = resetValue;
+    		}
+			//System.out.println(gamma);
+			}
 	}
 
-	public void updateParameters(double a, double b) {
+	/*public void updateParameters(double a, double b) {
     	// capacity violation test
     	if (a == 0) {
     		alpha = alpha / (1 + delta);
@@ -114,7 +132,7 @@ public class MySolution extends SolutionAdapter{
     	}
     	
     }
-	
+	*/
 	/*
 	public void buildInitialRoutesBis(Instance instance) 
 	{

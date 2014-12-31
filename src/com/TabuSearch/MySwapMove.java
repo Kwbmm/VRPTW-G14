@@ -100,7 +100,7 @@ public class MySwapMove implements ComplexMove {
     	sol.getCost().loadViol = Math.abs(sol.getCost().loadViol) < instance.getPrecision() ? 0 : sol.getCost().loadViol;
     	sol.getCost().twViol = Math.abs(sol.getCost().twViol) < instance.getPrecision() ? 0 : sol.getCost().twViol;
     	
-		sol.getCost().calculateTotal(sol.getAlpha(), sol.getBeta(), sol.getGamma());
+		sol.getCost().calculateTotal(sol.getAlpha(), sol.getGamma());
 	}
 	
 	
