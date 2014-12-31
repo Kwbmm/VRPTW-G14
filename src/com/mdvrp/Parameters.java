@@ -17,9 +17,9 @@ public class Parameters {
 	public Parameters() {
 		currDir 			= System.getProperty("user.dir");
 		outputFileName    	= currDir + "/output/solutions.csv";
-		movesType         	= MovesType.SWAP;
+		movesType         	= MovesType.RELOCATE;
 		precision         	= 1E-2;
-		iterations        	= 10000;
+		iterations        	= 40000;
 		tabuTenure        	= -1;
 		randomSeed		  	= -1;
 		variableTenure    	= false;

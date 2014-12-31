@@ -4,7 +4,7 @@ import org.coinor.opents.*;
 
 @SuppressWarnings("serial")
 public class MyTabuList extends ComplexTabuList implements TabuSearchListener{
-//	private int counter;
+	private int counter;
 
 	public MyTabuList(int tenure, int[] attrDim) {
 		super(tenure, attrDim);
@@ -28,6 +28,8 @@ public class MyTabuList extends ComplexTabuList implements TabuSearchListener{
 	@Override
 	public void newBestSolutionFound(TabuSearchEvent arg0) {
 		//  Auto-generated method stub
+		counter--;
+		setTenure(getTenure()-2);
 		
 	}
 
@@ -41,20 +43,20 @@ public class MyTabuList extends ComplexTabuList implements TabuSearchListener{
 	public void unimprovingMoveMade(TabuSearchEvent arg0) {
 		//  Auto-generated method stub
 		
-		/*counter++;
+		counter++;
 		if (counter==50){
-			
+			setTenure(getTenure()+3);
 			System.out.println("counter50");
 			counter=0;
 		}
 		
-		*/
+		
 	}
 
 	@Override
 	public void improvingMoveMade(TabuSearchEvent arg0) {
 		//  Auto-generated method stub
-		//counter--;
+		
 		
 	}
 

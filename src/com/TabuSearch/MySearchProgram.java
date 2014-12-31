@@ -178,11 +178,11 @@ public class MySearchProgram implements TabuSearchListener{
 			System.out.println("counter 100 "+ manager.getMovesType());
 			counter=0;
 		}*/
-		if(iterationsDone>=5000)
+		if(iterationsDone>=3500)
 		{
 			//System.out.println("CAMBIO MOSSA");
 			//instance.getParameters().setMovesType(MovesType.SWAP);
-			manager.setMovesType(MovesType.RELOCATE);
+			manager.setMovesType(MovesType.SWAP);
 		}
 	}
 	
