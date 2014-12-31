@@ -1,7 +1,5 @@
 package com.TabuSearch;
 
-import java.util.ArrayList;
-
 import org.coinor.opents.*;
 
 import com.mdvrp.Cost;

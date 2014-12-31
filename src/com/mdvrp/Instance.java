@@ -4,7 +4,6 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.LinkedList;
 import java.util.Random;
 import java.util.Scanner;
 
@@ -290,6 +289,7 @@ public class Instance {
 	}
 public ArrayList<Customer> calculateAnglesToCustomer( Customer c) {
 		
+		@SuppressWarnings("unchecked")
 		ArrayList<Customer> list = (ArrayList<Customer>)allCustomers.clone(); //get all customers
 
 		Customer swap = new Customer();

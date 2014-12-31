@@ -2,7 +2,6 @@ package com.TabuSearch;
 
 import java.util.Random;
 import java.util.ArrayList;
-import java.util.List;
 
 import org.coinor.opents.SolutionAdapter;
 
@@ -18,10 +17,10 @@ public class MySolution extends SolutionAdapter{
 	private static Instance instance;
 	private ArrayList<Route> route;
 	private Cost cost; //Save the tot cost of the route
-	private double alpha;		// a
-	private double beta;		// �
-	private double gamma;		// ?
-	private double delta;		// d
+	private double alpha;		
+	private double beta;		
+	private double gamma;		
+	private double delta;		
 	private double upLimit;
 	private double resetValue;
 	
@@ -35,7 +34,7 @@ public class MySolution extends SolutionAdapter{
 //		initializeRoute(instance);
 //		buildInitialRoute(instance);
 		alpha 	= 1;
-    	beta 	= 1;
+    	//beta 	= 1;
     	gamma	= 1;
     	delta	= 0.005;
     	upLimit = 10000000;
@@ -86,8 +85,13 @@ public class MySolution extends SolutionAdapter{
 	public Cost getCost(){
 		return cost;
 	}
+	
+	public void updateAB (double a, double b){
+		a= a/2;
+		b= b/2;
+	}
 
-	public void updateParameters(double a, double b, double g) {
+	public void updateParameters(double a, double b) {
     	// capacity violation test
     	if (a == 0) {
     		alpha = alpha / (1 + delta);
@@ -98,18 +102,9 @@ public class MySolution extends SolutionAdapter{
     		}
     	}
     	
-    	// duration violation test    	
-    	if (b == 0) {
-    		beta = beta / (1 + delta);
-    	} else {
-    		beta = beta * (1 + delta);
-    		if(beta > upLimit){
-    			beta = resetValue;
-    		}
-    	}
     	
     	// time window violation test
-    	if (g == 0) {
+    	if (b == 0) {
     		gamma = gamma / (1 + delta);
     	} else {
     		gamma = gamma * (1 + delta);
@@ -178,8 +173,8 @@ public class MySolution extends SolutionAdapter{
 		int customerNr = 0;
 		Random random = new Random();
 		
-		int minCustomersPerRoute = 4;
-		int maxCustomersPerRoute = 9;
+		int minCustomersPerRoute = 6;
+		int maxCustomersPerRoute = 10;
 		int customerNrThreshold = random.nextInt(maxCustomersPerRoute-minCustomersPerRoute+1)+minCustomersPerRoute;
 		for(int i=0; i<route.size(); i++)
 		{
@@ -214,12 +209,12 @@ public class MySolution extends SolutionAdapter{
 		}
 		route.trimToSize();
 	}
-	private boolean evaluateRouteBis(Instance instance, Route route, Customer customer, int position)
+	/*private boolean evaluateRouteBis(Instance instance, Route route, Customer customer, int position)
 	{
 		boolean good = false;
 		
 		return good;
-	}
+	}*/
 	
 	private void insertBestTravel(Instance instance, Route route, Customer customerChosenPtr) {
 		double minCost = Double.MAX_VALUE;

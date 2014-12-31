@@ -1,5 +1,4 @@
 package com.mdvrp;
-import java.util.Random;
 import java.util.ArrayList;
 
 /**
@@ -21,7 +20,6 @@ public class Customer {
 	private double distanceFromDepot;
 	private double angleFromDepot;
 	private double distanceFromSupercustomer;
-	private Random random;
 	private boolean isDistant=false;
 	private ArrayList<Customer> neighbours = new ArrayList<>();
 	private boolean isTaken=false;

@@ -1,6 +1,6 @@
 package com.TabuSearch;
 
-import java.util.ArrayList;
+
 
 import org.coinor.opents.*;
 
@@ -38,7 +38,7 @@ public class MySwapMove implements ComplexMove {
     {
     	MySolution sol = (MySolution)solution;
 
-		ArrayList<Route> routes = sol.getRoutes();
+		//ArrayList<Route> routes = sol.getRoutes();
 /*    	 for (int j=0; j<routes.size(); j++){
 
        		System.out.println("\nRotta "+ routes.get(j).getIndex());         

@@ -25,6 +25,7 @@ public class MySearchProgram implements TabuSearchListener{
 	public int numberFeasibleSol;
 	public MyMoveManager manager;
 	public DecimalFormat df = new DecimalFormat("#.##");
+	public int  counter;
 	
 	public MySearchProgram(Instance instance, Solution initialSol, MoveManager moveManager, ObjectiveFunction objFunc, TabuList tabuList, boolean minmax, PrintStream outPrintStream)
 	{
@@ -64,7 +65,7 @@ public class MySearchProgram implements TabuSearchListener{
 	@Override
 	public void newCurrentSolutionFound(TabuSearchEvent event) {
 		//System.out.println("new current");
-		ArrayList<Route> array =  sol.getRoutes();
+		//ArrayList<Route> array =  sol.getRoutes();
     	/*for(int z=0;z<array.size(); z++){
     		if(!array.get(z).isEmpty()){
     			System.out.println("\nRotta " + array.get(z).getIndex());
@@ -77,6 +78,7 @@ public class MySearchProgram implements TabuSearchListener{
 		currentCost = getCostFromObjective(sol.getObjectiveValue());
 		
 		MySearchProgram.iterationsDone += 1;
+		
 	//	System.out.println("Iteration: " + iterationsDone);
 	//	System.out.println("Precision: " + (feasibleCost.total-instance.getPrecision()));
 		// Check to see if a new feasible solution is found
@@ -85,6 +87,7 @@ public class MySearchProgram implements TabuSearchListener{
 		
 		if(currentCost.checkFeasible() && currentCost.total < feasibleCost.total - instance.getPrecision())
 		{
+			//System.out.println(manager.getMovesType());
 			feasibleCost = currentCost;
 			feasibleRoutes = cloneRoutes(sol.getRoutes());
 			// set the new best to the current one
@@ -92,16 +95,10 @@ public class MySearchProgram implements TabuSearchListener{
 			System.out.println("It " + tabuSearch.getIterationsCompleted() +" - New solution " + sol.getCost().total+ " travel time: "+ sol.getCost().getTravelTime());
 			numberFeasibleSol++;
 			//System.out.println("FEASIBLE: " + numberFeasibleSol);
-			
-/*			if(iterationsDone>=4500 && numberFeasibleSol<10)
-			{
-				//System.out.println("CAMBIO MOSSA");
-				//instance.getParameters().setMovesType(MovesType.SWAP);
-				manager.setMovesType(MovesType.SWAP);
-			}*/
+
 		}
 		
-		sol.updateParameters(sol.getObjectiveValue()[2], sol.getObjectiveValue()[3], sol.getObjectiveValue()[4]);
+		sol.updateParameters(sol.getObjectiveValue()[3], sol.getObjectiveValue()[4]);
 	}
 
 	@Override
@@ -141,6 +138,11 @@ public class MySearchProgram implements TabuSearchListener{
 
 	@Override
 	public void unimprovingMoveMade(TabuSearchEvent event) {
+		counter++;
+		/*if (counter== 100){
+			System.out.println("counter 100 "+ manager.getMovesType());
+			counter=0;
+		}*/
 		if(iterationsDone>=3500)
 		{
 			//System.out.println("CAMBIO MOSSA");

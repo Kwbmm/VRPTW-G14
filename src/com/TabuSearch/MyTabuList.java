@@ -1,11 +1,10 @@
 package com.TabuSearch;
 
 import org.coinor.opents.*;
-import org.coinor.opents.TabuSearchEvent;
-import org.coinor.opents.TabuSearchListener;
 
 @SuppressWarnings("serial")
 public class MyTabuList extends ComplexTabuList implements TabuSearchListener{
+	private int counter;
 
 	public MyTabuList(int tenure, int[] attrDim) {
 		super(tenure, attrDim);
@@ -15,6 +14,8 @@ public class MyTabuList extends ComplexTabuList implements TabuSearchListener{
 	@Override
 	public void tabuSearchStarted(TabuSearchEvent arg0) {
 		//  Auto-generated method stub
+		counter=0;
+		
 		
 	}
 
@@ -40,11 +41,20 @@ public class MyTabuList extends ComplexTabuList implements TabuSearchListener{
 	public void unimprovingMoveMade(TabuSearchEvent arg0) {
 		//  Auto-generated method stub
 		
+		counter++;
+		if (counter==50){
+			
+			System.out.println("counter50");
+			counter=0;
+		}
+		
+		
 	}
 
 	@Override
 	public void improvingMoveMade(TabuSearchEvent arg0) {
 		//  Auto-generated method stub
+		counter--;
 		
 	}
 

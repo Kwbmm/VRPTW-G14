@@ -1,11 +1,9 @@
 package com.TabuSearch;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
-import java.util.Map.Entry;
 
 import org.coinor.opents.Move;
 import org.coinor.opents.MoveManager;
