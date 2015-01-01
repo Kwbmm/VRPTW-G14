@@ -53,7 +53,7 @@ public class MDVRPTW {
 	        
 	        // Create Tabu Search object
 	        search 			= new MySearchProgram(instance, initialSol, moveManager,
-							            objFunc, tabuList, false,  outPrintSream, duration);
+							            objFunc, tabuList, false,  outPrintSream);
 	        // Start solving        
 	        search.tabuSearch.setIterationsToGo(parameters.getIterations());
 	        search.tabuSearch.startSolving();

@@ -27,7 +27,7 @@ public class MySearchProgram implements TabuSearchListener{
 	public DecimalFormat df = new DecimalFormat("#.##");
 	public int  counter;
 	
-	public MySearchProgram(Instance instance, Solution initialSol, MoveManager moveManager, ObjectiveFunction objFunc, TabuList tabuList, boolean minmax, PrintStream outPrintStream, Duration duration)
+	public MySearchProgram(Instance instance, Solution initialSol, MoveManager moveManager, ObjectiveFunction objFunc, TabuList tabuList, boolean minmax, PrintStream outPrintStream)
 	{
 		tabuSearch = new SingleThreadedTabuSearch(initialSol, moveManager, objFunc,tabuList,	new BestEverAspirationCriteria(), minmax );
 		feasibleIndex = -1;
@@ -143,7 +143,7 @@ public class MySearchProgram implements TabuSearchListener{
 			System.out.println("counter 100 "+ manager.getMovesType());
 			counter=0;
 		}*/
-		if(iterationsDone>=3500)
+		if(iterationsDone>= instance.getParameters().getIterations()/3)
 		{
 			//System.out.println("CAMBIO MOSSA");
 			//instance.getParameters().setMovesType(MovesType.SWAP);
