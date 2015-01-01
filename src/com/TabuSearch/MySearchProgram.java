@@ -6,7 +6,7 @@ import java.util.ArrayList;
 
 import org.coinor.opents.*;
 
-import com.mdvrp.*;
+import com.vrp.*;
 
 @SuppressWarnings("serial")
 public class MySearchProgram implements TabuSearchListener{
@@ -26,7 +26,7 @@ public class MySearchProgram implements TabuSearchListener{
 	public MyMoveManager manager;
 	public DecimalFormat df = new DecimalFormat("#.##");
 	public int  counter;
-	
+
 	public MySearchProgram(Instance instance, Solution initialSol, MoveManager moveManager, ObjectiveFunction objFunc, TabuList tabuList, boolean minmax, PrintStream outPrintStream)
 	{
 		tabuSearch = new SingleThreadedTabuSearch(initialSol, moveManager, objFunc,tabuList,	new BestEverAspirationCriteria(), minmax );
@@ -40,16 +40,13 @@ public class MySearchProgram implements TabuSearchListener{
 		this.manager = (MyMoveManager) moveManager;
 	}
 
-	public void improvingMoveMade(TabuSearchEvent event) {
-	//	System.out.println("improve move");
-	}
+	public void improvingMoveMade(TabuSearchEvent event) {}
 
 	/**
 	 * when a new best solution event occur save and print it
 	 */
 	@Override
 	public void newBestSolutionFound(TabuSearchEvent event) {
-	//	System.out.println("best sol");
 		sol = ((MySolution)tabuSearch.getBestSolution());
 		bestCost 	= getCostFromObjective(sol.getObjectiveValue());
 		bestRoutes 	= cloneRoutes(sol.getRoutes());
@@ -64,40 +61,19 @@ public class MySearchProgram implements TabuSearchListener{
 	 */
 	@Override
 	public void newCurrentSolutionFound(TabuSearchEvent event) {
-		//System.out.println("new current");
-		//ArrayList<Route> array =  sol.getRoutes();
-    	/*for(int z=0;z<array.size(); z++){
-    		if(!array.get(z).isEmpty()){
-    			System.out.println("\nRotta " + array.get(z).getIndex());
-    			for(int x=0;x< array.get(z).getCustomersLength(); x++)
-    				System.out.printf("%d ", array.get(z).getCustomerNr(x) );
-    		}
-    		
-    	}*/
 		sol = ((MySolution)tabuSearch.getCurrentSolution());
 		currentCost = getCostFromObjective(sol.getObjectiveValue());
-		
+
 		MySearchProgram.iterationsDone += 1;
-		
-	//	System.out.println("Iteration: " + iterationsDone);
-	//	System.out.println("Precision: " + (feasibleCost.total-instance.getPrecision()));
-		// Check to see if a new feasible solution is found
-		// Checking with the current solution admits new feasible solution
-		// that are worst than the best solution
-		
 		if(currentCost.checkFeasible() && currentCost.total < feasibleCost.total - instance.getPrecision())
 		{
-			//System.out.println(manager.getMovesType());
 			feasibleCost = currentCost;
 			feasibleRoutes = cloneRoutes(sol.getRoutes());
 			// set the new best to the current one
 			tabuSearch.setBestSolution(sol);
-			System.out.println("It " + tabuSearch.getIterationsCompleted() +" - New solution " + sol.getCost().total+ " travel time: "+ sol.getCost().getTravelTime());
+			System.out.println("It " + tabuSearch.getIterationsCompleted() +" - New solution " + sol.getCost().total);
 			numberFeasibleSol++;
-			//System.out.println("FEASIBLE: " + numberFeasibleSol);
-
 		}
-		
 		sol.updateParameters(sol.getObjectiveValue()[3], sol.getObjectiveValue()[4]);
 	}
 
@@ -121,7 +97,6 @@ public class MySearchProgram implements TabuSearchListener{
 		}
 		feasibleRoutes = cloneRoutes(sol.getRoutes());
 		bestRoutes = feasibleRoutes;
-		//System.out.println("FEASIBLE_COST: " + feasibleCost);
 	}
 
 	@Override
@@ -130,27 +105,17 @@ public class MySearchProgram implements TabuSearchListener{
 		if (feasibleCost.total != Double.POSITIVE_INFINITY) {
 			sol.setCost(feasibleCost);
 			sol.setRoute(feasibleRoutes);
-			//sol.setFeasibleIndex(feasibleIndex);
 			tabuSearch.setBestSolution(sol);
-			//System.out.println("BestSolution");
 		}
 	}
 
 	@Override
 	public void unimprovingMoveMade(TabuSearchEvent event) {
 		counter++;
-		/*if (counter== 100){
-			System.out.println("counter 100 "+ manager.getMovesType());
-			counter=0;
-		}*/
 		if(iterationsDone>= instance.getParameters().getIterations()/3)
-		{
-			//System.out.println("CAMBIO MOSSA");
-			//instance.getParameters().setMovesType(MovesType.SWAP);
 			manager.setMovesType(MovesType.SWAP);
-		}
 	}
-	
+
 	// return a new created cost from the objective vector passed as parameter
 	private Cost getCostFromObjective(double[] objective) {
 		Cost cost = new Cost();
@@ -158,19 +123,15 @@ public class MySearchProgram implements TabuSearchListener{
 		cost.travelTime   = objective[2];
 		cost.loadViol     = objective[3];
 		cost.twViol       = objective[4];
-		//System.out.printf("total: %f \n traveltime: %f\n loadviol: %f\n twviol: %f\n",objective[1], objective[2],objective[3], objective[4]);
-
-
 		return cost;
 	}
-    
-    // clone the routes passed as parameter
-    public ArrayList<Route> cloneRoutes(ArrayList<Route> routes){
+
+	// clone the routes passed as parameter
+	public ArrayList<Route> cloneRoutes(ArrayList<Route> routes){
 		ArrayList<Route> routescopy = new ArrayList<Route>();
-        for (int i = 0; i < routes.size(); ++i) {
-        	routescopy.add(new Route(routes.get(i)));
-        }
-        return routescopy;
+		for (int i = 0; i < routes.size(); ++i)
+			routescopy.add(new Route(routes.get(i)));
+		return routescopy;
 	}
 
 	/**

@@ -1,4 +1,4 @@
-package com.mdvrp;
+package com.vrp;
 
 import java.util.Comparator;
 

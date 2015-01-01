@@ -1,4 +1,4 @@
-package com.mdvrp;
+package com.vrp;
 
 /**
  * This class stores information about cost of a route or a group of routes.
@@ -14,8 +14,8 @@ public class Cost {
 	public double twViol;            // violation of the time window
 	public double returnToDepotTime; // stores time to return to the depot
 	public double depotTwViol;       // stores the time window violation of the depot
-	
-	
+
+
 	// default constructor
 	public Cost(){
 		total             = 0;
@@ -23,16 +23,16 @@ public class Cost {
 		load		      = 0;
 		serviceTime		  = 0;
 		waitingTime		  = 0;
-		
+
 		loadViol          = 0;
-		
+
 		twViol            = 0;
-		
+
 		returnToDepotTime = 0;
 		depotTwViol       = 0;
-		
+
 	}
-	
+
 	// constructor which clone the cost passed as parameter
 	public Cost(Cost cost) {
 		this.total             = new Double(cost.total);
@@ -40,10 +40,10 @@ public class Cost {
 		this.load              = new Double(cost.load);
 		this.serviceTime       = new Double(cost.serviceTime);
 		this.waitingTime       = new Double(cost.waitingTime);
-		
+
 		this.loadViol          = new Double(cost.loadViol);
 		this.twViol            = new Double(cost.twViol);
-		
+
 		this.returnToDepotTime = new Double(cost.returnToDepotTime);
 		this.depotTwViol       = new Double(cost.depotTwViol);		
 	}
@@ -57,12 +57,12 @@ public class Cost {
 		print.append("\n" + "--------------------------------------------------" + "\n");
 		return print.toString();
 	}
-	
+
 	public void calculateTotalCostViol() {
 		total = travelTime + loadViol + twViol ;
 	}
 
-	
+
 	/**
 	 * Set the total cost based on alpha, beta, gamma
 	 * @param alpha
@@ -72,22 +72,22 @@ public class Cost {
 	public void calculateTotal(double alpha, double beta, double gamma) {
 		total = travelTime+ alpha * loadViol + gamma * twViol;
 	}
-	
-	
+
+
 	public void setLoadViol(double capacityviol) {
 		this.loadViol = capacityviol;
 	}
-	
-	
+
+
 	public void addLoadViol(double capacityviol) {
 		this.loadViol += capacityviol;
 	}
-	
+
 	public void addTWViol(double TWviol) {
 		this.twViol += TWviol;
 	}
-	
-	
+
+
 	/**
 	 * Add cost to the total cost
 	 * @param cost
@@ -95,11 +95,11 @@ public class Cost {
 	public void addTravel(double cost) {
 		travelTime +=cost;
 	}
-	
+
 	public void setTravelTime(double travelTime) {
 		this.travelTime = travelTime;
 	}
-	
+
 	/**
 	 * @return the totalcost
 	 */
@@ -113,52 +113,52 @@ public class Cost {
 	public double getTotal() {
 		return total;
 	}
-	
+
 	/**
 	 * @return the capacityviol
 	 */
-	
+
 	public double getLoadViol() {
 		return loadViol;
 	}
 
-	
+
 	/**
 	 * @return the tWviol
 	 */
-	
+
 	public double getTwViol() {
 		return twViol;
 	}
-	
+
 	public void initialize() {
 		total             	= 0;
 		travelTime        	= 0;
 		load		      	= 0;
 		serviceTime		  	= 0;
 		waitingTime			= 0;
-		
+
 		loadViol			= 0;
 		twViol       		= 0;
-		
+
 		returnToDepotTime 	= 0;
 		depotTwViol       	= 0;
-		
+
 	}
-	
-	
+
+
 	// check if a cost has violations
-    public boolean checkFeasible() {
-    	if (this.loadViol == 0 && this.twViol == 0) {
-    		return true;
-    	} else {
-    		return false;
-    	}
-    }
-    
-    public double getDuration(){
-    	return this.serviceTime + this.waitingTime;
-    }
+	public boolean checkFeasible() {
+		if (this.loadViol == 0 && this.twViol == 0) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	public double getDuration(){
+		return this.serviceTime + this.waitingTime;
+	}
 
 	/**
 	 * @return the load
@@ -219,7 +219,7 @@ public class Cost {
 	/**
 	 * @return the depotTwViol
 	 */
-	
+
 	public double getDepotTwViol() {
 		return depotTwViol;
 	}
@@ -227,7 +227,7 @@ public class Cost {
 	/**
 	 * @param depotTwViol the depotTwViol to set
 	 */
-	
+
 	public void setDepotTwViol(double depotTwViol) {
 		this.depotTwViol = depotTwViol;
 	}
@@ -235,7 +235,7 @@ public class Cost {
 	/**
 	 * @return the travelTime
 	 */
-	
+
 	public double getTravelTime() {
 		return travelTime;
 	}
@@ -250,7 +250,7 @@ public class Cost {
 	/**
 	 * @param twViol the twViol to set
 	 */
-	
+
 	public void setTwViol(double twViol) {
 		this.twViol = twViol;
 	}

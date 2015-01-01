@@ -1,4 +1,4 @@
-﻿package com.mdvrp;
+﻿package com.vrp;
 
 import java.util.ArrayList;
 
@@ -15,24 +15,22 @@ public class Depot {
 	private int startTw;                           // beginning of time window (earliest time for start of service),if any
 	private int endTw;                             // end of time window (latest time for start of service), if any
 	private ArrayList<Customer> assignedCustomers; // the list of customers that are assigned to this depot
-	
-	
+
+
 	public Depot() {
 		this.startTw           = 0;
 		this.endTw             = 0;
 		this.assignedCustomers = new ArrayList<>();
 	}
-	
+
 	/**
 	 * Return the formated string of the depot
 	 */
-	/*
 	public String toString() {
 		StringBuffer print = new StringBuffer();
 		print.append("\n");
 		print.append("\n" + "--- Depot " + number + " -------------------------------------");
 		print.append("\n" + "| x=" + xCoordinate + " y=" + yCoordinate);
-		print.append("\n" + "| Capacity=" + capacity);
 		print.append("\n" + "| StartTimeWindow=" + startTw + " EndTimeWindow=" + endTw);
 		print.append("\n" + "| AssignedCustomers: ");
 		for (int i = 0; i < assignedCustomers.size(); ++i) {
@@ -40,13 +38,12 @@ public class Depot {
 		}
 		print.append("\n" + "--------------------------------------------------");
 		return print.toString();	
-	}*/
-	
+	}
+
 	/**
 	 * 
 	 * @return the list of assigned customers to depot in a string
 	 */
-	/*
 	public String printAssignedCustomers() {
 		StringBuffer print = new StringBuffer();
 		print.append("\n" + "AssignedCustomers=");
@@ -55,25 +52,8 @@ public class Depot {
 		}
 		print.append("\n");
 		return print.toString();
-	}*/
-	
-	/**
-	 * 
-	 * @param index
-	 * @return the formated string with the angles of assigned customers to depot
-	 */
-	/*
-	public String printAssignedCustomersAngles(int index) {
-		StringBuffer print = new StringBuffer();
-		print.append("\nDepot[" + index + "]---AssignedCustomers-------------\nCustomerNumber\t\tCustomerAngle\n");
-		for(Customer customer : assignedCustomers) {
-//			print.append("\t" + customer.getNumber() + "\t\t\t\t" + customer.getAngleToDepot(index) + "\n");
-			print.append("\t" + customer.getNumber() + "\t\t\t\t" + customer.getAngleToDepot() + "\n");
-		}
-		print.append("---------------------------------------------------\n");
-		return print.toString();
-	}*/
-	
+	}
+
 	/**
 	 * 
 	 * @return the number of customers assigned to depot
@@ -81,7 +61,7 @@ public class Depot {
 	public int getAssignedCustomersNr() {
 		return assignedCustomers.size();
 	}
-	
+
 	/**
 	 * @return the xcoordinate
 	 */
@@ -161,7 +141,7 @@ public class Depot {
 	public void addAssignedCustomer(Customer customer) {
 		assignedCustomers.add(customer);
 	}
-	
+
 	/**
 	 * Get the assigned customer at index
 	 * @param index
@@ -170,7 +150,7 @@ public class Depot {
 	public Customer getAssignedCustomer(int index) {
 		return assignedCustomers.get(index);
 	}
-	
+
 	/**
 	 * Get the list of assigned customers
 	 * @return ArrayList<Customer>

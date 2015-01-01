@@ -2,7 +2,7 @@ package com.TabuSearch;
 
 import org.coinor.opents.*;
 
-import com.mdvrp.Instance;
+import com.vrp.Instance;
 
 @SuppressWarnings("serial")
 public class MyTabuList extends ComplexTabuList implements TabuSearchListener{
@@ -11,46 +11,30 @@ public class MyTabuList extends ComplexTabuList implements TabuSearchListener{
 	private Instance instance;
 
 	public MyTabuList(int tenure, int[] attrDim, Instance instance) {
-		
 		super(tenure, attrDim);
 		this.instance= instance;
-		//  Auto-generated constructor stub
 	}
 
 	@Override
-	public void tabuSearchStarted(TabuSearchEvent arg0) {
-		//  Auto-generated method stub
-		//counter=0;
-		
-		
-	}
+	public void tabuSearchStarted(TabuSearchEvent arg0) {}
 
 	@Override
-	public void tabuSearchStopped(TabuSearchEvent arg0) {
-		//  Auto-generated method stub
-		
-	}
+	public void tabuSearchStopped(TabuSearchEvent arg0) {}
 
 	@Override
 	public void newBestSolutionFound(TabuSearchEvent arg0) {
-		//  Auto-generated method stub
 		counter--;
 		setTenure(getTenure()-2);
 		if (getTenure()<1)
 			setTenure(reset);
-		
+
 	}
 
 	@Override
-	public void newCurrentSolutionFound(TabuSearchEvent arg0) {
-		//  Auto-generated method stub
-		
-	}
+	public void newCurrentSolutionFound(TabuSearchEvent arg0) {}
 
 	@Override
 	public void unimprovingMoveMade(TabuSearchEvent arg0) {
-		//  Auto-generated method stub
-		
 		counter++;
 		if (counter==20){
 			setTenure(getTenure()+3);
@@ -58,21 +42,11 @@ public class MyTabuList extends ComplexTabuList implements TabuSearchListener{
 				setTenure(reset);
 			counter=0;
 		}
-		
-		
 	}
 
 	@Override
-	public void improvingMoveMade(TabuSearchEvent arg0) {
-		//  Auto-generated method stub
-		
-		
-	}
+	public void improvingMoveMade(TabuSearchEvent arg0) {}
 
 	@Override
-	public void noChangeInValueMoveMade(TabuSearchEvent arg0) {
-		//  Auto-generated method stub
-		
-	}
-
+	public void noChangeInValueMoveMade(TabuSearchEvent arg0) {}
 }

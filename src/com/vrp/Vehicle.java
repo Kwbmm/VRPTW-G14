@@ -1,10 +1,9 @@
-package com.mdvrp;
+package com.vrp;
 
 public class Vehicle {
-	
+
 	private double capacity;
-	
-	
+
 	public Vehicle() {}
 
 	/**
@@ -20,7 +19,4 @@ public class Vehicle {
 	public void setCapacity(double capacity) {
 		this.capacity = capacity;
 	}
-
-
-
 }

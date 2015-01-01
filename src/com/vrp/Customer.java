@@ -1,5 +1,4 @@
-package com.mdvrp;
-import java.util.ArrayList;
+package com.vrp;
 
 /**
  * Customer class stores information about one customer which implements the Vertex interface.
@@ -19,19 +18,11 @@ public class Customer {
 	private double twViol;              // value of time window violation, 0 if none
 	private double distanceFromDepot;
 	private double angleFromDepot;
-	private double distanceFromSupercustomer;
-	private boolean isDistant=false;
-	private ArrayList<Customer> neighbours = new ArrayList<>();
 	private boolean isTaken=false;
 	private double angleToCustomer;
-	/*
-	 * This stores the mean distance from the most distant customers. The amount of most distant customers
-	 * is equal to the amount of vehicles used initially
-	 */
-	private double meanDistance;
 	private Route assignedRoute;
 	private int routeIndex;
-	
+
 	public Customer() {
 		xCoordinate = 0;
 		yCoordinate = 0;
@@ -44,7 +35,6 @@ public class Customer {
 		waitingTime = 0;
 		twViol = 0;
 		distanceFromDepot = 0;
-		distanceFromSupercustomer = 0;
 		routeIndex =-1;
 	}
 
@@ -61,7 +51,6 @@ public class Customer {
 		this.waitingTime 		= new Double(customer.waitingTime);
 		this.twViol 			= new Double(customer.twViol);
 		this.distanceFromDepot = customer.distanceFromDepot;
-		this.distanceFromSupercustomer = customer.distanceFromSupercustomer;
 		this.angleToCustomer     =customer.angleToCustomer;
 		this.assignedRoute       =customer.assignedRoute;
 		this.routeIndex = customer.routeIndex;
@@ -77,14 +66,13 @@ public class Customer {
 		print.append("\n" + "--- Customer " + number + " -----------------------------------");
 		print.append("\n" + "| x=" + xCoordinate + " y=" + yCoordinate);
 		print.append("\n" + "| ServiceDuration=" + serviceDuration + " Demand=" + load);
-//		print.append("\n" + "| frequency=" + frequency + " visitcombinationsnr=" + combinationsVisitsNr);
 		print.append("\n" + "| AssignedDepot=" + assignedDepot.getNumber());
 		print.append("\n" + "| StartTimeWindow=" + startTw + " EndTimeWindow=" + endTw);
 		print.append("\n" + "--------------------------------------------------");
 		return print.toString();
-		
+
 	}
-	
+
 	/**
 	 * get the time at which the car arrives to the customer
 	 * @return dispatchtime
@@ -92,7 +80,7 @@ public class Customer {
 	public double getArriveTime() {
 		return arriveTime;
 	}
-	
+
 	/**
 	 * set the time at which the car arrives to the customer
 	 * @param dispatchtime
@@ -100,7 +88,7 @@ public class Customer {
 	public void setArriveTime(double dispatchtime) {
 		this.arriveTime = dispatchtime;
 	}
-	
+
 	/**
 	 * @return the customernumber
 	 */
@@ -119,14 +107,12 @@ public class Customer {
 		this.number = customernumber;
 	}
 
-
 	/**
 	 * @return the xcoordinate
 	 */
 	public double getXCoordinate() {
 		return xCoordinate;
 	}
-
 
 	/**
 	 * @param xcoordinate the xcoordinate to set
@@ -135,7 +121,6 @@ public class Customer {
 		this.xCoordinate = xcoordinate;
 	}
 
-
 	/**
 	 * @return the ycoordinate
 	 */
@@ -143,10 +128,10 @@ public class Customer {
 		return yCoordinate;
 	}
 
-
 	/**
 	 * @param ycoordinate the ycoordinate to set
 	 */
+
 	public void setYCoordinate(double ycoordinate) {
 		this.yCoordinate = ycoordinate;
 	}
@@ -154,64 +139,21 @@ public class Customer {
 	public void setDistanceFromDepot(double distance){
 		this.distanceFromDepot = distance;
 	}
-	
-	public void setIsDistant(){
-		this.isDistant = true;
-	}
-	
-	public boolean getIsDistant(){
-		return this.isDistant;
-	}
-	
 
-	/*
-	 * This is the mean distance from supercustomers to depot
-	 */
-	public void setMeanDistance(double meanDistance){
-		this.meanDistance = meanDistance;
-	}
-	
 	public void setIsTaken(boolean value){
 		this.isTaken = value;
 	}
-	
-	public void setDistanceFromSupercustomer(double dist){
-		this.distanceFromSupercustomer = dist;
-	}
-	
+
 	public boolean getIsTaken(){
 		return this.isTaken;
 	}
-	
-	public void generateNeighbours(ArrayList<Customer> customers,int vehiclesUsed){
-		double distance;
-		Customer cSelected = new Customer();
 
-		for(int i=0; i<customers.size();++i){
-			cSelected = customers.get(i);
-			if(!cSelected.getIsDistant()){
-				distance = Math.sqrt(Math.pow(this.getXCoordinate()-cSelected.getXCoordinate(),2)+Math.pow(this.getYCoordinate()-cSelected.getYCoordinate(), 2));
-				if(distance <= meanDistance && !cSelected.getIsTaken()){
-					neighbours.add(cSelected);
-					cSelected.setIsTaken(true);
-					cSelected.setDistanceFromSupercustomer(distance);
-				}
-			}
-		}
-		
-		
-	}
-
-	public ArrayList<Customer> getNeighbours(){
-		return this.neighbours;
-	}
 	/**
 	 * @return the serviceduration
 	 */
 	public double getServiceDuration() {
 		return serviceDuration;
 	}
-	
 
 	/**
 	 * @param serviceduration the serviceduration to set
@@ -219,7 +161,6 @@ public class Customer {
 	public void setServiceDuration(double serviceduration) {
 		this.serviceDuration = serviceduration;
 	}
-
 
 	/**
 	 * @return the demand
@@ -312,14 +253,6 @@ public class Customer {
 		this.twViol = twViol;
 	}
 
-	public Route getAssignedRoute() {
-		return assignedRoute;
-	}
-
-	public void setAssignedRoute(Route assignedRoute) {
-		this.assignedRoute = assignedRoute;
-	}
-
 	public double getAngleToCustomer() {
 		return angleToCustomer;
 	}
@@ -343,15 +276,4 @@ public class Customer {
 	public void setAngleFromDepot(double angleFromDepot) {
 		this.angleFromDepot = angleFromDepot;
 	}
-
-
-
-
-	/*
-	// get depot i from depot list
-	public Depot getDepot(int index){
-		return depotlist.get(index);
-	}
-	*/
-
 }

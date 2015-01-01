@@ -1,4 +1,4 @@
-package com.mdvrp;
+package com.vrp;
 
 import com.TabuSearch.MovesType;
 
@@ -12,8 +12,7 @@ public class Parameters {
 	private int tabuTenure;
 	private boolean variableTenure;
 	private String currDir;
-	private int vehicles; //How many vehicles we want to use
-	
+
 	public Parameters() {
 		currDir 			= System.getProperty("user.dir");
 		outputFileName    	= currDir + "/output/solutions.csv";
@@ -23,52 +22,48 @@ public class Parameters {
 		tabuTenure        	= -1;
 		randomSeed		  	= -1;
 		variableTenure    	= false;
-		vehicles			= -1; //If this remains -1, a random number is generated
 	}
-	
+
 	public void updateParameters(String[] args) throws Exception
 	{
 		if(args.length % 2 == 0){
 			for(int i = 0; i < args.length; i += 2){
 				switch (args[i]) {
-					case "-mT":
-						movesType = MovesType.RELOCATE;
-						break;
-					case "-if":
-						inputFileName = args[i+1];
-						break;
-					case "-of":
-						outputFileName = args[i+1];
-						break;
-					case "-p":
-						precision = Double.parseDouble(args[i+1]);
-						break;
-					case "-it":
-						iterations = Integer.parseInt(args[i+1]);
-						break;
-					case "-rs":
-						randomSeed = Integer.parseInt(args[i+1]);
-						break;
-					case "-t":
-						tabuTenure = Integer.parseInt(args[i+1]);
-						break;
-					case "-vt":
-						if(args[i+1].equalsIgnoreCase("true")){
-							setVariableTenure(true);
-						}else if(args[i+1].equalsIgnoreCase("false")){
-							setVariableTenure(false);
-						}else {
-							System.out.println("Variable tenure argument must be true of false. Set to default false!");
-							throw new Exception();
-						}
-						break;
-					case "-v":
-						vehicles = Integer.parseInt(args[i+1]);
-						break;
-					default: {
-						System.out.println("Unknown type of argument: " + args[i]);
+				case "-mT":
+					movesType = MovesType.RELOCATE;
+					break;
+				case "-if":
+					inputFileName = args[i+1];
+					break;
+				case "-of":
+					outputFileName = args[i+1];
+					break;
+				case "-p":
+					precision = Double.parseDouble(args[i+1]);
+					break;
+				case "-it":
+					iterations = Integer.parseInt(args[i+1]);
+					break;
+				case "-rs":
+					randomSeed = Integer.parseInt(args[i+1]);
+					break;
+				case "-t":
+					tabuTenure = Integer.parseInt(args[i+1]);
+					break;
+				case "-vt":
+					if(args[i+1].equalsIgnoreCase("true")){
+						setVariableTenure(true);
+					}else if(args[i+1].equalsIgnoreCase("false")){
+						setVariableTenure(false);
+					}else {
+						System.out.println("Variable tenure argument must be true of false. Set to default false!");
 						throw new Exception();
 					}
+					break;
+				default: {
+					System.out.println("Unknown type of argument: " + args[i]);
+					throw new Exception();
+				}
 				}
 			}
 		}else {
@@ -76,8 +71,8 @@ public class Parameters {
 			throw new Exception();
 		}
 	}
-	
-	
+
+
 	public String toString(){
 		StringBuffer print = new StringBuffer();
 		print.append("\n" + "--- Parameters: -------------------------------------");
@@ -202,13 +197,5 @@ public class Parameters {
 
 	public void setCurrDir(String currDir) {
 		this.currDir = currDir;
-	}
-	
-	public int getVehiclesToUse(){
-		return this.vehicles;
-	}
-	
-	public void setVehiclesToUse(int vehicles){
-		this.vehicles = vehicles;
 	}
 }

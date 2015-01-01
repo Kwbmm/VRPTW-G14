@@ -1,4 +1,4 @@
-package com.mdvrp;
+package com.vrp;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,18 +9,16 @@ public class Route {
 	private Vehicle assignedVehicle;  // vehicle assigned to the route
 	private Depot depot;              // depot the route starts from
 	private List<Customer> customers; //list of customers served in the route
-	
+
 	/**
 	 * Constructor of the route
 	 */
 	public Route() {
 		cost = new Cost();
 		customers = new ArrayList<>();
-		
 	}
-	
-	public Route(Route route) {
-		
+
+	public Route(Route route) {	
 		this.index = route.index;
 		this.cost = new Cost(route.cost);
 		this.assignedVehicle = route.assignedVehicle;
@@ -30,44 +28,44 @@ public class Route {
 			this.customers.add(new Customer(route.getCustomer(i)));
 		}
 	}
-	
+
 	public double getDuration() {
 		return cost.serviceTime + cost.waitingTime;
 	}
-	
+
 	public Customer getCustomer(int index) {
 		return this.customers.get(index);
 	}
 	public void setDepot(Depot depot) {
 		this.depot = depot;
 	}
-	
+
 	public void removeCustomer(int index){
 		this.customers.remove(index);
 	}
-	
+
 	public int getDepotNr(){
 		return this.depot.getNumber();
 	}
-	
+
 	public Depot getDepot(){
 		return this.depot;
 	}
-	
+
 	public int getLastCustomerNr(){
 		return getCustomerNr(customers.size() - 1);
 	}
-	
+
 	public int getFirstCustomerNr(){
 		return getCustomerNr(0);
 	}
-	
+
 	public boolean isEmpty(){
 		if(getCustomersLength() > 0)
 			return false;
 		else return true;
 	}
-	
+
 	/**
 	 * Get the customer index found at certain position in the customer list
 	 * @param index
@@ -76,10 +74,10 @@ public class Route {
 	public int getCustomerNr(int index){
 		return this.customers.get(index).getNumber();
 	}
+
 	/**
 	 * Prints the route
 	 */
-
 	public String printRoute() {
 		StringBuffer print = new StringBuffer();
 		print.append("Route[" + index + ", " + (getCustomersLength() + 1) + "]=");
@@ -90,7 +88,7 @@ public class Route {
 		print.append("\n");
 		return print.toString();
 	}
-	
+
 	public String printRouteCost() {
 		StringBuffer print = new StringBuffer();
 		print.append("\n" + "Route[" + index + "]");
@@ -100,15 +98,14 @@ public class Route {
 		print.append("\n");
 		return print.toString();
 	}
-	
-	
+
 	/**
 	 * @param customers list to set
 	 */
 	public void setCustomers(ArrayList<Customer> customers) {
 		this.customers = customers;
 	}
-	
+
 	/**
 	 * Add a new customer to the route
 	 * @param customer
@@ -116,7 +113,7 @@ public class Route {
 	public void addCustomer(Customer customer) {
 		this.customers.add(customer);
 	}
-	
+
 	/**
 	 * Add a new customer to the route on specific position
 	 * @param node
@@ -124,7 +121,7 @@ public class Route {
 	public void addCustomer(Customer customer, int index) {
 		this.customers.add(index, customer);
 	}
-	
+
 	/**
 	 * Set the index to the route
 	 * @param index
@@ -153,13 +150,11 @@ public class Route {
 	public void setAssignedVehicle(Vehicle assignedvehicle) {
 		this.assignedVehicle = assignedvehicle;
 	}
-	
+
 	public Vehicle getAssignedVehicle() {
 		return this.assignedVehicle;
 	}
-	
 
-	
 	public double getLoadAdmited() {
 		return assignedVehicle.getCapacity();
 	}
@@ -192,28 +187,24 @@ public class Route {
 		return this.cost;
 	}
 
-
 	public void initializeTimes() {
 		cost.initialize();
-		
-		
 	}
 
 	/**
 	 * @return the depotTwViol
 	 */
-
 	public double getDepotTwViol() {
 		return cost.depotTwViol;
 	}
-	
+
 	/**
 	 * @param depotTwViol the depotTwViol to set
 	 */
 	public void setDepotTwViol(double depotTwViol) {
 		this.cost.depotTwViol = depotTwViol;
 	}
-	
+
 	/**
 	 * @return the returnToDepotTime
 	 */
@@ -228,10 +219,4 @@ public class Route {
 		this.cost.returnToDepotTime = returnToDepotTime;
 	}
 
-	
-
-	public void removeCustomerK(Customer k){
-		this.customers.remove(k);
-	}
-	  
 }
