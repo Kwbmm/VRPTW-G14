@@ -18,7 +18,7 @@ public class MyObjectiveFunction implements ObjectiveFunction {
     public MyObjectiveFunction( Instance instance ) 
     {   
     	MyObjectiveFunction.setInstance(instance);
-     	//lambda     = 0.5 * Math.sqrt(instance.getVehiclesNr() * instance.getCustomersNr());
+     	lambda     = 0.5 * Math.sqrt(instance.getVehiclesNr() * instance.getCustomersNr());
     }   // end constructor
 
     /**
@@ -61,7 +61,7 @@ public class MyObjectiveFunction implements ObjectiveFunction {
         	for (int i = 0; i <= insertRoute.getCustomersLength(); ++i) {
         		// evaluate insertion of the customer in the list
         		Cost varCost = evaluateInsertRoute(insertRoute, move.getCustomer(), i);
-        		varCost.calculateTotal(sol.getAlpha(),sol.getGamma());
+        		varCost.calculateTotal(sol.getAlpha(), sol.getBeta(), sol.getGamma());
         		// this case covers the situation in which the parameters are too large and the cost will exceed the MAX_VALUE
         		if(varCost.total > Double.MAX_VALUE) {
         			varCost.total = Double.MAX_VALUE;
@@ -78,10 +78,9 @@ public class MyObjectiveFunction implements ObjectiveFunction {
         	solCost = getTotalCostSwapVariation(sol, move, varInsertCost, varDeleteCost);
         	obj = solCost.total;
             //calculate the penalization
-           /* if (sol.getObjectiveValue()[0] <= obj )
+            if (sol.getObjectiveValue()[0] <= obj )
             	penalization = lambda * solCost.total ;
-            */
-        	penalization=0;
+            
             double[] returnArray = new double[]{obj + penalization, obj, solCost.travelTime, solCost.loadViol, solCost.twViol};
             
             return returnArray;
@@ -105,10 +104,9 @@ public class MyObjectiveFunction implements ObjectiveFunction {
         	solCost = getTotalCostVariation(sol, move, varInsertCost, varDeleteCost);
         	obj = solCost.total;
             //calculate the penalization
-            /*if (sol.getObjectiveValue()[0] <= obj )
+            if (sol.getObjectiveValue()[0] <= obj )
             	penalization = lambda * solCost.total ;
-            */
-        	penalization=0;
+            
             double[] returnArray = new double[]{obj + penalization, obj, solCost.travelTime, solCost.loadViol, solCost.twViol};
             
             return returnArray;
@@ -132,7 +130,7 @@ public class MyObjectiveFunction implements ObjectiveFunction {
     	varCost.loadViol = Math.abs(varCost.loadViol) < instance.getPrecision() ? 0 : varCost.loadViol;
     	varCost.twViol = Math.abs(varCost.twViol) < instance.getPrecision() ? 0 : varCost.twViol;
     	
-		varCost.calculateTotal(sol.getAlpha(), sol.getGamma());
+		varCost.calculateTotal(sol.getAlpha(), sol.getBeta(), sol.getGamma());
 		    	
     	return varCost;
 	}
@@ -152,7 +150,7 @@ public class MyObjectiveFunction implements ObjectiveFunction {
     	varCost.loadViol = Math.abs(varCost.loadViol) < instance.getPrecision() ? 0 : varCost.loadViol;
     	varCost.twViol = Math.abs(varCost.twViol) < instance.getPrecision() ? 0 : varCost.twViol;
     	
-		varCost.calculateTotal(sol.getAlpha(),sol.getGamma());
+		varCost.calculateTotal(sol.getAlpha(), sol.getBeta(), sol.getGamma());
 		    	
     	return varCost;
 	}

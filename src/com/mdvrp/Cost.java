@@ -69,7 +69,7 @@ public class Cost {
 	 * @param beta
 	 * @param gamma
 	 */
-	public void calculateTotal(double alpha, double gamma) {
+	public void calculateTotal(double alpha, double beta, double gamma) {
 		total = travelTime+ alpha * loadViol + gamma * twViol;
 	}
 	

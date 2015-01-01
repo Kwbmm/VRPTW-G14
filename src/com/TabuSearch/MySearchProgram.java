@@ -25,10 +25,9 @@ public class MySearchProgram implements TabuSearchListener{
 	public int numberFeasibleSol;
 	public MyMoveManager manager;
 	public DecimalFormat df = new DecimalFormat("#.##");
-	public int  twviol=0;
-	public int loadviol=0;
+	public int  counter;
 	
-	public MySearchProgram(Instance instance, Solution initialSol, MoveManager moveManager, ObjectiveFunction objFunc, TabuList tabuList, boolean minmax, PrintStream outPrintStream)
+	public MySearchProgram(Instance instance, Solution initialSol, MoveManager moveManager, ObjectiveFunction objFunc, TabuList tabuList, boolean minmax, PrintStream outPrintStream, Duration duration)
 	{
 		tabuSearch = new SingleThreadedTabuSearch(initialSol, moveManager, objFunc,tabuList,	new BestEverAspirationCriteria(), minmax );
 		feasibleIndex = -1;
@@ -80,11 +79,7 @@ public class MySearchProgram implements TabuSearchListener{
 		
 		MySearchProgram.iterationsDone += 1;
 		
-
-			
-			
-		
-			//	System.out.println("Iteration: " + iterationsDone);
+	//	System.out.println("Iteration: " + iterationsDone);
 	//	System.out.println("Precision: " + (feasibleCost.total-instance.getPrecision()));
 		// Check to see if a new feasible solution is found
 		// Checking with the current solution admits new feasible solution
@@ -102,38 +97,8 @@ public class MySearchProgram implements TabuSearchListener{
 			//System.out.println("FEASIBLE: " + numberFeasibleSol);
 
 		}
-		if(sol.getObjectiveValue()[3] != 0.00000000000000){
-			loadviol++;	
-			}
 		
-		if(sol.getObjectiveValue()[4]!=0.000000000000){
-			twviol++;}
-		
-		
-		if ((iterationsDone % 10)==0 ){
-			boolean x,y;
-			
-			if(loadviol == 10){
-				//true capacity violated ten times
-				x=true; 
-			}
-				else
-					x=false;
-			if(twviol==10){
-				//true tw violated ten times
-				y=true;
-			}
-				else
-					y=false;
-			
-			sol.update(x, y);	
-			loadviol=0;
-			twviol=0;
-			
-		}
-		//System.out.println(sol.getObjectiveValue()[3] + " " + sol.getObjectiveValue()[4]);
-		
-		//sol.updateParameters(sol.getObjectiveValue()[3], sol.getObjectiveValue()[4]);
+		sol.updateParameters(sol.getObjectiveValue()[3], sol.getObjectiveValue()[4]);
 	}
 
 	@Override
@@ -173,7 +138,7 @@ public class MySearchProgram implements TabuSearchListener{
 
 	@Override
 	public void unimprovingMoveMade(TabuSearchEvent event) {
-		
+		counter++;
 		/*if (counter== 100){
 			System.out.println("counter 100 "+ manager.getMovesType());
 			counter=0;

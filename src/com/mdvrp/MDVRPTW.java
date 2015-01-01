@@ -49,14 +49,15 @@ public class MDVRPTW {
 	        // Tabu list
 	        //First is depotNr
 	        int dimension[] = {1, instance.getVehiclesNr(), instance.getCustomersNr(), 1, 1};
-	        tabuList 		= new MyTabuList(parameters.getTabuTenure(), dimension);
+	        tabuList 		= new MyTabuList(parameters.getTabuTenure(), dimension, instance);
 	        
 	        // Create Tabu Search object
 	        search 			= new MySearchProgram(instance, initialSol, moveManager,
-							            objFunc, tabuList, false,  outPrintSream);
+							            objFunc, tabuList, false,  outPrintSream, duration);
 	        // Start solving        
 	        search.tabuSearch.setIterationsToGo(parameters.getIterations());
 	        search.tabuSearch.startSolving();
+	       
 	        
 	        duration.stop();
 	       // System.out.println("Duration: " + duration.getMilliSeconds());

@@ -2,12 +2,18 @@ package com.TabuSearch;
 
 import org.coinor.opents.*;
 
+import com.mdvrp.Instance;
+
 @SuppressWarnings("serial")
 public class MyTabuList extends ComplexTabuList implements TabuSearchListener{
 	private int counter;
+	private int reset=7;
+	private Instance instance;
 
-	public MyTabuList(int tenure, int[] attrDim) {
+	public MyTabuList(int tenure, int[] attrDim, Instance instance) {
+		
 		super(tenure, attrDim);
+		this.instance= instance;
 		//  Auto-generated constructor stub
 	}
 
@@ -30,6 +36,8 @@ public class MyTabuList extends ComplexTabuList implements TabuSearchListener{
 		//  Auto-generated method stub
 		counter--;
 		setTenure(getTenure()-2);
+		if (getTenure()<1)
+			setTenure(reset);
 		
 	}
 
@@ -44,9 +52,10 @@ public class MyTabuList extends ComplexTabuList implements TabuSearchListener{
 		//  Auto-generated method stub
 		
 		counter++;
-		if (counter==50){
+		if (counter==20){
 			setTenure(getTenure()+3);
-			System.out.println("counter50");
+			if (getTenure()>instance.getCustomersNr()*2)
+				setTenure(reset);
 			counter=0;
 		}
 		
